@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			const theme = localStorage.getItem('theme');
+			let currentTheme;
+		
+			if (theme === 'system' || !theme) {
+				currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			} else {
+				currentTheme = theme;
+			}
+		
+			if (currentTheme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		
+			if (!theme) {
+				localStorage.setItem('theme', 'system');
+			}
+		</script>
+		%sveltekit.head%
+	</head>
+		%sveltekit.body%
+	</body>
+</html>

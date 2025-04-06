@@ -1,0 +1,42 @@
+import type { Tab } from '$lib/types';
+
+export const providersSortOrder = ['google', 'yandex', 'github'];
+
+export const icon = {
+	default: 'h-4 w-4',
+	left: 'mr-2 h-4 w-4',
+	right: 'ml-2 h-4 w-4'
+};
+
+export const logos = {
+	github: {
+		dark: '/github-light.svg'
+	}
+};
+
+export const tabsConfig: { [key: string]: Tab[] } = {
+	region: [
+		{
+			name: 'Overview',
+			href: ''
+		},
+		{
+			name: 'Settings',
+			href: '/~/settings'
+		}
+	],
+	team: [
+		{
+			name: 'Overview',
+			href: ''
+		},
+		{
+			name: 'Members',
+			href: '/~/members'
+		},
+		{
+			name: 'Settings',
+			href: '/~/settings'
+		}
+	]
+};
