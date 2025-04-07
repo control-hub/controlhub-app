@@ -278,4 +278,17 @@ export const createTeam = async (teamsStore: CollectionStore<TeamsResponse>, tea
 	});
 
 	return createdTeam;
-} 
+};
+
+export const randintSeed = (str: string, min: number, max: number): number => {
+	// Конвертируем seed-строку в 32битное число (простейший хэш)
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash * 31 + str.charCodeAt(i)) | 0; // умножение + сдвиг
+	}
+
+	// Псевдослучайное на базе хэша
+	const pseudoRand = Math.abs(Math.sin(hash) * 10000) % 1;
+
+	return Math.floor(pseudoRand * (max - min + 1)) + min;
+};

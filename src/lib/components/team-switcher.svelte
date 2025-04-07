@@ -1,14 +1,69 @@
 <script lang="ts">
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import { useSidebar } from "$lib/components/ui/sidebar/index.js";
-	import ChevronsUpDown from "@lucide/svelte/icons/chevrons-up-down";
-	import Plus from "@lucide/svelte/icons/plus";
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+	import { randintSeed } from '$lib/utils';
+	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
+	import Plus from '@lucide/svelte/icons/plus';
+
+	import {
+		Cuboid,
+		Radar,
+		Airplay,
+		BookUser,
+		Cast,
+		Cylinder,
+		Diameter,
+		Eclipse,
+		Radius,
+		Box,
+		Package,
+		PackageOpen,
+		Bolt,
+		Container,
+		Pyramid,
+		TriangleRight,
+		Blend,
+		Pentagon,
+		Hexagon,
+		CircleDot,
+		CircleDotDashed,
+		Cone,
+		Square,
+		Triangle,
+		Tangent,
+		Torus
+	} from 'lucide-svelte';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let { teams }: { teams: { name: string; logo: any; plan: string }[] } = $props();
+	let { teams }: { teams: { name: string; logo?: any; plan?: string }[] } = $props();
 	const sidebar = useSidebar();
+
+	const logos = [
+		Cuboid,
+		Cylinder,
+		Diameter,
+		Eclipse,
+		Radius,
+		Box,
+		Package,
+		PackageOpen,
+		Bolt,
+		Container,
+		Pyramid,
+		TriangleRight,
+		Blend,
+		Pentagon,
+		Hexagon,
+		CircleDot,
+		CircleDotDashed,
+		Cone,
+		Square,
+		Triangle,
+		Tangent,
+		Torus
+	];
 
 	let activeTeam = $state(teams[0]);
 </script>
@@ -18,15 +73,17 @@
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
+					{@const activeTeamLogo =
+						activeTeam.logo ?? logos[randintSeed(activeTeam.name, 0, logos.length - 1)]}
 					<Sidebar.MenuButton
 						{...props}
 						size="lg"
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<div
-							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+							class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 						>
-							<activeTeam.logo class="size-4" />
+							<svelte:component this={activeTeamLogo} class="size-4" />
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold">
@@ -41,27 +98,28 @@
 			<DropdownMenu.Content
 				class="w-[var(--bits-dropdown-menu-anchor-width)] min-w-56 rounded-lg"
 				align="start"
-				side={sidebar.isMobile ? "bottom" : "right"}
+				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
 			>
-				<DropdownMenu.Label class="text-muted-foreground text-xs">Teams</DropdownMenu.Label>
+				<DropdownMenu.Label class="text-xs text-muted-foreground">Teams</DropdownMenu.Label>
 				{#each teams as team, index (team.name)}
-					<DropdownMenu.Item onSelect={() => (activeTeam = team)} class="gap-2 p-2">
+					{@const logo = team.logo ?? logos[randintSeed(team.name, 0, logos.length - 1)]}
+					<DropdownMenu.Item
+						onSelect={() => (window.location.href = '/' + team.name)}
+						class="gap-2 p-2"
+					>
 						<div class="flex size-6 items-center justify-center rounded-sm border">
-							<team.logo class="size-4 shrink-0" />
+							<svelte:component this={logo} class="size-4 shrink-0" />
 						</div>
 						{team.name}
-						<DropdownMenu.Shortcut>⌘{index + 1}</DropdownMenu.Shortcut>
 					</DropdownMenu.Item>
 				{/each}
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item class="gap-2 p-2">
-					<div
-						class="bg-background flex size-6 items-center justify-center rounded-md border"
-					>
+					<div class="flex size-6 items-center justify-center rounded-md border bg-background">
 						<Plus class="size-4" />
 					</div>
-					<div class="text-muted-foreground font-medium">Add team</div>
+					<div class="font-medium text-muted-foreground">Add team</div>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

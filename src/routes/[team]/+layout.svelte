@@ -10,7 +10,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
-	import { teamStore, teamAccessStore } from '$lib/stores.js';
+	import { teamStore, teamAccessStore, userStore } from '$lib/stores.js';
 	import { tabsStore } from '$lib/stores.js';
 	import { icon } from '$lib/config';
 	import { goto } from '$app/navigation';
@@ -28,6 +28,7 @@
 		params: any;
 	};
 
+	userStore.set(data.user);
 	teamAccessStore.set(data.teamAccess);
 	teamStore.set(data.team);
 

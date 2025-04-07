@@ -1,23 +1,14 @@
 <script lang="ts">
-	import * as Collapsible from "$lib/components/ui/collapsible/index.js";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import ChevronRight from "@lucide/svelte/icons/chevron-right";
+	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+
+	import type { NavPage } from './sidebar-types';
 
 	let {
-		items,
+		items
 	}: {
-		items: {
-			title: string;
-			url: string;
-			// this should be `Component` after @lucide/svelte updates types
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			icon?: any;
-			isActive?: boolean;
-			items?: {
-				title: string;
-				url: string;
-			}[];
-		}[];
+		items: NavPage[];
 	} = $props();
 </script>
 

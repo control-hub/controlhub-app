@@ -1,6 +1,13 @@
 import { derived, writable } from 'svelte/store';
-import type { RegionsResponse, TeamsResponse, TeamsAccessResponse, Tab } from '$lib/types';
+import type {
+	RegionsResponse,
+	UsersResponse,
+	TeamsResponse,
+	TeamsAccessResponse,
+	Tab
+} from '$lib/types';
 
+export const userStore = writable<UsersResponse | null>(null);
 export const regionStore = writable<RegionsResponse | null>(null);
 export const teamStore = writable<TeamsResponse | null>(null);
 export const teamAccessStore = writable<TeamsAccessResponse | null>(null);
