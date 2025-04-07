@@ -28,7 +28,7 @@
 
 <div class="mx-auto grid w-[min(748px,100vw)] grid-cols-1 gap-6 px-6">
 	<!-- Edit Name -->
-	<Card.Root class="w-[min(max(240px,80vw),600px)]" muted={true}>
+	<Card.Root class="w-[min(max(240px,80vw),600px)]">
 		<Card.Header>
 			<Card.Title>Team Name</Card.Title>
 			<Card.Description>
