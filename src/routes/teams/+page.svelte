@@ -7,18 +7,20 @@
 
 	import { emptyTeam } from '$lib/config';
 	import type { TeamsResponse, UsersResponse } from '$lib/types.js';
-	import { onDestroy, onMount, tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 
 	export let data: { teams: TeamsResponse[]; cookie: string; user: UsersResponse };
 
 	// region: PocketBase
+	teamStore.set(emptyTeam);
+	teamsStore.set(data.teams);
 
-	pb.authStore.loadFromCookie(data.cookie);
-
-	onMount(async () => {
-		await tick();
-		teamStore.set(emptyTeam);
-		teamsStore.set(data.teams);
+	beforeNavigate(({ from, to }) => {
+		if (from?.url.pathname !== to?.url.pathname) {
+			teamStore.set(undefined);
+			teamsStore.set([]);
+		}
 	});
 
 	// endregion

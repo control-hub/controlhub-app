@@ -15,8 +15,6 @@
 	tabsStore.set(tabsConfig.team as any);
 
 	// region: PocketBase
-	pb.authStore.loadFromCookie(data.cookie);
-
 	const regionsStore = createCollectionStore<RegionsResponse>(
 		pb,
 		'regions',

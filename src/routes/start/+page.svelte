@@ -12,8 +12,6 @@
 
 	if (browser) {
 		(async () => {
-			pb.authStore.loadFromCookie(data.cookie);
-
 			if ($teamStore) {
 				goto('/' + $teamStore.name);
 			} else {

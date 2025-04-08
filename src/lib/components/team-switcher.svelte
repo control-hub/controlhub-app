@@ -8,6 +8,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { toastApi, createTeam } from '$lib/utils';
 	import { teamsStore, userStore } from '$lib/stores';
 
@@ -45,6 +46,7 @@
 	import type { Team } from './sidebar-types';
 	import { writable } from 'svelte/store';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
+	import { goto } from '$app/navigation';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +99,7 @@
 								>
 									<svelte:component this={activeTeamLogo} class="size-4" />
 								</div>
-							{:else}
+							{:else if activeTeam}
 								<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
 									<SquareDashed class="size-6" />
 								</div>
@@ -162,7 +164,7 @@
 						createTeamName = '';
 						dialogOpen.set(false);
 
-						window.location.href = '/' + result.name;
+						goto('/' + result.name);
 					},
 					`Team ${createTeamName} created.`,
 					`Failed to create team ${createTeamName}.`
@@ -173,4 +175,6 @@
 			</form>
 		</Dialog.Content>
 	</Dialog.Root>
+{:else}
+	<Skeleton class="h-[48px] w-full rounded-lg" />
 {/if}

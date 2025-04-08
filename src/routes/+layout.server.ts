@@ -10,6 +10,6 @@ export const load = async ({ locals, url }) => {
 
 	return {
 		user: toPOJO(user),
-		url: url.pathname
+		cookie: locals.pb.authStore.exportToCookie()
 	};
 };

@@ -4,10 +4,6 @@
 	import type { TeamsResponse } from '$lib/types';
 	import { onMount } from 'svelte';
 
-	export let data: { cookie: string };
-
-	pb.authStore.loadFromCookie(data.cookie);
-
 	onMount(async () => {
 		try {
 			const team = await pb

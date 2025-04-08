@@ -9,14 +9,16 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { userStore, teamStore, teamsStore } from '$lib/stores.js';
 
+	import { pb } from '$lib/pocketbase/client';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { writable, derived } from 'svelte/store';
 	import type { UsersResponse } from '$lib/types';
 	import { theme } from 'theme-selector';
 
-	export let data: { user: UsersResponse; url: string };
+	export let data: { user: UsersResponse; cookie: string };
 	userStore.set(data.user);
+	pb.authStore.loadFromCookie(data.cookie);
 
 	console.log('user', $userStore);
 

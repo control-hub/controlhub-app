@@ -10,6 +10,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
+	import { page } from '$app/stores';
 	import { teamStore, teamAccessStore, teamsStore } from '$lib/stores.js';
 	import { tabsStore } from '$lib/stores.js';
 	import { icon } from '$lib/config';
@@ -19,32 +20,19 @@
 	import { createCollectionStore } from 'pocketbase-store';
 	import type { TeamsAccessResponse, TeamsResponse } from '$lib/types';
 	import { onDestroy, onMount } from 'svelte';
-	export let data: {
-		user: any;
-		cookie: string;
-		url: string;
-		teams: TeamsResponse[];
-		team: TeamsResponse;
-		teamAccess: TeamsAccessResponse;
-		params: any;
-	};
 
-	teamAccessStore.set(data.teamAccess);
-	teamStore.set(data.team);
-	teamsStore.set(data.teams);
+	beforeNavigate(({ to, from }) => {
+		const nextPath = from?.url.pathname || '';
+		const currentPath = to?.url.pathname.split('/').slice(0, 2).join('/') || '';
 
-	beforeNavigate(() => {
-		teamAccessStore.set(undefined);
-		teamStore.set(undefined);
-		teamsStore.set([]);
+		console.log(currentPath);
+
+		if (!nextPath.startsWith(currentPath)) {
+			teamAccessStore.set(undefined);
+			teamStore.set(undefined);
+			teamsStore.set([]);
+		}
 	});
-
-	// region: PocketBase
-	pb.authStore.loadFromCookie(data.cookie);
-
-	console.log(data);
-
-	// endregion
 </script>
 
 <div class="flex flex-col">
@@ -54,8 +42,8 @@
 		<div class="flex h-12 w-full items-center justify-between border-b border-input px-4">
 			<div class="flex h-full">
 				{#each $tabsStore as tab}
-					{@const url = generateTabUrl(data.url, tab, $tabsStore)}
-					{@const isActive = url === data.url}
+					{@const url = generateTabUrl($page.url.pathname, tab, $tabsStore)}
+					{@const isActive = url === $page.url.pathname}
 					<div
 						class={cn('h-full px-2 py-2', isActive ? 'border-b-2 border-gray-300' : 'pb-[10px]')}
 					>
