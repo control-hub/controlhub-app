@@ -7,9 +7,21 @@
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import type { User } from './sidebar-types';
+	import { userStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
+	import { toastApi } from '$lib/utils';
+
+	import { theme } from 'theme-selector';
+	import { Moon, Sun, Bolt } from 'lucide-svelte';
 
 	let { user }: { user: User } = $props();
 	const sidebar = useSidebar();
+
+	async function logout() {
+		await toastApi.post('/api/auth/logout');
+		await goto('/auth/login');
+		userStore.set(undefined);
+	}
 </script>
 
 <Sidebar.Menu>
@@ -54,17 +66,39 @@
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group></DropdownMenu.Group>
-				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
 					<DropdownMenu.Item>
 						<BadgeCheck />
 						Account
 					</DropdownMenu.Item>
+					<DropdownMenu.Sub>
+						<DropdownMenu.SubTrigger>
+							{#if $theme === 'light'}
+								<Sun />
+							{:else if $theme === 'dark'}
+								<Moon />
+							{/if}
+							Theme
+						</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubContent>
+							<DropdownMenu.Item onclick={() => theme.set('light')}>
+								<Sun />
+								<span>Light</span>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => theme.set('dark')}>
+								<Moon />
+								<span>Dark</span>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={() => theme.set('system')}>
+								<Bolt />
+								<span>System</span>
+							</DropdownMenu.Item>
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Sub>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
-					<LogOut />
-					Log out
+				<DropdownMenu.Item onclick={logout} class="text-red-600">
+					<LogOut />Logout
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

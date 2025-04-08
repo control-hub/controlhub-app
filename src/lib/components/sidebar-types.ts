@@ -18,4 +18,5 @@ export type Team = {
 	name: string;
 	logo?: typeof SvelteComponent | Component;
 	plan?: string;
+	empty?: boolean;
 };

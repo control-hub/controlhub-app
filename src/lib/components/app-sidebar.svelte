@@ -21,29 +21,26 @@
 		teams: [
 			{
 				name: 'Acme Inc',
-				//logo: GalleryVerticalEnd,
 				plan: 'Enterprise'
 			},
 			{
 				name: 'Acme Corp.',
-				//logo: AudioWaveform,
 				plan: 'Startup'
 			},
 			{
 				name: 'Evil Corp.',
-				//logo: Command,
 				plan: 'Free'
 			}
 		],
 		navMain: [
 			{
-				title: 'Dashboard',
-				url: '/dashboard',
+				title: 'Teams',
+				url: '/teams',
 				icon: SquareTerminal,
 				items: [
 					{
 						title: 'Overview',
-						url: '/dashboard'
+						url: '/teams'
 					}
 				]
 			},
@@ -86,23 +83,25 @@
 		ref = $bindable(null),
 		collapsible = 'icon',
 		user,
+		teams,
+		activeTeam,
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> & {
 		user: User;
+		teams: Team[];
+		activeTeam?: Team;
 	} = $props();
-
-	data.user = user as User;
 </script>
 
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<TeamSwitcher teams={data.teams} />
+		<TeamSwitcher {activeTeam} {teams} />
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser {user} />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

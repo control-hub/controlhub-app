@@ -22,13 +22,13 @@
 	};
 </script>
 
-<div class="mb-6 w-[100vw] border-b border-input py-10 text-3xl font-medium">
-	<span class="ml-[calc(min(10vw,100px))]"> Settings </span>
+<div class="mb-6 w-[100%] border-b border-input py-10 text-3xl font-medium">
+	<span class="ml-[calc(min(10%,100px))]"> Settings </span>
 </div>
 
-<div class="mx-auto grid w-[min(748px,100vw)] grid-cols-1 gap-6 px-6">
+<div class="mx-auto grid w-[min(748px,100%)] grid-cols-1 gap-6 px-6">
 	<!-- Edit Name -->
-	<Card.Root class="w-[min(max(240px,80vw),600px)]">
+	<Card.Root class="w-[min(max(240px,80%),600px)]">
 		<Card.Header>
 			<Card.Title>Team Name</Card.Title>
 			<Card.Description>

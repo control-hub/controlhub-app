@@ -42,7 +42,13 @@
 										<Sidebar.MenuSubItem>
 											<Sidebar.MenuSubButton>
 												{#snippet child({ props })}
-													<a href={subItem.url} {...props}>
+													<a
+														onclick={() => {
+															window.location.href = subItem.url;
+														}}
+														class="min-w-full"
+														{...props}
+													>
 														<span>{subItem.title}</span>
 													</a>
 												{/snippet}

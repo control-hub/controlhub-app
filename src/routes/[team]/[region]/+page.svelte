@@ -54,7 +54,7 @@
 	const play = writable(false);
 </script>
 
-<div class="my-6 w-[min(1080px,90vw)]">
+<div class="my-6 w-[min(1080px,90%)]">
 	<div class="flex gap-4 pb-4">
 		<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
 		<Button

@@ -11,7 +11,7 @@ export const load = async ({ locals, url, params }) => {
 		throw redirect(302, '/auth/login');
 	}
 
-	const teamsPromise = locals.pb.collection('teams').getFullList();
+	const teamsPromise = locals.pb.collection('teams').getFullList({ sort: '-created' });
 
 	let team = null;
 	let teamAccess = null;

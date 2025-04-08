@@ -2,10 +2,12 @@
 	import { Input } from '$lib/components/ui/input';
 	import { TeamsTable } from '$lib/team/table';
 	import { writable } from 'svelte/store';
-	import { createCollectionStore } from 'pocketbase-store';
+	import { teamsStore, teamStore } from '$lib/stores';
 	import { pb } from '$lib/pocketbase/client';
 
+	import { emptyTeam } from '$lib/config';
 	import type { TeamsResponse, UsersResponse } from '$lib/types.js';
+	import { onDestroy, onMount, tick } from 'svelte';
 
 	export let data: { teams: TeamsResponse[]; cookie: string; user: UsersResponse };
 
@@ -13,22 +15,18 @@
 
 	pb.authStore.loadFromCookie(data.cookie);
 
-	const teamsStore = createCollectionStore<TeamsResponse>(
-		pb,
-		'teams',
-		{
-			sort: '-created',
-			autoSubGetData: false
-		},
-		data.teams
-	);
+	onMount(async () => {
+		await tick();
+		teamStore.set(emptyTeam);
+		teamsStore.set(data.teams);
+	});
 
 	// endregion
 	const filterPhrase = writable('');
 </script>
 
 <div class="container flex justify-center">
-	<div class="my-6 w-[min(1080px,90vw)]">
+	<div class="my-6 w-[min(1080px,90%)]">
 		<div class="mb-4 flex gap-4">
 			<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
 		</div>

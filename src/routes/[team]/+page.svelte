@@ -32,7 +32,7 @@
 	const filterPhrase = writable('');
 </script>
 
-<div class="my-6 w-[min(1080px,90vw)]">
+<div class="my-6 w-[min(1080px,90%)]">
 	<div class="mb-4 flex gap-4">
 		<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
 	</div>
