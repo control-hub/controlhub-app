@@ -175,7 +175,7 @@
 		</Dialog.Content>
 	</Dialog.Root>
 {:else if sidebar.open}
-	<Skeleton class="h-[3rem] w-full rounded-lg" />
+	<Skeleton class="h-[3rem] w-full rounded-lg bg-sidebar" />
 {:else}
-	<Skeleton class="h-[2rem] w-full rounded-lg" />
+	<Skeleton class="h-[2rem] w-full rounded-lg bg-sidebar" />
 {/if}
