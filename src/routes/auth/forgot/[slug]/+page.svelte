@@ -9,9 +9,7 @@
 	import { toastApi } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
-	export let data: {
-		token: string;
-	};
+	export let data;
 
 	let formData = {
 		token: data.token,

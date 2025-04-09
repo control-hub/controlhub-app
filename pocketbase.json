@@ -1,0 +1,403 @@
+[
+	{
+		"id": "_pb_users_auth_",
+		"name": "users",
+		"type": "auth",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "users_name",
+				"name": "name",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "users_avatar",
+				"name": "avatar",
+				"type": "file",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"mimeTypes": ["image/jpeg", "image/png", "image/svg+xml", "image/gif", "image/webp"],
+					"thumbs": null,
+					"maxSelect": 1,
+					"maxSize": 5242880,
+					"protected": false
+				}
+			}
+		],
+		"indexes": [],
+		"listRule": null,
+		"viewRule": "",
+		"createRule": "",
+		"updateRule": "@request.auth.id = id",
+		"deleteRule": "@request.auth.id = id",
+		"options": {
+			"allowEmailAuth": true,
+			"allowOAuth2Auth": true,
+			"allowUsernameAuth": true,
+			"exceptEmailDomains": null,
+			"manageRule": null,
+			"minPasswordLength": 8,
+			"onlyEmailDomains": null,
+			"onlyVerified": false,
+			"requireEmail": false
+		}
+	},
+	{
+		"id": "y5swzm9sjzt2xo7",
+		"name": "commands",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "oprn0uir",
+				"name": "name",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "lj5tlsrd",
+				"name": "description",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "ldqzl5ps",
+				"name": "lang",
+				"type": "select",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"maxSelect": 1,
+					"values": ["python", "cmd", "system"]
+				}
+			},
+			{
+				"system": false,
+				"id": "ripstdqq",
+				"name": "exec",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "u3wnuhl7",
+				"name": "user",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": [],
+		"listRule": "@request.auth.id = user.id",
+		"viewRule": "@request.auth.id = user.id",
+		"createRule": "@request.auth.id = user.id",
+		"updateRule": "@request.auth.id = user.id",
+		"deleteRule": "@request.auth.id = user.id",
+		"options": {}
+	},
+	{
+		"id": "c7d9yo9oik9cl3k",
+		"name": "computers",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "qrfeomjn",
+				"name": "name",
+				"type": "text",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "inxbl5bt",
+				"name": "logs",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": 1000,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "pb8r9qvr",
+				"name": "mac",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": "[0-9a-zA-Z]{2}[:\\-][0-9a-zA-Z]{2}[:\\-][0-9a-zA-Z]{2}[:\\-][0-9a-zA-Z]{2}[:\\-][0-9a-zA-Z]{2}[:\\-][0-9a-zA-Z]{2}"
+				}
+			},
+			{
+				"system": false,
+				"id": "xujarcwe",
+				"name": "status",
+				"type": "select",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"maxSelect": 1,
+					"values": ["2", "1", "0"]
+				}
+			},
+			{
+				"system": false,
+				"id": "xwttixbo",
+				"name": "active",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "y5swzm9sjzt2xo7",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			},
+			{
+				"system": false,
+				"id": "x4udwnpa",
+				"name": "region",
+				"type": "relation",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "jj1p9w8bm4x8y15",
+					"cascadeDelete": true,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": [],
+		"listRule": "region.team.teams_access_via_team.user.id = @request.auth.id || region.team.owner.id = @request.auth.id",
+		"viewRule": "region.team.teams_access_via_team.user.id = @request.auth.id || region.team.owner.id = @request.auth.id",
+		"createRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'add_computer') || region.team.owner.id = @request.auth.id",
+		"updateRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'edit_computer') || region.team.owner.id = @request.auth.id",
+		"deleteRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'delete_computer') || region.team.owner.id = @request.auth.id",
+		"options": {}
+	},
+	{
+		"id": "jj1p9w8bm4x8y15",
+		"name": "regions",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "jx64d9rf",
+				"name": "name",
+				"type": "text",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "n9jenykd",
+				"name": "team",
+				"type": "relation",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "kwsgdujc9jey3j8",
+					"cascadeDelete": true,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": ["CREATE UNIQUE INDEX `idx_dDUC3Gu` ON `regions` (\n  `name`,\n  `team`\n)"],
+		"listRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
+		"viewRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
+		"createRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'add_region') || team.owner.id = @request.auth.id",
+		"updateRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_region') || team.owner.id = @request.auth.id",
+		"deleteRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_region') || team.owner.id = @request.auth.id",
+		"options": {}
+	},
+	{
+		"id": "kwsgdujc9jey3j8",
+		"name": "teams",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "9sdcxiof",
+				"name": "name",
+				"type": "text",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "g7vxxbez",
+				"name": "owner",
+				"type": "relation",
+				"required": true,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": ["CREATE UNIQUE INDEX `idx_ZvcAPMf` ON `teams` (`name`)"],
+		"listRule": "teams_access_via_team.user.id = @request.auth.id || owner.id = @request.auth.id",
+		"viewRule": "teams_access_via_team.user.id = @request.auth.id || owner.id = @request.auth.id",
+		"createRule": "owner.id = @request.auth.id",
+		"updateRule": "(teams_access_via_team.user.id = @request.auth.id && teams_access_via_team.permissions ~ 'edit_team') || owner.id = @request.auth.id",
+		"deleteRule": "(teams_access_via_team.user.id = @request.auth.id && teams_access_via_team.permissions ~ 'delete_team') || owner.id = @request.auth.id",
+		"options": {}
+	},
+	{
+		"id": "0nnzldzsd60p82w",
+		"name": "teams_access",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "jq693vf3",
+				"name": "user",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			},
+			{
+				"system": false,
+				"id": "zchwqn1a",
+				"name": "team",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "kwsgdujc9jey3j8",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			},
+			{
+				"system": false,
+				"id": "nessz3nc",
+				"name": "permissions",
+				"type": "select",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"maxSelect": 11,
+					"values": [
+						"add_access",
+						"delete_access",
+						"edit_access",
+						"delete_team",
+						"edit_team",
+						"add_region",
+						"delete_region",
+						"edit_region",
+						"add_computer",
+						"delete_computer",
+						"edit_computer"
+					]
+				}
+			}
+		],
+		"indexes": ["CREATE UNIQUE INDEX `idx_BEWjWp3` ON `teams_access` (\n  `user`,\n  `team`\n)"],
+		"listRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
+		"viewRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
+		"createRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'add_access') || team.owner.id = @request.auth.id",
+		"updateRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_access') || team.owner.id = @request.auth.id",
+		"deleteRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_access') || team.owner.id = @request.auth.id",
+		"options": {}
+	}
+]

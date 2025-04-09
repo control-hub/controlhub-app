@@ -7,32 +7,29 @@
 	import { PlusCircle } from 'lucide-svelte';
 	import { DotsHorizontal } from 'svelte-radix';
 
-	import { CollectionStore } from 'pocketbase-store';
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { toastApi, createTeam as utilsCreateTeam, shrinkString } from '$lib/utils';
 	import { icon } from '$lib/config';
-	import type { TeamsResponse, UsersResponse } from '$lib/types';
+	import { userStore, teamsStore } from '$lib/stores';
 	// import { isOwner } from '$lib/store/team_store';
 
-	export let data: CollectionStore<TeamsResponse>;
 	export let filterPhrase: Writable<string>;
-	export let user: UsersResponse;
-
-	const filtered = derived([data, filterPhrase], ([$data, $filterPhrase]) => {
-		return $data.filter((team) => {
-			return team.name.toLowerCase().includes($filterPhrase.toLowerCase());
-		});
-	});
 
 	const teamDialogOpen = writable(false);
 	const teamForm = writable({
 		name: ''
 	});
 
+	const filtered = derived([teamsStore, filterPhrase], ([$data, $filterPhrase]) => {
+		return $data.filter((team) => {
+			return team.name.toLowerCase().includes($filterPhrase.toLowerCase());
+		});
+	});
+
 	async function createTeam(team: { name: string }) {
-		await utilsCreateTeam(data, {
+		await utilsCreateTeam(teamsStore, {
 			name: team.name,
-			owner: user.id
+			owner: $userStore?.id as string
 		});
 
 		teamDialogOpen.set(false);
@@ -41,43 +38,43 @@
 </script>
 
 <div
-	class="grid grid-cols-2 gap-4 pb-6 max-sm:grid-cols-1"
+	class="grid grid-cols-2 gap-4 pb-6 max-lg:grid-cols-1"
 	class:!grid-cols-1={$filtered.length === 0}
 >
 	<!-- {#if $isOwner} -->
-		<Dialog.Root bind:open={$teamDialogOpen}>
-			<Dialog.Trigger>
-				{#snippet child({ props })}
-					<Button
-						{...props}
-						class="relative h-[130px] w-full text-center max-sm:h-[80px] sm:col-auto"
-						variant="outline"
-					>
-						Create team
-						<PlusCircle class={icon.left} />
-					</Button>
-				{/snippet}
-			</Dialog.Trigger>
-			<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
-				<Dialog.Header>
-					<Dialog.Title>Create team</Dialog.Title>
-					<Dialog.Description>Enter your new team name.</Dialog.Description>
-				</Dialog.Header>
-				<form
-					class="flex gap-2"
-					on:submit|preventDefault={toastApi.execAsync(
-						async () => await createTeam($teamForm),
-						`Team ${$teamForm.name} created.`,
-						`Failed to create team ${$teamForm.name}, my be this team already exists.`
-					)}
+	<Dialog.Root bind:open={$teamDialogOpen}>
+		<Dialog.Trigger>
+			{#snippet child({ props })}
+				<Button
+					{...props}
+					class="relative h-[130px] w-full text-center max-lg:h-[80px] sm:col-auto"
+					variant="outline"
 				>
-					<div class="grid w-full grid-cols-1 gap-2">
-						<Input id="name" placeholder="Team name" bind:value={$teamForm.name} required />
-					</div>
-					<Button type="submit" class="h-full">Create <PlusCircle class={icon.left} /></Button>
-				</form>
-			</Dialog.Content>
-		</Dialog.Root>
+					Create team
+					<PlusCircle class={icon.left} />
+				</Button>
+			{/snippet}
+		</Dialog.Trigger>
+		<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
+			<Dialog.Header>
+				<Dialog.Title>Create team</Dialog.Title>
+				<Dialog.Description>Enter your new team name.</Dialog.Description>
+			</Dialog.Header>
+			<form
+				class="flex gap-2"
+				on:submit|preventDefault={toastApi.execAsync(
+					async () => await createTeam($teamForm),
+					`Team ${$teamForm.name} created.`,
+					`Failed to create team ${$teamForm.name}, my be this team already exists.`
+				)}
+			>
+				<div class="grid w-full grid-cols-1 gap-2">
+					<Input id="name" placeholder="Team name" bind:value={$teamForm.name} required />
+				</div>
+				<Button type="submit" class="h-full">Create <PlusCircle class={icon.left} /></Button>
+			</form>
+		</Dialog.Content>
+	</Dialog.Root>
 	<!-- {/if} -->
 	{#each $filtered as team (team.id)}
 		<Card.Root class="relative col-[1/-1] h-[130px] sm:col-auto">

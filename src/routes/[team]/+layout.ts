@@ -17,23 +17,19 @@ export const load = async (event) => {
 
 	const teamsPromise = pb.collection('teams').getFullList<TeamsResponse>({ sort: '-created' });
 
-	let team = null;
-	let teamAccess = null;
-	let teamNotFound = false;
-
-	team = await pb
+	const team = await pb
 		.collection('teams')
 		.getFirstListItem<TeamsResponse>(`name = "${shield(event.params.team)}"`);
-	teamAccess = await pb
+	const teamAccess = await pb
 		.collection('teams_access')
 		.getFirstListItem<TeamsAccessResponse>(
 			`team.name = "${shield(event.params.team)}" && user.id = "${user?.id}"`
 		);
 
-	const teams = await teamsPromise;
-
-	teamAccessStore.set(teamAccess);
 	teamStore.set(team);
+	teamAccessStore.set(teamAccess);
+
+	const teams = await teamsPromise;
 	teamsStore.set(teams);
 
 	return {};

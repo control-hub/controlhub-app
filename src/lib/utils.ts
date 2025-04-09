@@ -5,7 +5,7 @@ import { toast } from 'svelte-sonner';
 import { cubicOut } from 'svelte/easing';
 import type { Tab, AsyncFunction, UsersResponse, TeamsResponse, TeamsRecord } from '$lib/types';
 import type { AuthProviderInfo } from 'pocketbase';
-import PocketBase from 'pocketbase';
+import { beforeNavigate } from '$app/navigation';
 import type { TransitionConfig } from 'svelte/transition';
 import type { CollectionStore } from 'pocketbase-store';
 
@@ -291,4 +291,15 @@ export const randintSeed = (str: string, min: number, max: number): number => {
 	const pseudoRand = Math.abs(Math.sin(hash) * 10000) % 1;
 
 	return Math.floor(pseudoRand * (max - min + 1)) + min;
+};
+
+export const beforeNavigateOut = (func: Function) => {
+	beforeNavigate(({ to, from }) => {
+		const nextPath = from?.url.pathname || '';
+		const currentPath = to?.url.pathname.split('/').slice(0, 2).join('/') || '';
+
+		if (!nextPath.startsWith(currentPath)) {
+			func();
+		}
+	});
 };

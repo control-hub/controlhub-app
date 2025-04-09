@@ -157,6 +157,8 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'users'): RecordService<UsersResponse>;
 };
 
+// Other non generated types
+
 export type Tab = {
 	name: string;
 	href: string;

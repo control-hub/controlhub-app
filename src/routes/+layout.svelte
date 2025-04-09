@@ -3,6 +3,7 @@
 
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { Button } from '$lib/components/ui/button';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { Toaster } from 'svelte-sonner';
@@ -10,13 +11,15 @@
 	import { userStore, teamStore, teamsStore } from '$lib/stores.js';
 
 	import { pb } from '$lib/pocketbase/client';
+	import { tabsStore } from '$lib/stores.js';
+	import { generateTabUrl, cn } from '$lib/utils';
 	import { page } from '$app/stores';
 	import { afterNavigate } from '$app/navigation';
 	import { writable, derived } from 'svelte/store';
-	import type { UsersResponse } from '$lib/types';
 	import { theme } from 'theme-selector';
 
-	export let data: { user: UsersResponse; cookie: string };
+	export let data;
+
 	userStore.set(data.user);
 	pb.authStore.loadFromCookie(data.cookie);
 
@@ -46,9 +49,9 @@
 			<AppSidebar user={$userStore} activeTeam={$teamStore} teams={$teamsStore} />
 			<Sidebar.Inset>
 				<header
-					class="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 supports-[backdrop-filter]:bg-background/60"
+					class="sticky top-0 z-50 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 supports-[backdrop-filter]:bg-background/60"
 				>
-					<div class="flex items-center gap-2 px-4">
+					<div class="flex items-center gap-2 px-4 py-4">
 						<Sidebar.Trigger class="-ml-1" />
 						<Separator orientation="vertical" class="mr-2 h-4" />
 						<Breadcrumb.Root>
@@ -66,8 +69,40 @@
 							</Breadcrumb.List>
 						</Breadcrumb.Root>
 					</div>
+					{#if $tabsStore.length > 0}
+						<div class="flex h-12 w-full items-center justify-between px-4">
+							<div class="flex h-full">
+								{#each $tabsStore as tab}
+									{@const url = generateTabUrl($page.url.pathname, tab, $tabsStore)}
+									{@const isActive = url === $page.url.pathname}
+									<div
+										class={cn(
+											'h-full px-2 py-2',
+											isActive ? 'border-b-2 border-gray-300' : 'pb-[10px]'
+										)}
+									>
+										<Button
+											variant="ghost"
+											href={url}
+											class={cn(
+												'h-full font-medium',
+												!isActive ? 'text-muted-foreground hover:text-foreground' : ''
+											)}
+										>
+											{tab.name}
+										</Button>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+					<div class="border-b border-input"></div>
 				</header>
-				<slot />
+				<div class="container flex justify-center">
+					<div class="my-6 w-[min(1080px,90%)]">
+						<slot />
+					</div>
+				</div>
 			</Sidebar.Inset>
 		</Sidebar.Provider>
 	</ScrollArea>

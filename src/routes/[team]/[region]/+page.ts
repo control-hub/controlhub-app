@@ -1,5 +1,7 @@
 import { shield } from '$lib/utils';
 import { pb } from '$lib/pocketbase/client';
+import { tabsStore } from '$lib/stores';
+import { tabsConfig } from '$lib/config';
 
 export const prerender = false;
 
@@ -16,6 +18,8 @@ export const load = async ({ params }) => {
 		.getFirstListItem(`name = "${shield(params.region)}" && team.name = "${shield(params.team)}"`);
 
 	const computers = await computersPromise;
+
+	tabsStore.set(tabsConfig.region);
 
 	return {
 		team,

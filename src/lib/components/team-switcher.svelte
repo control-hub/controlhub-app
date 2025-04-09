@@ -9,7 +9,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { toastApi, createTeam } from '$lib/utils';
+	import { toastApi, createTeam as utilsCreateTeam } from '$lib/utils';
 	import { teamsStore, userStore } from '$lib/stores';
 
 	const dialogOpen = writable(false);
@@ -78,6 +78,17 @@
 		Tangent,
 		Torus
 	];
+
+	const createTeam = async () => {
+		const result = await utilsCreateTeam(teamsStore, {
+			name: createTeamName,
+			owner: $userStore?.id as string
+		});
+		createTeamName = '';
+		dialogOpen.set(false);
+
+		goto('/' + result.name);
+	};
 </script>
 
 {#if activeTeam}
@@ -124,10 +135,7 @@
 					<ScrollArea class={`max-h-[20vh]-scroll`}>
 						{#each teams as team, index (team.name)}
 							{@const logo = team.logo ?? logos[randintSeed(team.name, 0, logos.length - 1)]}
-							<DropdownMenu.Item
-								onSelect={() => (window.location.href = '/' + team.name)}
-								class="gap-2 p-2"
-							>
+							<DropdownMenu.Item onSelect={() => goto('/' + team.name)} class="gap-2 p-2">
 								<div class="flex size-6 items-center justify-center rounded-sm border">
 									<svelte:component this={logo} class="size-4 shrink-0" />
 								</div>
@@ -156,16 +164,7 @@
 			<form
 				class="flex gap-2"
 				onsubmit={toastApi.execAsync(
-					async () => {
-						const result = await createTeam(teamsStore, {
-							name: createTeamName,
-							owner: $userStore?.id as string
-						});
-						createTeamName = '';
-						dialogOpen.set(false);
-
-						goto('/' + result.name);
-					},
+					createTeam,
 					`Team ${createTeamName} created.`,
 					`Failed to create team ${createTeamName}.`
 				)}
@@ -175,6 +174,8 @@
 			</form>
 		</Dialog.Content>
 	</Dialog.Root>
+{:else if sidebar.open}
+	<Skeleton class="h-[3rem] w-full rounded-lg" />
 {:else}
-	<Skeleton class="h-[48px] w-full rounded-lg" />
+	<Skeleton class="h-[2rem] w-full rounded-lg" />
 {/if}

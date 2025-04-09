@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 
-	export let data: { user: UsersResponse; cookie: string };
+	export let data;
 
 	if (browser) {
 		(async () => {
@@ -24,16 +24,16 @@
 					let i = 0;
 					while (true) {
 						try {
-							const newTeamName = `${data.user.username}'s-team${i === 0 ? '' : '-' + i}`;
+							const newTeamName = `${data.user?.username}'s-team${i === 0 ? '' : '-' + i}`;
 							console.log(newTeamName);
 							const newTeam = await pb
 								.collection('teams')
-								.create({ name: newTeamName, owner: [data.user.id] });
+								.create({ name: newTeamName, owner: [data.user?.id] });
 							console.log(newTeam);
 
 							await pb.collection('teams_access').create({
 								team: newTeam.id,
-								user: data.user.id,
+								user: data.user?.id,
 								permissions: [
 									'add_access',
 									'delete_access',

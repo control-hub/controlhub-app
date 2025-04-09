@@ -1,26 +1,21 @@
 <script lang="ts">
-	import type { ComputersResponse, RegionsResponse, TeamsResponse } from '$lib/types';
+	import type { ComputersResponse } from '$lib/types';
 	import { createCollectionStore } from 'pocketbase-store';
 	import { writable } from 'svelte/store';
-	import { shield, cn } from '$lib/utils';
+	import { shield, cn, beforeNavigateOut } from '$lib/utils';
 	import { pb } from '$lib/pocketbase/client';
 	import { onMount, onDestroy } from 'svelte';
-	import { icon, tabsConfig } from '$lib/config';
+	import { icon } from '$lib/config';
 
 	import { Play, Square } from 'lucide-svelte';
+	import { tabsStore } from '$lib/stores';
 
 	import { ComputersTable } from '$lib/computer/table';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
-	import { tabsStore } from '$lib/stores.js';
 
-	export let data: {
-		computers: ComputersResponse[];
-		region: RegionsResponse;
-		cookie: string;
-	};
+	export let data;
 
-	tabsStore.set(tabsConfig.region);
 	// region: PocketBase
 	pb.authStore.loadFromCookie(data.cookie);
 
@@ -44,6 +39,10 @@
 	});
 	// endregion
 
+	beforeNavigateOut(() => {
+		tabsStore.set([]);
+	});
+
 	const checkedList = writable<string[]>([]);
 	const filterPhrase = writable<string>('');
 
@@ -54,22 +53,19 @@
 	const play = writable(false);
 </script>
 
-<div class="my-6 w-[min(1080px,90%)]">
-	<div class="flex gap-4 pb-4">
-		<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
-		<Button
-			class={cn('gap-0 text-center', playClasses[$play ? 0 : 1])}
-			onclick={() => play.update((p: boolean) => !p)}
-		>
-			{#if !$play}
-				<Play class={icon.left} />
-			{:else}
-				<Square class={icon.left} />
-			{/if}
-			Start
-		</Button>
-	</div>
-	<ComputersTable region={data.region} data={computersStore} {filterPhrase} {checkedList} />
-	{$checkedList}
-	<div class="h-4"></div>
+<div class="flex gap-4 pb-4">
+	<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
+	<Button
+		class={cn('gap-0 text-center', playClasses[$play ? 0 : 1])}
+		onclick={() => play.update((p: boolean) => !p)}
+	>
+		{#if !$play}
+			<Play class={icon.left} />
+		{:else}
+			<Square class={icon.left} />
+		{/if}
+		Start
+	</Button>
 </div>
+<ComputersTable region={data.region} data={computersStore} {filterPhrase} {checkedList} />
+<span class="mt-4">Selected: {$checkedList}</span>
