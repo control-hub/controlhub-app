@@ -68,4 +68,4 @@
 	</Button>
 </div>
 <ComputersTable region={data.region} data={computersStore} {filterPhrase} {checkedList} />
-<span class="mt-4">Selected: {$checkedList}</span>
+<!-- <span class="mt-4">Selected: {$checkedList}</span> -->

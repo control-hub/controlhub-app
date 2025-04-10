@@ -20,14 +20,17 @@
 		},
 		teams: [
 			{
+				id: '1',
 				name: 'Acme Inc',
 				plan: 'Enterprise'
 			},
 			{
+				id: '2',
 				name: 'Acme Corp.',
 				plan: 'Startup'
 			},
 			{
+				id: '3',
 				name: 'Evil Corp.',
 				plan: 'Free'
 			}
@@ -93,7 +96,7 @@
 	} = $props();
 </script>
 
-<Sidebar.Root bind:ref {collapsible} {...restProps}>
+<Sidebar.Root bind:ref {collapsible} {...restProps} class="z-50">
 	<Sidebar.Header>
 		<TeamSwitcher {activeTeam} {teams} />
 	</Sidebar.Header>

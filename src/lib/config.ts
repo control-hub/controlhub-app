@@ -43,6 +43,7 @@ export const tabsConfig: { [key: string]: Tab[] } = {
 };
 
 export const emptyTeam: TeamsResponse = {
+	id: 'undefined',
 	name: 'Unselected',
 	empty: true
 } as any;

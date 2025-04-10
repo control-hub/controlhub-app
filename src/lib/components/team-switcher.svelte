@@ -47,6 +47,7 @@
 	import { writable } from 'svelte/store';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
+	import { fade } from 'svelte/transition';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,7 +99,7 @@
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
 						{@const activeTeamLogo =
-							activeTeam.logo ?? logos[randintSeed(activeTeam.name, 0, logos.length - 1)]}
+							activeTeam.logo ?? logos[randintSeed(activeTeam.id, 0, logos.length - 1)]}
 						<Sidebar.MenuButton
 							{...props}
 							size="lg"
@@ -106,12 +107,16 @@
 						>
 							{#if !activeTeam.empty}
 								<div
+									transition:fade={{ duration: 1000 }}
 									class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 								>
 									<svelte:component this={activeTeamLogo} class="size-4" />
 								</div>
 							{:else if activeTeam}
-								<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
+								<div
+									transition:fade={{ duration: 1000 }}
+									class="flex aspect-square size-8 items-center justify-center rounded-lg"
+								>
 									<SquareDashed class="size-6" />
 								</div>
 							{/if}
@@ -133,8 +138,8 @@
 				>
 					<DropdownMenu.Label class="text-xs text-muted-foreground">Teams</DropdownMenu.Label>
 					<ScrollArea class={`max-h-[20vh]-scroll`}>
-						{#each teams as team, index (team.name)}
-							{@const logo = team.logo ?? logos[randintSeed(team.name, 0, logos.length - 1)]}
+						{#each teams as team, index (team.id)}
+							{@const logo = team.logo ?? logos[randintSeed(team.id, 0, logos.length - 1)]}
 							<DropdownMenu.Item onSelect={() => goto('/' + team.name)} class="gap-2 p-2">
 								<div class="flex size-6 items-center justify-center rounded-sm border">
 									<svelte:component this={logo} class="size-4 shrink-0" />

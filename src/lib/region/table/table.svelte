@@ -52,7 +52,7 @@
 			{#snippet child({ props })}
 				<Button
 					{...props}
-					class="relative h-[130px] w-full text-center max-lg:h-[80px] sm:col-auto"
+					class="animate-fade-in-up relative h-[130px] w-full text-center max-lg:h-[80px] sm:col-auto"
 					variant="outline"
 				>
 					Create region
@@ -82,7 +82,7 @@
 	</Dialog.Root>
 	<!-- {/if} -->
 	{#each $filteredRegionsStore as region (region.id)}
-		<Card.Root class="relative col-[1/-1] h-[130px] sm:col-auto">
+		<Card.Root class="animate-fade-in-up relative col-[1/-1] h-[130px] sm:col-auto">
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>

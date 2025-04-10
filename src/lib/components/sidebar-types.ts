@@ -15,6 +15,7 @@ export type NavPage = {
 };
 
 export type Team = {
+	id: string;
 	name: string;
 	logo?: typeof SvelteComponent | Component;
 	plan?: string;

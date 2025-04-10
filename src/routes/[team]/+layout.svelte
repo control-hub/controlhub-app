@@ -5,7 +5,6 @@
 	beforeNavigateOut(() => {
 		teamAccessStore.set(undefined);
 		teamStore.set(undefined);
-		teamsStore.set([]);
 	});
 </script>
 

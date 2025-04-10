@@ -2,15 +2,13 @@
 	import { Input } from '$lib/components/ui/input';
 	import { TeamsTable } from '$lib/team/table';
 	import { writable } from 'svelte/store';
-	import { tabsStore, teamsStore, teamStore } from '$lib/stores';
+	import { teamsStore, teamStore } from '$lib/stores';
 
 	import { beforeNavigate } from '$app/navigation';
-	import { tabsConfig } from '$lib/config';
 
 	beforeNavigate(({ from, to }) => {
 		if (from?.url.pathname !== to?.url.pathname) {
 			teamStore.set(undefined);
-			teamsStore.set([]);
 		}
 	});
 

@@ -39,8 +39,8 @@
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">{user.username}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<span class="truncate font-semibold" translate="no">{user.username}</span>
+							<span class="truncate text-xs" translate="no">{user.email}</span>
 						</div>
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>
@@ -59,8 +59,8 @@
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold">{user.username}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<span class="truncate font-semibold" translate="no">{user.username}</span>
+							<span class="truncate text-xs" translate="no">{user.email}</span>
 						</div>
 					</div>
 				</DropdownMenu.Label>

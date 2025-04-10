@@ -49,7 +49,7 @@
 			<AppSidebar user={$userStore} activeTeam={$teamStore} teams={$teamsStore} />
 			<Sidebar.Inset>
 				<header
-					class="sticky top-0 z-50 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 supports-[backdrop-filter]:bg-background/60"
+					class="sticky top-0 z-40 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width] ease-linear supports-[backdrop-filter]:bg-background/60"
 				>
 					<div class="flex items-center gap-2 px-4 py-4">
 						<Sidebar.Trigger class="-ml-1" />

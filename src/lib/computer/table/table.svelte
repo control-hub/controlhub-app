@@ -103,46 +103,41 @@
 			</Table.Body>
 		</Table.Root>
 		<!-- {#if $isOwner} -->
-			<Dialog.Root bind:open={$computerDialogOpen}>
-				<Dialog.Trigger>
-					{#snippet child({ props })}
-						<Button
-							{...props}
-							variant="outline"
-							class={cn(
-								'h-12 w-full rounded-none border-0',
-								$filtered.length > 0 ? 'border-t-[1px]' : ''
-							)}
-							>Create computer
-							<PlusCircle class={icon.left} /></Button
-						>
-					{/snippet}
-				</Dialog.Trigger>
-				<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
-					<Dialog.Header>
-						<Dialog.Title>Create computer</Dialog.Title>
-						<Dialog.Description>Enter your new computer name.</Dialog.Description>
-					</Dialog.Header>
-					<form
-						class="flex gap-2"
-						on:submit|preventDefault={toastApi.execAsync(
-							async () => await createComputer($computerForm),
-							`Computer ${$computerForm.name} created.`,
-							`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
+		<Dialog.Root bind:open={$computerDialogOpen}>
+			<Dialog.Trigger>
+				{#snippet child({ props })}
+					<Button
+						{...props}
+						variant="outline"
+						class={cn(
+							'h-12 w-full rounded-none border-0',
+							$filtered.length > 0 ? 'border-t-[1px]' : ''
 						)}
+						>Create computer
+						<PlusCircle class={icon.left} /></Button
 					>
-						<div class="grid w-full grid-cols-1 gap-2">
-							<Input
-								id="name"
-								placeholder="Computer name"
-								bind:value={$computerForm.name}
-								required
-							/>
-						</div>
-						<Button type="submit" class="h-full">Create <PlusCircle class={icon.left} /></Button>
-					</form>
-				</Dialog.Content>
-			</Dialog.Root>
+				{/snippet}
+			</Dialog.Trigger>
+			<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
+				<Dialog.Header>
+					<Dialog.Title>Create computer</Dialog.Title>
+					<Dialog.Description>Enter your new computer name.</Dialog.Description>
+				</Dialog.Header>
+				<form
+					class="flex gap-2"
+					on:submit|preventDefault={toastApi.execAsync(
+						async () => await createComputer($computerForm),
+						`Computer ${$computerForm.name} created.`,
+						`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
+					)}
+				>
+					<div class="grid w-full grid-cols-1 gap-2">
+						<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
+					</div>
+					<Button type="submit" class="h-full">Create <PlusCircle class={icon.left} /></Button>
+				</form>
+			</Dialog.Content>
+		</Dialog.Root>
 		<!-- {/if} -->
 	</Card.Content>
 </Card.Root>
