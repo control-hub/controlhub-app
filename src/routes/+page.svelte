@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { userStore } from '$lib/stores';
-</script>
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
-Hello! To start go <a href="/start">here</a>{JSON.stringify($userStore)}
+	onMount(() => {
+		if ($userStore) {
+			goto('/teams');
+		}
+	});
+</script>

@@ -15,6 +15,6 @@ export const load = async ({ params }) => {
 
 		regionsStore.set(regions);
 	} catch (err) {
-		window.location.href = '/start/clear';
+		window.location.href = '/teams/clear';
 	}
 };
