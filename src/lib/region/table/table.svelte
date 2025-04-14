@@ -32,9 +32,9 @@
 		name: ''
 	});
 
-	async function createRegion(region: { name: string }) {
+	async function createRegion() {
 		const result = regionsStore.create({
-			...region,
+			...$regionForm,
 			team: $teamStore?.id as string
 		});
 		regionDialogOpen.set(false);
@@ -52,7 +52,7 @@
 			{#snippet child({ props })}
 				<Button
 					{...props}
-					class="animate-fade-in-up relative h-[130px] w-full text-center max-lg:h-[80px] sm:col-auto"
+					class="relative h-[130px] w-full animate-fade-in-up text-center max-lg:h-[80px] sm:col-auto"
 					variant="outline"
 				>
 					Create region
@@ -68,7 +68,7 @@
 			<form
 				class="flex gap-2"
 				on:submit|preventDefault={toastApi.execAsync(
-					async () => await createRegion($regionForm),
+					createRegion,
 					`Region ${$regionForm.name} created.`,
 					`Failed to create region ${$regionForm.name}, my be this region already exists.`
 				)}
@@ -82,7 +82,7 @@
 	</Dialog.Root>
 	<!-- {/if} -->
 	{#each $filteredRegionsStore as region (region.id)}
-		<Card.Root class="animate-fade-in-up relative col-[1/-1] h-[130px] sm:col-auto">
+		<Card.Root class="relative col-[1/-1] h-[130px] animate-fade-in-up sm:col-auto">
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>

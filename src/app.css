@@ -87,7 +87,7 @@
 @layer utilities {
 	.scrollbar-container {
 		position: relative;
-		height: 100vh;
+		height: 100svh;
 		overflow-y: scroll;
 		overflow-x: hidden;
 	}

@@ -2,6 +2,7 @@
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import {goto} from "$app/navigation"
 
 	import type { NavPage } from './sidebar-types';
 
@@ -21,6 +22,7 @@
 					<Sidebar.MenuItem {...props}>
 						<Collapsible.Trigger>
 							{#snippet child({ props })}
+							{#if mainItem.items}
 								<Sidebar.MenuButton {...props}>
 									{#snippet tooltipContent()}
 										{mainItem.title}
@@ -33,6 +35,17 @@
 										class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
 									/>
 								</Sidebar.MenuButton>
+							{:else}
+								<Sidebar.MenuButton {...props} onclick={() => goto(mainItem.url)}>
+									{#snippet tooltipContent()}
+										{mainItem.title}
+									{/snippet}
+									{#if mainItem.icon}
+										<mainItem.icon />
+									{/if}
+									<span>{mainItem.title}</span>
+								</Sidebar.MenuButton>
+							{/if}
 							{/snippet}
 						</Collapsible.Trigger>
 						<Collapsible.Content>

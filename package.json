@@ -6,6 +6,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"clean": "vite clean",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
@@ -38,6 +39,7 @@
 		"globals": "^15.0.0",
 		"lucide-svelte": "^0.454.0",
 		"mode-watcher": "^0.4.1",
+		"monaco-editor": "^0.52.2",
 		"paneforge": "^1.0.0-next.1",
 		"pocketbase-typegen": "^1.2.1",
 		"prettier": "^3.3.2",
@@ -59,9 +61,21 @@
 		"zod": "^3.23.8"
 	},
 	"dependencies": {
+		"@codemirror/basic-setup": "^0.20.0",
+		"@codemirror/lang-javascript": "^6.2.3",
+		"@codemirror/lang-python": "^6.1.7",
+		"@codemirror/state": "^6.5.2",
+		"@codemirror/theme-one-dark": "^6.1.2",
+		"@codemirror/view": "^6.36.5",
+		"@fsegurai/codemirror-theme-basic-dark": "^6.1.2",
+		"@fsegurai/codemirror-theme-basic-light": "^6.1.2",
+		"@fsegurai/codemirror-theme-github-dark": "^6.1.2",
+		"@fsegurai/codemirror-theme-github-light": "^6.1.2",
+		"codemirror": "^6.0.1",
 		"pocketbase": "^0.21.5",
 		"pocketbase-store": "^0.2.3",
 		"svelte": "^5.0.0",
+		"svelte-codemirror-editor": "^1.4.1",
 		"theme-selector": "^0.1.3"
 	}
 }

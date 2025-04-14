@@ -9,5 +9,8 @@ export default defineConfig({
 			usePolling: true,
 			interval: 300
 		}
+	},
+	optimizeDeps: {
+		exclude: ['monaco-editor']
 	}
 });

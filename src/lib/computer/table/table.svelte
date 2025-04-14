@@ -9,37 +9,35 @@
 	import Status from '$lib/components/ui/status/status.svelte';
 
 	import { icon } from '$lib/config';
-	import { shield, toastApi, cn } from '$lib/utils';
+	import { toastApi, cn, contains, createComputer as utilsCreateComputer } from '$lib/utils';
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { PlusCircle } from 'lucide-svelte';
-	import { CollectionStore } from 'pocketbase-store';
-	import type { ComputersResponse, RegionsResponse } from '$lib/types';
+	import { computersStore } from '$lib/stores';
+	import type { ComputersResponse } from '$lib/types';
 	// import { isOwner } from '$lib/store/team_store';
 
-	export let data: CollectionStore<ComputersResponse>;
 	export let filterPhrase: Writable<string>;
-	export let checkedList: Writable<string[]> = writable([]);
-	export let region: RegionsResponse;
+	export let checkedList: Writable<ComputersResponse[]> = writable([]);
 
-	const filtered = derived([data, filterPhrase], ([$data, $filterPhrase]) => {
-		return $data.filter((computer) => {
+	const filtered = derived([computersStore, filterPhrase], ([$computersStore, $filterPhrase]) => {
+		return $computersStore.filter((computer) => {
 			return computer.name.toLowerCase().includes($filterPhrase.toLowerCase());
 		});
 	});
 
 	const toggle = {
 		all: () => {
-			if ($checkedList.length >= $filtered.length) {
+			if (contains($checkedList, $filtered)) {
 				$checkedList = [];
 			} else {
-				$checkedList = $filtered.map((computer) => computer.id);
+				$checkedList = $filtered;
 			}
 		},
-		checked: (computerId: string) => {
-			if ($checkedList.includes(computerId)) {
-				$checkedList = $checkedList.filter((id) => id !== computerId);
+		checked: (computer: ComputersResponse) => {
+			if ($checkedList.includes(computer)) {
+				$checkedList = $checkedList.filter((item) => item.id !== computer.id);
 			} else {
-				$checkedList = [...$checkedList, computerId];
+				$checkedList = [...$checkedList, computer];
 			}
 		}
 	};
@@ -49,12 +47,8 @@
 		name: ''
 	});
 
-	async function createComputer(computer: { name: string }) {
-		const result = data.create({
-			...computer,
-			status: 0,
-			region: region.id
-		});
+	async function createComputer(name: string) {
+		const result = utilsCreateComputer(name);
 		computerDialogOpen.set(false);
 		await result;
 	}
@@ -64,12 +58,12 @@
 	<Card.Content class={cn('p-0', $$props.class)}>
 		<Table.Root>
 			<Table.Header>
-				<Table.Row class={$checkedList.length >= $filtered.length ? 'bg-muted/10' : ''}>
+				<Table.Row class={contains($checkedList, $filtered) ? 'bg-muted/10' : ''}>
 					<Table.Head class="h-12">
 						{#if $filtered.length > 0}
 							<Checkbox
-								class="ml-4"
-								checked={$checkedList.length >= $filtered.length}
+								class="ml-4 border-foreground/50"
+								checked={contains($checkedList, $filtered)}
 								onclick={(event: { preventDefault: () => void }) => {
 									event.preventDefault();
 									toggle.all();
@@ -84,14 +78,14 @@
 			</Table.Header>
 			<Table.Body>
 				{#each $filtered as computer (computer.id)}
-					<Table.Row class={$checkedList.includes(computer.id) ? 'bg-muted/20' : ''}>
+					<Table.Row class={$checkedList.includes(computer) ? 'bg-muted/20' : ''}>
 						<Table.Cell class="h-12 w-[100px]">
 							<Checkbox
-								class="ml-4"
-								checked={$checkedList.includes(computer.id)}
+								class="ml-4 border-foreground/50"
+								checked={$checkedList.includes(computer)}
 								onclick={(event: any) => {
 									event.preventDefault();
-									toggle.checked(computer.id);
+									toggle.checked(computer);
 								}}
 							/>
 						</Table.Cell>
@@ -126,7 +120,7 @@
 				<form
 					class="flex gap-2"
 					on:submit|preventDefault={toastApi.execAsync(
-						async () => await createComputer($computerForm),
+						async () => await createComputer($computerForm.name),
 						`Computer ${$computerForm.name} created.`,
 						`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
 					)}

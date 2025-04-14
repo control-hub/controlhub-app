@@ -1,11 +1,9 @@
 <script lang="ts">
-	import type { ComputersResponse } from '$lib/types';
-	import { createCollectionStore } from 'pocketbase-store';
 	import { writable } from 'svelte/store';
-	import { shield, cn, beforeNavigateOut } from '$lib/utils';
-	import { pb } from '$lib/pocketbase/client';
+	import { cn, beforeNavigateOut } from '$lib/utils';
 	import { onMount, onDestroy } from 'svelte';
 	import { icon } from '$lib/config';
+	import { computersStore } from '$lib/stores';
 
 	import { Play, Square } from 'lucide-svelte';
 	import { tabsStore } from '$lib/stores';
@@ -13,22 +11,7 @@
 	import { ComputersTable } from '$lib/computer/table';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
-
-	export let data;
-
-	// region: PocketBase
-	pb.authStore.loadFromCookie(data.cookie);
-
-	const computersStore = createCollectionStore<ComputersResponse>(
-		pb,
-		'computers',
-		{
-			sort: '-status,-updated',
-			filter: `region.id = "${shield(data.region.id)}"`,
-			autoSubGetData: false
-		},
-		data.computers
-	);
+	import type { ComputersResponse } from '$lib/types';
 
 	onMount(async () => {
 		await computersStore.subscribeOnPocketBase();
@@ -43,13 +26,14 @@
 		tabsStore.set([]);
 	});
 
-	const checkedList = writable<string[]>([]);
+	const checkedList = writable<ComputersResponse[]>([]);
 	const filterPhrase = writable<string>('');
 
 	const playClasses = {
 		1: 'bg-green-500 hover:bg-green-600',
 		0: 'bg-yellow-500 hover:bg-yellow-600'
 	};
+
 	const play = writable(false);
 </script>
 
@@ -67,5 +51,5 @@
 		Start
 	</Button>
 </div>
-<ComputersTable region={data.region} data={computersStore} {filterPhrase} {checkedList} />
+<ComputersTable {filterPhrase} {checkedList} />
 <!-- <span class="mt-4">Selected: {$checkedList}</span> -->

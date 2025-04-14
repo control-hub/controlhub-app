@@ -27,11 +27,8 @@
 		});
 	});
 
-	async function createTeam(team: { name: string }) {
-		await utilsCreateTeam(teamsStore, {
-			name: team.name,
-			owner: $userStore?.id as string
-		});
+	async function createTeam(name: string) {
+		await utilsCreateTeam(name);
 
 		teamDialogOpen.set(false);
 		teamForm.set({ name: '' });
@@ -48,7 +45,7 @@
 			{#snippet child({ props })}
 				<Button
 					{...props}
-					class="animate-fade-in-up relative h-[130px] w-full text-center max-lg:h-[80px] sm:col-auto"
+					class="relative h-[130px] w-full animate-fade-in-up text-center max-lg:h-[80px] sm:col-auto"
 					variant="outline"
 				>
 					Create team
@@ -64,7 +61,7 @@
 			<form
 				class="flex gap-2"
 				on:submit|preventDefault={toastApi.execAsync(
-					async () => await createTeam($teamForm),
+					async () => await createTeam($teamForm.name),
 					`Team ${$teamForm.name} created.`,
 					`Failed to create team ${$teamForm.name}, my be this team already exists.`
 				)}
@@ -78,7 +75,7 @@
 	</Dialog.Root>
 	<!-- {/if} -->
 	{#each $filtered as team (team.id)}
-		<Card.Root class="animate-fade-in-up relative col-[1/-1]  h-[130px] sm:col-auto">
+		<Card.Root class="relative col-[1/-1] h-[130px] animate-fade-in-up sm:col-auto">
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>

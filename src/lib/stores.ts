@@ -7,7 +7,9 @@ import type {
 	UsersResponse,
 	TeamsResponse,
 	TeamsAccessResponse,
-	Tab
+	ComputersResponse,
+	Tab,
+	ScriptsResponse
 } from '$lib/types';
 import { shield } from '$lib/utils';
 
@@ -38,6 +40,18 @@ export const havePermission = derived(
 
 export const regionStore = writable<RegionsResponse | undefined>(undefined);
 export const regionsStore = createCollectionStore<RegionsResponse>(pb, 'regions', {
+	sort: '-created',
+	autoSubGetData: false
+});
+
+export const computerStore = writable<ComputersResponse | undefined>(undefined);
+export const computersStore = createCollectionStore<ComputersResponse>(pb, 'computers', {
+	sort: '-status,-updated',
+	autoSubGetData: false
+});
+
+export const scriptStore = writable<ScriptsResponse | undefined>(undefined);
+export const scriptsStore = createCollectionStore<ScriptsResponse>(pb, 'scripts', {
 	sort: '-created',
 	autoSubGetData: false
 });

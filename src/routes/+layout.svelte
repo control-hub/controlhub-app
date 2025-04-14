@@ -17,13 +17,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { writable, derived } from 'svelte/store';
 	import { theme } from 'theme-selector';
-
-	export let data;
-
-	userStore.set(data.user);
-	pb.authStore.loadFromCookie(data.cookie);
-
-	console.log('user', $userStore);
+	import { slide } from 'svelte/transition';
 
 	const currentPathname = writable($page.url.pathname);
 
@@ -44,7 +38,7 @@
 <Toaster richColors theme={$theme} />
 
 {#if $userStore}
-	<ScrollArea class="h-[100vh] w-full">
+	<ScrollArea class="h-[100svh] w-full">
 		<Sidebar.Provider>
 			<AppSidebar user={$userStore} activeTeam={$teamStore} teams={$teamsStore} />
 			<Sidebar.Inset>
@@ -70,7 +64,7 @@
 						</Breadcrumb.Root>
 					</div>
 					{#if $tabsStore.length > 0}
-						<div class="flex h-12 w-full items-center justify-between px-4">
+						<div class="flex h-12 w-full items-center justify-between px-4" transition:slide>
 							<div class="flex h-full">
 								{#each $tabsStore as tab}
 									{@const url = generateTabUrl($page.url.pathname, tab, $tabsStore)}

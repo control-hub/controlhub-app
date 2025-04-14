@@ -5,7 +5,8 @@ import { tabsConfig } from '$lib/config';
 
 export const prerender = false;
 
-export const load = async ({ params }) => {
+export const load = async ({ parent, params }) => {
+	await parent();
 	tabsStore.set(tabsConfig.team as any);
 
 	try {
@@ -15,6 +16,6 @@ export const load = async ({ params }) => {
 
 		regionsStore.set(regions);
 	} catch (err) {
-		window.location.href = '/teams/clear';
+		window.location.href = '/';
 	}
 };

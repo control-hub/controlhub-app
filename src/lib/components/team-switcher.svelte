@@ -47,7 +47,7 @@
 	import { writable } from 'svelte/store';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
-	import { fade } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,10 +81,7 @@
 	];
 
 	const createTeam = async () => {
-		const result = await utilsCreateTeam(teamsStore, {
-			name: createTeamName,
-			owner: $userStore?.id as string
-		});
+		const result = await utilsCreateTeam(createTeamName);
 		createTeamName = '';
 		dialogOpen.set(false);
 
@@ -100,34 +97,44 @@
 					{#snippet child({ props })}
 						{@const activeTeamLogo =
 							activeTeam.logo ?? logos[randintSeed(activeTeam.id, 0, logos.length - 1)]}
-						<Sidebar.MenuButton
-							{...props}
-							size="lg"
-							class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-						>
-							{#if !activeTeam.empty}
+
+						{#if !activeTeam.empty}
+							<Sidebar.MenuButton
+								{...props}
+								size="lg"
+								class="animate-fade-in-up data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							>
 								<div
-									transition:fade={{ duration: 1000 }}
 									class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 								>
 									<svelte:component this={activeTeamLogo} class="size-4" />
 								</div>
-							{:else if activeTeam}
-								<div
-									transition:fade={{ duration: 1000 }}
-									class="flex aspect-square size-8 items-center justify-center rounded-lg"
-								>
+								<div class="grid flex-1 text-left text-sm leading-tight">
+									<span class="truncate font-semibold">
+										{activeTeam.name}
+									</span>
+									<span class="truncate text-xs">{activeTeam.plan}</span>
+								</div>
+								<ChevronsUpDown class="ml-auto" />
+							</Sidebar.MenuButton>
+						{:else if activeTeam}
+							<Sidebar.MenuButton
+								{...props}
+								size="lg"
+								class="animate-fade-in-up data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							>
+								<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
 									<SquareDashed class="size-6" />
 								</div>
-							{/if}
-							<div class="grid flex-1 text-left text-sm leading-tight">
-								<span class="truncate font-semibold">
-									{activeTeam.name}
-								</span>
-								<span class="truncate text-xs">{activeTeam.plan}</span>
-							</div>
-							<ChevronsUpDown class="ml-auto" />
-						</Sidebar.MenuButton>
+								<div class="grid flex-1 text-left text-sm leading-tight">
+									<span class="truncate font-semibold">
+										{activeTeam.name}
+									</span>
+									<span class="truncate text-xs">{activeTeam.plan}</span>
+								</div>
+								<ChevronsUpDown class="ml-auto" />
+							</Sidebar.MenuButton>
+						{/if}
 					{/snippet}
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content

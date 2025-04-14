@@ -5,25 +5,19 @@ import { teamStore, teamAccessStore, teamsStore } from '$lib/stores.js';
 
 export const prerender = false;
 
-export const load = async (event) => {
-	// if (typeof window === 'undefined') {
-	// 	// Server-side: skip auth and data fetching, return minimal data
-
-	// }
-
-	// Client-side: load auth from cookie and fetch data
-
+export const load = async ({ parent, params }) => {
+	await parent();
 	const user = pb.authStore.model;
 
 	const teamsPromise = pb.collection('teams').getFullList<TeamsResponse>({ sort: '-created' });
 
 	const team = await pb
 		.collection('teams')
-		.getFirstListItem<TeamsResponse>(`name = "${shield(event.params.team)}"`);
+		.getFirstListItem<TeamsResponse>(`name = "${shield(params.team)}"`);
 	const teamAccess = await pb
 		.collection('teams_access')
 		.getFirstListItem<TeamsAccessResponse>(
-			`team.name = "${shield(event.params.team)}" && user.id = "${user?.id}"`
+			`team.name = "${shield(params.team)}" && user.id = "${user?.id}"`
 		);
 
 	teamStore.set(team);

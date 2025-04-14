@@ -39,24 +39,12 @@
 			{
 				title: 'Teams',
 				url: '/teams',
-				icon: SquareTerminal,
-				items: [
-					{
-						title: 'Overview',
-						url: '/teams'
-					}
-				]
+				icon: SquareTerminal
 			},
 			{
 				title: 'Scripts',
-				url: '#',
-				icon: FileCode2,
-				items: [
-					{
-						title: 'Overview',
-						url: '#'
-					}
-				]
+				url: '/scripts',
+				icon: FileCode2
 			},
 			{
 				title: 'Settings',
