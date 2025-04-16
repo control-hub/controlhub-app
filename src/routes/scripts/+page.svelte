@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { ScriptsTable } from '$lib/script/table';
-	import { Switch } from '$lib/components/ui/switch';
+	import SuperDebug from 'sveltekit-superforms';
 	import { writable } from 'svelte/store';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { scriptsStore } from '$lib/stores';
+	import { get } from 'svelte/store';
 
 	const filterPhrase = writable('');
-	const showPublic = writable(true);
+	const showPublic = writable(false);
 </script>
 
 <div class="mb-4 flex gap-4">

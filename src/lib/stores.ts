@@ -49,6 +49,7 @@ export const computersStore = createCollectionStore<ComputersResponse>(pb, 'comp
 	sort: '-status,-updated',
 	autoSubGetData: false
 });
+export const selectedComputers = writable<ComputersResponse[]>([]);
 
 export const scriptStore = writable<ScriptsResponse | undefined>(undefined);
 export const scriptsStore = createCollectionStore<ScriptsResponse>(pb, 'scripts', {

@@ -55,15 +55,15 @@
 		}
 	},
 	{
-		"id": "y5swzm9sjzt2xo7",
-		"name": "commands",
+		"id": "c7d9yo9oik9cl3k",
+		"name": "computers",
 		"type": "base",
 		"system": false,
 		"schema": [
 			{
 				"system": false,
-				"id": "oprn0uir",
-				"name": "name",
+				"id": "ii4cjqmz",
+				"name": "ip",
 				"type": "text",
 				"required": false,
 				"presentable": false,
@@ -74,74 +74,6 @@
 					"pattern": ""
 				}
 			},
-			{
-				"system": false,
-				"id": "lj5tlsrd",
-				"name": "description",
-				"type": "editor",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"convertUrls": false
-				}
-			},
-			{
-				"system": false,
-				"id": "ldqzl5ps",
-				"name": "lang",
-				"type": "select",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"maxSelect": 1,
-					"values": ["python", "cmd", "system"]
-				}
-			},
-			{
-				"system": false,
-				"id": "ripstdqq",
-				"name": "exec",
-				"type": "editor",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"convertUrls": false
-				}
-			},
-			{
-				"system": false,
-				"id": "u3wnuhl7",
-				"name": "user",
-				"type": "relation",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"collectionId": "_pb_users_auth_",
-					"cascadeDelete": false,
-					"minSelect": null,
-					"maxSelect": 1,
-					"displayFields": null
-				}
-			}
-		],
-		"indexes": [],
-		"listRule": "@request.auth.id = user.id",
-		"viewRule": "@request.auth.id = user.id",
-		"createRule": "@request.auth.id = user.id",
-		"updateRule": "@request.auth.id = user.id",
-		"deleteRule": "@request.auth.id = user.id",
-		"options": {}
-	},
-	{
-		"id": "c7d9yo9oik9cl3k",
-		"name": "computers",
-		"type": "base",
-		"system": false,
-		"schema": [
 			{
 				"system": false,
 				"id": "qrfeomjn",
@@ -159,14 +91,14 @@
 			{
 				"system": false,
 				"id": "inxbl5bt",
-				"name": "logs",
+				"name": "token",
 				"type": "text",
-				"required": false,
+				"required": true,
 				"presentable": false,
 				"unique": false,
 				"options": {
-					"min": null,
-					"max": 1000,
+					"min": 8,
+					"max": 32,
 					"pattern": ""
 				}
 			},
@@ -199,22 +131,6 @@
 			},
 			{
 				"system": false,
-				"id": "xwttixbo",
-				"name": "active",
-				"type": "relation",
-				"required": false,
-				"presentable": false,
-				"unique": false,
-				"options": {
-					"collectionId": "y5swzm9sjzt2xo7",
-					"cascadeDelete": false,
-					"minSelect": null,
-					"maxSelect": 1,
-					"displayFields": null
-				}
-			},
-			{
-				"system": false,
 				"id": "x4udwnpa",
 				"name": "region",
 				"type": "relation",
@@ -230,12 +146,112 @@
 				}
 			}
 		],
+		"indexes": [
+			"CREATE UNIQUE INDEX `idx_IBbZmv5` ON `computers` (\n  `region`,\n  `name`\n)",
+			"CREATE INDEX `idx_XQj12Dj` ON `computers` (`token`)"
+		],
+		"listRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
+		"viewRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
+		"createRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'add_computer')",
+		"updateRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'edit_computer')",
+		"deleteRule": "region.team.owner.id = @request.auth.id || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'delete_computer')",
+		"options": {}
+	},
+	{
+		"id": "pzq5nca9esp5ywq",
+		"name": "executions",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "sussdl87",
+				"name": "executable",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "0cudx0m8",
+				"name": "complited",
+				"type": "bool",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {}
+			},
+			{
+				"system": false,
+				"id": "dqdqnfgg",
+				"name": "logs",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "3frfzhtr",
+				"name": "user",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			},
+			{
+				"system": false,
+				"id": "pfqbqwn2",
+				"name": "computer",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "c7d9yo9oik9cl3k",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			},
+			{
+				"system": false,
+				"id": "l4wnnq1h",
+				"name": "script",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "y5swzm9sjzt2xo7",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
 		"indexes": [],
-		"listRule": "region.team.teams_access_via_team.user.id = @request.auth.id || region.team.owner.id = @request.auth.id",
-		"viewRule": "region.team.teams_access_via_team.user.id = @request.auth.id || region.team.owner.id = @request.auth.id",
-		"createRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'add_computer') || region.team.owner.id = @request.auth.id",
-		"updateRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'edit_computer') || region.team.owner.id = @request.auth.id",
-		"deleteRule": "(region.team.teams_access_via_team.user.id = @request.auth.id && region.team.teams_access_via_team.permissions ~ 'delete_computer') || region.team.owner.id = @request.auth.id",
+		"listRule": null,
+		"viewRule": null,
+		"createRule": null,
+		"updateRule": null,
+		"deleteRule": null,
 		"options": {}
 	},
 	{
@@ -276,11 +292,93 @@
 			}
 		],
 		"indexes": ["CREATE UNIQUE INDEX `idx_dDUC3Gu` ON `regions` (\n  `name`,\n  `team`\n)"],
-		"listRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
-		"viewRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
-		"createRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'add_region') || team.owner.id = @request.auth.id",
-		"updateRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_region') || team.owner.id = @request.auth.id",
-		"deleteRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_region') || team.owner.id = @request.auth.id",
+		"listRule": "team.owner.id = @request.auth.id || team.teams_access_via_team.user.id ?= @request.auth.id",
+		"viewRule": "team.owner.id = @request.auth.id || team.teams_access_via_team.user.id ?= @request.auth.id",
+		"createRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'add_region')",
+		"updateRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_region')",
+		"deleteRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_region')",
+		"options": {}
+	},
+	{
+		"id": "y5swzm9sjzt2xo7",
+		"name": "scripts",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "oprn0uir",
+				"name": "name",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "lj5tlsrd",
+				"name": "description",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "ripstdqq",
+				"name": "executable",
+				"type": "editor",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"convertUrls": false
+				}
+			},
+			{
+				"system": false,
+				"id": "putbtxw0",
+				"name": "public",
+				"type": "bool",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {}
+			},
+			{
+				"system": false,
+				"id": "u3wnuhl7",
+				"name": "user",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": 1,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": [
+			"CREATE UNIQUE INDEX `idx_xQR1KZR` ON `scripts` (\n  `user`,\n  `name`\n)",
+			"CREATE INDEX `idx_H23MrK0` ON `scripts` (`name`)"
+		],
+		"listRule": "public = true || @request.auth.id = user.id",
+		"viewRule": "public = true || @request.auth.id = user.id",
+		"createRule": "@request.auth.id = user.id",
+		"updateRule": "@request.auth.id = user.id",
+		"deleteRule": "@request.auth.id = user.id",
 		"options": {}
 	},
 	{
@@ -321,11 +419,11 @@
 			}
 		],
 		"indexes": ["CREATE UNIQUE INDEX `idx_ZvcAPMf` ON `teams` (`name`)"],
-		"listRule": "teams_access_via_team.user.id = @request.auth.id || owner.id = @request.auth.id",
-		"viewRule": "teams_access_via_team.user.id = @request.auth.id || owner.id = @request.auth.id",
+		"listRule": "owner.id = @request.auth.id || teams_access_via_team.user.id ?= @request.auth.id",
+		"viewRule": "owner.id = @request.auth.id || teams_access_via_team.user.id ?= @request.auth.id",
 		"createRule": "owner.id = @request.auth.id",
-		"updateRule": "(teams_access_via_team.user.id = @request.auth.id && teams_access_via_team.permissions ~ 'edit_team') || owner.id = @request.auth.id",
-		"deleteRule": "(teams_access_via_team.user.id = @request.auth.id && teams_access_via_team.permissions ~ 'delete_team') || owner.id = @request.auth.id",
+		"updateRule": "owner.id = @request.auth.id || (teams_access_via_team.user.id ?= @request.auth.id && teams_access_via_team.permissions ~ 'edit_team')",
+		"deleteRule": "owner.id = @request.auth.id || (teams_access_via_team.user.id ?= @request.auth.id && teams_access_via_team.permissions ~ 'delete_team')",
 		"options": {}
 	},
 	{
@@ -360,7 +458,7 @@
 				"unique": false,
 				"options": {
 					"collectionId": "kwsgdujc9jey3j8",
-					"cascadeDelete": false,
+					"cascadeDelete": true,
 					"minSelect": null,
 					"maxSelect": 1,
 					"displayFields": null
@@ -393,11 +491,81 @@
 			}
 		],
 		"indexes": ["CREATE UNIQUE INDEX `idx_BEWjWp3` ON `teams_access` (\n  `user`,\n  `team`\n)"],
-		"listRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
-		"viewRule": "team.teams_access_via_team.user.id = @request.auth.id || team.owner.id = @request.auth.id",
-		"createRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'add_access') || team.owner.id = @request.auth.id",
-		"updateRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_access') || team.owner.id = @request.auth.id",
-		"deleteRule": "(team.teams_access_via_team.user.id = @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_access') || team.owner.id = @request.auth.id",
+		"listRule": "team.owner.id = @request.auth.id || team.teams_access_via_team.user.id ?= @request.auth.id",
+		"viewRule": "team.owner.id = @request.auth.id || team.teams_access_via_team.user.id ?= @request.auth.id",
+		"createRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'add_access')",
+		"updateRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'edit_access')",
+		"deleteRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ~ 'delete_access')",
+		"options": {}
+	},
+	{
+		"id": "pzesfn3b3h74830",
+		"name": "teams_link",
+		"type": "base",
+		"system": false,
+		"schema": [
+			{
+				"system": false,
+				"id": "30q2w23e",
+				"name": "secret",
+				"type": "text",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"min": null,
+					"max": null,
+					"pattern": ""
+				}
+			},
+			{
+				"system": false,
+				"id": "wcrpyjkg",
+				"name": "permissions",
+				"type": "select",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"maxSelect": 1,
+					"values": [
+						"add_access",
+						"delete_access",
+						"edit_access",
+						"delete_team",
+						"edit_team",
+						"add_region",
+						"delete_region",
+						"edit_region",
+						"add_computer",
+						"delete_computer",
+						"edit_computer"
+					]
+				}
+			},
+			{
+				"system": false,
+				"id": "fkyby0el",
+				"name": "joined",
+				"type": "relation",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"collectionId": "_pb_users_auth_",
+					"cascadeDelete": false,
+					"minSelect": null,
+					"maxSelect": null,
+					"displayFields": null
+				}
+			}
+		],
+		"indexes": [],
+		"listRule": null,
+		"viewRule": null,
+		"createRule": null,
+		"updateRule": null,
+		"deleteRule": null,
 		"options": {}
 	}
 ]

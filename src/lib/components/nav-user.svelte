@@ -36,7 +36,10 @@
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.username} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+								>{user.username[0].toUpperCase() +
+									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold" translate="no">{user.username}</span>
@@ -56,7 +59,10 @@
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg">
 							<Avatar.Image src={user.avatar} alt={user.username} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+								>{user.username[0].toUpperCase() +
+									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold" translate="no">{user.username}</span>

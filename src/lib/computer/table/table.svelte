@@ -1,137 +1,328 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import * as Table from '$lib/components/ui/table';
-
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import Status from '$lib/components/ui/status/status.svelte';
-
-	import { icon } from '$lib/config';
-	import { toastApi, cn, contains, createComputer as utilsCreateComputer } from '$lib/utils';
-	import { writable, derived, type Writable } from 'svelte/store';
-	import { PlusCircle } from 'lucide-svelte';
+	import { SquareMinus, SquarePlus } from 'lucide-svelte';
+	import { droppable, draggable, type DragDropState } from '@thisux/sveltednd';
+	import { flip } from 'svelte/animate';
+	import { writable, derived, type Writable, type Readable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
+	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
 	import { computersStore } from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
-	// import { isOwner } from '$lib/store/team_store';
 
-	export let filterPhrase: Writable<string>;
-	export let checkedList: Writable<ComputersResponse[]> = writable([]);
+	// Вспомогательные функции
+	function getAvatarUrl(id: string, size: number = 100): string {
+		const hash = id.trim().toLowerCase();
+		return `https://avatar.vercel.sh/${hash}?size=${size}`;
+	}
 
-	const filtered = derived([computersStore, filterPhrase], ([$computersStore, $filterPhrase]) => {
-		return $computersStore.filter((computer) => {
-			return computer.name.toLowerCase().includes($filterPhrase.toLowerCase());
+	function getStatusInfo(status: '0' | '1' | '2'): {
+		color: string;
+		bgColor: string;
+		label: string;
+		icon: typeof BadgeCheck | typeof BadgeMinus | typeof BadgeAlert;
+	} {
+		switch (status) {
+			case '0':
+				return {
+					color: 'text-red-500',
+					bgColor: 'bg-red-500/10',
+					label: 'Offline',
+					icon: BadgeAlert
+				};
+			case '1':
+				return {
+					color: 'text-yellow-500',
+					bgColor: 'bg-yellow-500/10',
+					label: 'Idle',
+					icon: BadgeMinus
+				};
+			case '2':
+				return {
+					color: 'text-green-500',
+					bgColor: 'bg-green-500/10',
+					label: 'Active',
+					icon: BadgeCheck
+				};
+			default:
+				return {
+					color: 'text-gray-500',
+					bgColor: 'bg-gray-500/10',
+					label: 'Unknown',
+					icon: BadgeMinus
+				};
+		}
+	}
+
+	// Store для выбранных компьютеров
+	const selectedComputers: Writable<ComputersResponse[]> = writable<ComputersResponse[]>([]);
+
+	computersStore.subscribe((computers) => {
+		// Логика для обновления состояния выбранных компьютеров при изменении списка компьютеров
+		const find_pc = (id: string) => {
+			return computers.find((computer) => computer.id === id);
+		};
+
+		selectedComputers.update(($selected) => {
+			for (const computer of $selected) {
+				const found = find_pc(computer.id);
+				if (!found) {
+					$selected = $selected.filter((comp) => comp.id !== computer.id);
+				} else if (found !== computer) {
+					$selected = $selected.map((comp) => (comp.id === found.id ? found : comp));
+				}
+			}
+
+			return $selected;
 		});
 	});
 
-	const toggle = {
-		all: () => {
-			if (contains($checkedList, $filtered)) {
-				$checkedList = [];
-			} else {
-				$checkedList = $filtered;
-			}
-		},
-		checked: (computer: ComputersResponse) => {
-			if ($checkedList.includes(computer)) {
-				$checkedList = $checkedList.filter((item) => item.id !== computer.id);
-			} else {
-				$checkedList = [...$checkedList, computer];
-			}
+	// Derived stores для компьютеров разных категорий с учетом выбранных
+	const filteredComputers: Readable<ComputersResponse[]> = derived(
+		[computersStore, selectedComputers],
+		([$computersStore, $selectedComputers]) => {
+			// Создаем Set из ID выбранных компьютеров для быстрого поиска
+			const selectedIds = new Set($selectedComputers.map((comp) => comp.id));
+
+			// Возвращаем только те компьютеры, которые не выбраны
+			return $computersStore.filter((computer) => !selectedIds.has(computer.id));
 		}
-	};
+	);
 
-	const computerDialogOpen = writable(false);
-	const computerForm = writable({
-		name: ''
-	});
+	// Создаем derived stores для разных категорий
+	const disabledComputers = derived(filteredComputers, ($filtered) =>
+		$filtered.filter((computer) => computer.status === '0')
+	);
 
-	async function createComputer(name: string) {
-		const result = utilsCreateComputer(name);
-		computerDialogOpen.set(false);
-		await result;
+	const idleComputers = derived(filteredComputers, ($filtered) =>
+		$filtered.filter((computer) => computer.status === '1')
+	);
+
+	const activeComputers = derived(filteredComputers, ($filtered) =>
+		$filtered.filter((computer) => computer.status === '2')
+	);
+
+	// Функция для обновления статуса компьютера - теперь просто логирует
+	function updateComputerStatus(computerId: string, newStatus: '0' | '1' | '2'): void {
+		console.log(`Updating computer ${computerId} to status ${newStatus}`);
+	}
+
+	// Обработчик перетаскивания
+	function handleDrop(
+		state: DragDropState<ComputersResponse>,
+		targetStatus: '0' | '1' | '2' | 'selected'
+	): void {
+		const { sourceContainer, targetContainer, draggedItem } = state;
+
+		console.log(`Dragged from ${sourceContainer} to ${targetContainer}:`, draggedItem.name);
+
+		if (targetStatus === 'selected') {
+			// Перетаскивание в выбранные компьютеры
+			selectedComputers.update(($selected) => {
+				// Проверяем, не добавлен ли уже этот компьютер
+				if (!$selected.some((comp) => comp.id === draggedItem.id)) {
+					return [...$selected, draggedItem];
+				}
+				return $selected;
+			});
+		} else if (sourceContainer === 'selected') {
+			// Перетаскивание из выбранных компьютеров обратно в основные категории
+			selectedComputers.update(($selected) =>
+				$selected.filter((comp) => comp.id !== draggedItem.id)
+			);
+
+			// Логируем изменение статуса
+			if (draggedItem.status !== targetStatus) {
+				updateComputerStatus(draggedItem.id, targetStatus);
+			}
+		} else {
+			// Перетаскивание между категориями состояний
+			updateComputerStatus(draggedItem.id, targetStatus);
+		}
+	}
+
+	function selectComputer(computer: ComputersResponse): void {
+		selectedComputers.update(($selected) => {
+			if ($selected.some((comp) => comp.id === computer.id)) {
+				return $selected.filter((comp) => comp.id !== computer.id);
+			} else {
+				return [...$selected, computer];
+			}
+		});
+	}
+
+	function unselectComputer(computer: ComputersResponse): void {
+		selectedComputers.update(($selected) => $selected.filter((comp) => comp.id !== computer.id));
 	}
 </script>
 
-<Card.Root class="w-full overflow-hidden p-0">
-	<Card.Content class={cn('p-0', $$props.class)}>
-		<Table.Root>
-			<Table.Header>
-				<Table.Row class={contains($checkedList, $filtered) ? 'bg-muted/10' : ''}>
-					<Table.Head class="h-12">
-						{#if $filtered.length > 0}
-							<Checkbox
-								class="ml-4 border-foreground/50"
-								checked={contains($checkedList, $filtered)}
-								onclick={(event: { preventDefault: () => void }) => {
-									event.preventDefault();
-									toggle.all();
-								}}
-							/>
-						{/if}
-					</Table.Head>
-					<Table.Head>Name</Table.Head>
-					<Table.Head>Status</Table.Head>
-					<Table.Head />
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each $filtered as computer (computer.id)}
-					<Table.Row class={$checkedList.includes(computer) ? 'bg-muted/20' : ''}>
-						<Table.Cell class="h-12 w-[100px]">
-							<Checkbox
-								class="ml-4 border-foreground/50"
-								checked={$checkedList.includes(computer)}
-								onclick={(event: any) => {
-									event.preventDefault();
-									toggle.checked(computer);
-								}}
-							/>
-						</Table.Cell>
-						<Table.Cell class="font-medium">{computer.name}</Table.Cell>
-						<Table.Cell><Status status={computer.status} /></Table.Cell>
-						<Table.Cell class="text-right"></Table.Cell>
-					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-		<!-- {#if $isOwner} -->
-		<Dialog.Root bind:open={$computerDialogOpen}>
-			<Dialog.Trigger>
-				{#snippet child({ props })}
-					<Button
-						{...props}
-						variant="outline"
-						class={cn(
-							'h-12 w-full rounded-none border-0',
-							$filtered.length > 0 ? 'border-t-[1px]' : ''
-						)}
-						>Create computer
-						<PlusCircle class={icon.left} /></Button
+<div class="grid grid-cols-2 gap-6 max-md:grid-cols-1">
+	<!-- Disabled Computers Column -->
+	<div
+		class="rounded-xl bg-red-500/10 p-4 shadow-sm ring-1 ring-border"
+		use:droppable={{
+			container: 'disabled',
+			callbacks: { onDrop: (state: any) => handleDrop(state, '0') }
+		}}
+	>
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="font-semibold text-foreground">Offline Computers</h2>
+			<span class="rounded-full bg-red-500/20 px-2.5 py-0.5 text-sm text-red-500">
+				{$disabledComputers.length}
+			</span>
+		</div>
+
+		<div class="space-y-3">
+			{#each $disabledComputers as computer (computer.id)}
+				<div animate:flip={{ duration: 200 }}>
+					{@render computerCard(computer, 'disabled')}
+				</div>
+			{/each}
+
+			{#if $disabledComputers.length === 0}
+				{@render emptyPlaceholder('No offline computers', 'border-red-500/30')}
+			{/if}
+		</div>
+	</div>
+
+	<!-- Idle Computers Column -->
+	<div
+		class="rounded-xl bg-yellow-500/10 p-4 shadow-sm ring-1 ring-border"
+		use:droppable={{
+			container: 'idle',
+			callbacks: { onDrop: (state: any) => handleDrop(state, '1') }
+		}}
+	>
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="font-semibold text-foreground">Idle Computers</h2>
+			<span class="rounded-full bg-yellow-500/20 px-2.5 py-0.5 text-sm text-yellow-500">
+				{$idleComputers.length}
+			</span>
+		</div>
+
+		<div class="space-y-3">
+			{#each $idleComputers as computer (computer.id)}
+				<div animate:flip={{ duration: 200 }}>
+					{@render computerCard(computer, 'idle')}
+				</div>
+			{/each}
+
+			{#if $idleComputers.length === 0}
+				{@render emptyPlaceholder('No idle computers', 'border-yellow-500/30')}
+			{/if}
+		</div>
+	</div>
+
+	<!-- Active Computers Column -->
+	<div
+		class="rounded-xl bg-green-500/10 p-4 shadow-sm ring-1 ring-border"
+		use:droppable={{
+			container: 'active',
+			callbacks: { onDrop: (state: any) => handleDrop(state, '2') }
+		}}
+	>
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="font-semibold text-foreground">Active Computers</h2>
+			<span class="rounded-full bg-green-500/20 px-2.5 py-0.5 text-sm text-green-500">
+				{$activeComputers.length}
+			</span>
+		</div>
+
+		<div class="space-y-3">
+			{#each $activeComputers as computer (computer.id)}
+				<div animate:flip={{ duration: 200 }}>
+					{@render computerCard(computer, 'active')}
+				</div>
+			{/each}
+
+			{#if $activeComputers.length === 0}
+				{@render emptyPlaceholder('No active computers', 'border-green-500/30')}
+			{/if}
+		</div>
+	</div>
+
+	<!-- Selected Computers Column -->
+	<div
+		class="rounded-xl bg-primary/10 p-4 shadow-sm ring-1 ring-border"
+		use:droppable={{
+			container: 'selected',
+			callbacks: { onDrop: (state: any) => handleDrop(state, 'selected') }
+		}}
+	>
+		<div class="mb-4 flex items-center justify-between">
+			<h2 class="font-semibold text-foreground">Selected Computers</h2>
+			<span class="rounded-full bg-primary/20 px-2.5 py-0.5 text-sm text-primary">
+				{$selectedComputers.length}
+			</span>
+		</div>
+
+		<div class="space-y-3">
+			{#each $selectedComputers as computer (computer.id)}
+				<div animate:flip={{ duration: 200 }}>
+					{@render computerCard(computer, 'selected')}
+				</div>
+			{/each}
+
+			{#if $selectedComputers.length === 0}
+				{@render emptyPlaceholder('Drop computers here', 'border-primary/30')}
+			{/if}
+		</div>
+	</div>
+</div>
+
+{#snippet computerCard(computer: ComputersResponse, containerType: string)}
+	<div
+		use:draggable={{ container: containerType, dragData: computer, interactive: ['button'] }}
+		in:fade={{ duration: 150 }}
+		out:fade={{ duration: 150 }}
+		class="group cursor-move rounded-lg bg-card p-3 shadow-sm ring-1 ring-border
+		transition-all duration-200 hover:shadow-md hover:ring-2 hover:ring-primary/20"
+	>
+		<div class="flex items-center gap-3">
+			<img
+				src={getAvatarUrl(computer.mac || computer.name, 48)}
+				alt={computer.name}
+				class="h-12 w-12 rounded-full ring-2 ring-background"
+			/>
+			<div class="flex-1">
+				<h3 class="font-medium text-foreground">{computer.name}</h3>
+				<div class="flex items-center gap-1">
+					<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
+					<span
+						class:text-red-500={computer.status === '0'}
+						class:text-yellow-500={computer.status === '1'}
+						class:text-green-500={computer.status === '2'}
 					>
-				{/snippet}
-			</Dialog.Trigger>
-			<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
-				<Dialog.Header>
-					<Dialog.Title>Create computer</Dialog.Title>
-					<Dialog.Description>Enter your new computer name.</Dialog.Description>
-				</Dialog.Header>
-				<form
-					class="flex gap-2"
-					on:submit|preventDefault={toastApi.execAsync(
-						async () => await createComputer($computerForm.name),
-						`Computer ${$computerForm.name} created.`,
-						`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
-					)}
+						<svelte:component this={getStatusInfo(computer.status).icon} class="h-3.5 w-3.5" />
+					</span>
+				</div>
+			</div>
+			{#if containerType !== 'selected'}
+				<button
+					class="text-right text-card-foreground/50"
+					onclick={() => {
+						selectComputer(computer);
+					}}
 				>
-					<div class="grid w-full grid-cols-1 gap-2">
-						<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
-					</div>
-					<Button type="submit" class="h-full">Create <PlusCircle class={icon.left} /></Button>
-				</form>
-			</Dialog.Content>
-		</Dialog.Root>
-		<!-- {/if} -->
-	</Card.Content>
-</Card.Root>
+					<SquarePlus />
+				</button>
+			{:else}
+				<button
+					class="text-right text-card-foreground/50"
+					onclick={() => {
+						unselectComputer(computer);
+					}}
+				>
+					<SquareMinus />
+				</button>
+			{/if}
+		</div>
+	</div>
+{/snippet}
+
+{#snippet emptyPlaceholder(text: string, borderColor: string)}
+	<div
+		class="flex h-32 items-center justify-center rounded-lg border-2 border-dashed
+		{borderColor} text-sm text-muted-foreground"
+	>
+		{text}
+	</div>
+{/snippet}
