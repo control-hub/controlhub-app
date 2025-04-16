@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { SquareMinus, SquarePlus } from 'lucide-svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { droppable, draggable, type DragDropState } from '@thisux/sveltednd';
 	import { flip } from 'svelte/animate';
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
@@ -7,6 +8,7 @@
 	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
 	import { computersStore } from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
+	import { toast } from 'svelte-sonner';
 
 	// Вспомогательные функции
 	function getAvatarUrl(id: string, size: number = 100): string {
@@ -51,6 +53,18 @@
 				};
 		}
 	}
+
+	const statusColorMap = {
+		0: 'red-500',
+		1: 'yellow-500',
+		2: 'green-500'
+	};
+
+	const statusLabelMap = {
+		0: 'Offline',
+		1: 'Idle',
+		2: 'Enabled'
+	};
 
 	// Store для выбранных компьютеров
 	const selectedComputers: Writable<ComputersResponse[]> = writable<ComputersResponse[]>([]);
@@ -114,7 +128,9 @@
 
 		console.log(`Dragged from ${sourceContainer} to ${targetContainer}:`, draggedItem.name);
 
-		if (targetStatus === 'selected') {
+		if (targetStatus === 'selected' && sourceContainer === 'disabled') {
+			toast.error("Can't select disabled computer");
+		} else if (targetStatus === 'selected') {
 			// Перетаскивание в выбранные компьютеры
 			selectedComputers.update(($selected) => {
 				// Проверяем, не добавлен ли уже этот компьютер
@@ -140,13 +156,17 @@
 	}
 
 	function selectComputer(computer: ComputersResponse): void {
-		selectedComputers.update(($selected) => {
-			if ($selected.some((comp) => comp.id === computer.id)) {
-				return $selected.filter((comp) => comp.id !== computer.id);
-			} else {
-				return [...$selected, computer];
-			}
-		});
+		if (computer.status === '0') {
+			toast.error("Can't select disabled computer");
+		} else {
+			selectedComputers.update(($selected) => {
+				if ($selected.some((comp) => comp.id === computer.id)) {
+					return $selected.filter((comp) => comp.id !== computer.id);
+				} else {
+					return [...$selected, computer];
+				}
+			});
+		}
 	}
 
 	function unselectComputer(computer: ComputersResponse): void {
@@ -154,7 +174,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-2 gap-6 max-md:grid-cols-1">
+<div class="grid grid-cols-2 gap-6 max-lg:grid-cols-1">
 	<!-- Disabled Computers Column -->
 	<div
 		class="rounded-xl bg-red-500/10 p-4 shadow-sm ring-1 ring-border"
@@ -286,15 +306,19 @@
 				<h3 class="font-medium text-foreground">{computer.name}</h3>
 				<div class="flex items-center gap-1">
 					<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
-					<span
-						class:text-red-500={computer.status === '0'}
-						class:text-yellow-500={computer.status === '1'}
-						class:text-green-500={computer.status === '2'}
-					>
+					<span class="text-{statusColorMap[computer.status]}">
 						<svelte:component this={getStatusInfo(computer.status).icon} class="h-3.5 w-3.5" />
 					</span>
 				</div>
 			</div>
+			<Badge
+				class="bg-{statusColorMap[computer.status]} hover:bg-{statusColorMap[
+					computer.status
+				]}/60 shadow-sm ring-1
+		ring-border hover:shadow-md hover:ring-2 hover:ring-primary/20 max-sm:hidden"
+			>
+				<span>{statusLabelMap[computer.status]}</span>
+			</Badge>
 			{#if containerType !== 'selected'}
 				<button
 					class="text-right text-card-foreground/50"
