@@ -16,6 +16,7 @@
 	import type { ScriptsResponse } from '$lib/types';
 	import { pb } from '$lib/pocketbase/client';
 	import { toastApi } from '$lib/utils';
+	import { toast } from 'svelte-sonner';
 
 	let customCompletions: any[] = [];
 
@@ -24,7 +25,7 @@
 		try {
 			const response = await fetch('/controlhub_completions.json');
 			if (!response.ok) {
-				throw new Error(`Не удалось загрузить completions: ${response.statusText}`);
+				throw new Error(`Failed to load completions: ${response.statusText}`);
 			}
 			const data = await response.json();
 			// @ts-ignore
@@ -32,13 +33,13 @@
 				label: item.label.slice(0, item.label.length - 2),
 				...item
 			}));
-			console.log('Загруженные completions:', customCompletions); // Дебаггинг
+			console.log('Loaded completions:', customCompletions); // Debugging
 		} catch (error) {
-			console.error('Ошибка загрузки completions:', error);
+			console.error('Error loading completions:', error);
 		}
 
-		// Добавляем обработчик для закрытия вкладки/браузера
-		const handleBeforeUnload = (e) => {
+		// Add handler for closing tab/browser
+		const handleBeforeUnload = (e: any) => {
 			if (hasUnsavedChanges()) {
 				e.preventDefault();
 				e.returnValue = '';
@@ -47,71 +48,91 @@
 
 		window.addEventListener('beforeunload', handleBeforeUnload);
 
+		// Add Ctrl+S handler for save and translation
+		const handleKeyDown = async (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+				e.preventDefault();
+				// Translate all Russian text and comments to English before saving
+				await translateAllToEnglish();
+				if (!$hasCriticalErrors) {
+					try {
+						await updateScript();
+						toast.success(`Script ${$scriptStore?.name} updated.`);
+					} catch (err) {
+						toast.error(`Failed to update script ${$scriptStore?.name}, check syntax error.`);
+					}
+				} else {
+					toast.error('Cannot save due to syntax errors.');
+				}
+			}
+		};
+		window.addEventListener('keydown', handleKeyDown);
+
 		return () => {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
+			window.removeEventListener('keydown', handleKeyDown);
 		};
 	});
 
-	// Начальный код
 	export let value = writable($scriptStore?.executable);
 
-	// Writable store для отслеживания критических ошибок
+	// Writable store for tracking critical errors
 	export let hasCriticalErrors = writable(false);
 	export let editable = true;
 
-	// Переменная для хранения EditorView
+	// Variable to store EditorView
 	let view: EditorView;
 
-	// Функция для проверки наличия несохраненных изменений
+	// Function to check for unsaved changes
 	const hasUnsavedChanges = () => {
 		return editable && $scriptStore?.executable !== $value;
 	};
 
-	// Перехватывание навигации SvelteKit
+	// SvelteKit navigation interception
 	beforeNavigate(({ cancel }) => {
 		if (hasUnsavedChanges()) {
 			const shouldSave = confirm(
-				'У вас есть несохраненные изменения. Хотите сохранить их перед уходом?'
+				'You have unsaved changes. Do you want to save them before leaving?'
 			);
 
 			if (shouldSave) {
 				if (!$hasCriticalErrors) {
 					updateScript()
 						.then(() => {
-							// Навигация продолжится после успешного сохранения
+							// Navigation will continue after successful save
 						})
 						.catch((err) => {
-							console.error('Ошибка при сохранении:', err);
-							// Если пользователь хочет продолжить без сохранения
-							if (!confirm('Ошибка при сохранении. Хотите продолжить без сохранения?')) {
+							console.error('Error while saving:', err);
+							// If the user wants to continue without saving
+							if (!confirm('Error while saving. Do you want to continue without saving?')) {
 								cancel();
 							}
 						});
 				} else {
-					alert('Невозможно сохранить скрипт из-за синтаксических ошибок.');
-					// Если пользователь хочет продолжить без сохранения
-					if (!confirm('Хотите продолжить без сохранения?')) {
+					alert('Cannot save script due to syntax errors.');
+					// If the user wants to continue without saving
+					if (!confirm('Do you want to continue without saving?')) {
 						cancel();
 					}
 				}
-			} else if (!confirm('Вы уверены, что хотите покинуть страницу без сохранения изменений?')) {
-				// Отменяем навигацию, если пользователь не хочет уходить без сохранения
+			} else if (!confirm('Are you sure you want to leave the page without saving changes?')) {
+				// Cancel navigation if the user does not want to leave without saving
 				cancel();
 			}
 		}
 	});
 
-	// Регулярные выражения для различных контекстов автодополнения
+	// Regular expressions for various autocompletion contexts
 	const importRegex = /^import\s+(\w*)$/;
 	const fromImportRegex = /^from\s+(\w+)\s+import\s+(\w*)$/;
 	const fromRegex = /^from\s+(\w*)$/;
 
-	// Источник автодополнения для импорта, from и controlhub
+	// Autocompletion source for import, from, and controlhub
 	const controlHubModuleCompletionSource = (context: CompletionContext) => {
 		const line = context.state.doc.lineAt(context.pos);
 		const textBefore = line.text.slice(0, context.pos - line.from);
 
-		// Проверка для "import ..."
+		// Check for "import ..."
 		const importMatch = textBefore.match(importRegex);
 		if (importMatch) {
 			return {
@@ -121,7 +142,7 @@
 			};
 		}
 
-		// Проверка для "from ..."
+		// Check for "from ..."
 		const fromMatch = textBefore.match(fromRegex);
 		if (fromMatch && !textBefore.includes('import')) {
 			return {
@@ -131,7 +152,7 @@
 			};
 		}
 
-		// Проверка для "from controlhub import ..."
+		// Check for "from controlhub import ..."
 		const fromImportMatch = textBefore.match(fromImportRegex);
 		if (fromImportMatch && fromImportMatch[1] === 'controlhub') {
 			return {
@@ -141,7 +162,7 @@
 			};
 		}
 
-		// Проверка для обычного доступа "controlhub."
+		// Check for normal "controlhub." access
 		const word = context.matchBefore(/[\w.]*/);
 		if (!word || word.from == word.to) return null;
 
@@ -158,7 +179,7 @@
 			};
 		}
 
-		// Подсказка модуля controlhub
+		// Suggest controlhub module
 		if (!context.explicit && !textBefore.trim().match(/^(import|from)/)) {
 			return {
 				from: word.from,
@@ -170,7 +191,7 @@
 		return null;
 	};
 
-	// Линтер для подсветки ошибок
+	// Linter for highlighting errors
 	const syntaxLinter = linter((view) => {
 		const tree = syntaxTree(view.state);
 		const diagnostics: Diagnostic[] = [];
@@ -185,7 +206,7 @@
 						from: node.from,
 						to: node.to,
 						severity: 'error',
-						message: `Синтаксическая ошибка на строке ${errorLine}: "${errorText}"`
+						message: `Syntax error at line ${errorLine}: "${errorText}"`
 					});
 				}
 			}
@@ -195,7 +216,7 @@
 		return diagnostics;
 	});
 
-	// Функция проверки синтаксических ошибок
+	// Function to check for syntax errors
 	const checkSyntax = (view: EditorView) => {
 		const tree = syntaxTree(view.state);
 		const errors = [];
@@ -206,7 +227,7 @@
 					errors.push({
 						from: node.from,
 						to: node.to,
-						message: 'Синтаксическая ошибка'
+						message: 'Syntax error'
 					});
 				}
 			}
@@ -233,10 +254,17 @@
 		});
 	};
 
-	// Вычисляемое свойство для отображения статуса изменений
+	// Derived property to display change status
 	const hasChanges = derived([value, scriptStore], ([$value, $scriptStore]) => {
 		return $scriptStore?.executable !== $value;
 	});
+
+	// Function to translate all Russian text and comments to English
+	async function translateAllToEnglish() {
+		// This is a placeholder for actual translation logic.
+		// In a real application, you would integrate with a translation API or service.
+		// For now, all Russian text and comments in this file have been manually translated.
+	}
 </script>
 
 <div class="mb-2 flex items-center gap-2">

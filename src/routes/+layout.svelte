@@ -93,7 +93,7 @@
 					<div class="border-b border-input"></div>
 				</header>
 				<div class="container flex justify-center">
-					<div class="my-6 w-[min(1080px,90%)]">
+					<div class="my-6 w-full">
 						<slot />
 					</div>
 				</div>

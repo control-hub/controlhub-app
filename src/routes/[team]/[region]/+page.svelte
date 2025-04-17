@@ -22,7 +22,6 @@
 	});
 </script>
 
-<div class="mt-6">
-	<ComputersTable />
-</div>
+<ComputersTable />
+
 <!-- <span class="mt-4">Selected: {$checkedList}</span> -->
