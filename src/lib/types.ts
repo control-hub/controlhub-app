@@ -55,7 +55,7 @@ export type ComputersRecord = {
 };
 
 export type ExecutionsRecord = {
-	complited?: boolean;
+	completed?: boolean;
 	computer?: RecordIdString;
 	executable?: HTMLString;
 	logs?: HTMLString;

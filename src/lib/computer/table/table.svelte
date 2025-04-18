@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SquareMinus, SquarePlus, Plus, Minus, Power, Play } from 'lucide-svelte';
+	import { SquareMinus, SquarePlus, Plus, Minus, Power, Play, CirclePlus } from 'lucide-svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { droppable, draggable, type DragDropState } from '@thisux/sveltednd';
 	import { flip } from 'svelte/animate';
@@ -11,7 +11,9 @@
 	import { toast } from 'svelte-sonner';
 	import { pb } from '$lib/pocketbase/client';
 	import { toastApi, createComputer as utilsCreateComputer } from '$lib/utils';
+	import { icon } from '$lib/config';
 
+	import ExecuteButton from '$lib/script/execute/button.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -210,33 +212,36 @@
 	}
 </script>
 
-<div class="grid animate-fade-in-up grid-cols-2 gap-6 max-xl:grid-cols-1">
-	<!-- <Dialog.Root bind:open={$computerDialogOpen}>
-		<Dialog.Trigger>
-			{#snippet child({ props })}
-				<Button {...props} variant="outline">Create computer</Button>
-			{/snippet}
-		</Dialog.Trigger>
-		<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
-			<Dialog.Header>
-				<Dialog.Title>Create computer</Dialog.Title>
-				<Dialog.Description>Enter your new computer name.</Dialog.Description>
-			</Dialog.Header>
-			<form
-				class="flex gap-2"
-				onsubmit={toastApi.execAsync(
-					async () => await createComputer($computerForm.name),
-					`Computer ${$computerForm.name} created.`,
-					`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
-				)}
+<Dialog.Root bind:open={$computerDialogOpen}>
+	<Dialog.Trigger>
+		{#snippet child({ props })}
+			<Button {...props} variant="outline" class="mb-4 w-full"
+				>Create computer<CirclePlus class={icon.left} /></Button
 			>
-				<div class="grid w-full grid-cols-1 gap-2">
-					<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
-				</div>
-				<Button type="submit" class="h-full">Create</Button>
-			</form>
-		</Dialog.Content>
-	</Dialog.Root> -->
+		{/snippet}
+	</Dialog.Trigger>
+	<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
+		<Dialog.Header>
+			<Dialog.Title>Create computer</Dialog.Title>
+			<Dialog.Description>Enter your new computer name.</Dialog.Description>
+		</Dialog.Header>
+		<form
+			class="flex gap-2"
+			onsubmit={toastApi.execAsync(
+				async () => await createComputer($computerForm.name),
+				`Computer ${$computerForm.name} created.`,
+				`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
+			)}
+		>
+			<div class="grid w-full grid-cols-1 gap-2">
+				<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
+			</div>
+			<Button type="submit" class="h-full">Create</Button>
+		</form>
+	</Dialog.Content>
+</Dialog.Root>
+
+<div class="grid animate-fade-in-up grid-cols-2 gap-6 max-xl:grid-cols-1">
 	<!-- Disabled Computers Column -->
 	<div
 		class="rounded-xl bg-red-500/10 p-4 shadow-sm ring-1 ring-border"
@@ -408,22 +413,8 @@
 				</span>
 				<span class="ml-2"> Selected Computers </span>
 			</h2>
-
-			<button
-				class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary/50 {$selectedComputers.length >
-				0
-					? ''
-					: 'opacity-0'}"
-				onclick={() => {
-					for (const computer of $selectedComputers) {
-						unselectComputer(computer);
-					}
-				}}
-			>
-				<Play class="size-5 py-[2px]" />
-			</button>
+			<ExecuteButton dialogVisible={$selectedComputers.length > 0} {selectedComputers} />
 		</div>
-
 		<div class="h-[calc(100%-44px)] min-h-[68px] space-y-3">
 			{#each $selectedComputers as computer (computer.id)}
 				<div animate:flip={{ duration: 200 }}>

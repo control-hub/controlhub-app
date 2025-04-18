@@ -150,10 +150,10 @@
 			"CREATE UNIQUE INDEX `idx_IBbZmv5` ON `computers` (\n  `region`,\n  `name`\n)",
 			"CREATE INDEX `idx_XQj12Dj` ON `computers` (`token`)"
 		],
-		"listRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
-		"viewRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
-		"createRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'add_computer')",
-		"updateRule": "region.team.owner.id = @request.auth.id || @request.data.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'edit_computer')",
+		"listRule": "region.team.owner.id = @request.auth.id || @request.query.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
+		"viewRule": "region.team.owner.id = @request.auth.id || @request.query.token = token || region.team.teams_access_via_team.user.id ?= @request.auth.id",
+		"createRule": "region.team.owner.id = @request.auth.id || @request.query.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'add_computer')",
+		"updateRule": "region.team.owner.id = @request.auth.id || @request.query.token = token || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'edit_computer')",
 		"deleteRule": "region.team.owner.id = @request.auth.id || (region.team.teams_access_via_team.user.id ?= @request.auth.id && region.team.teams_access_via_team.permissions ~ 'delete_computer')",
 		"options": {}
 	},
@@ -178,7 +178,7 @@
 			{
 				"system": false,
 				"id": "0cudx0m8",
-				"name": "complited",
+				"name": "completed",
 				"type": "bool",
 				"required": false,
 				"presentable": false,
@@ -247,10 +247,10 @@
 			}
 		],
 		"indexes": [],
-		"listRule": null,
-		"viewRule": null,
-		"createRule": null,
-		"updateRule": null,
+		"listRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
+		"viewRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
+		"createRule": "(computer.region.team.owner.id = @request.auth.id || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')) && user.id = @request.auth.id",
+		"updateRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
 		"deleteRule": null,
 		"options": {}
 	},

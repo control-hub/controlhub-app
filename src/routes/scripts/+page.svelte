@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { ScriptsTable } from '$lib/script/table';
-	import SuperDebug from 'sveltekit-superforms';
 	import { writable } from 'svelte/store';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { scriptsStore } from '$lib/stores';
