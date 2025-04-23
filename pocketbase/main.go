@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"time"
+
 	// "fmt"
 	"log"
 	"regexp"
@@ -88,6 +90,12 @@ func main() {
         globalCache.Set(data.ClientId, token)
         return nil
     })
+
+    app.OnRealtimeConnectRequest().Add(func(e *core.RealtimeConnectEvent) error {
+        e.IdleTimeout = 30 * 24 * time.Hour // A Month
+        return nil
+    })
+
 
     app.OnRealtimeDisconnectRequest().Add(func(e *core.RealtimeDisconnectEvent) error {
         token, ok := globalCache.Get(e.Client.Id())
