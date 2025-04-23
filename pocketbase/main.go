@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"regexp"
 	"sync"
@@ -69,7 +69,17 @@ func main() {
             return err
         }
 
-        token := token_re.FindStringSubmatch(data.Subscriptions[0])[1]
+        if len(data.Subscriptions) < 1 {
+            return nil
+        }
+
+        matches := token_re.FindStringSubmatch(data.Subscriptions[0])
+
+        if len(matches) < 2 {
+            return nil
+        }
+
+        token := matches[1]
         
         if token == "" {
             return nil
@@ -87,7 +97,7 @@ func main() {
             return nil
         }
 
-        fmt.Println(token)
+        // fmt.Println(token)
 
         computer := Computer{}
         err := app.DB().NewQuery("SELECT id, token, status FROM computers WHERE token = {:token}").Bind(dbx.Params{"token": token}).One(&computer)
@@ -104,7 +114,7 @@ func main() {
             }
         }
 
-        fmt.Println(computer)
+        // fmt.Println(computer)
 
         return nil
     })
