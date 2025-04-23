@@ -100,14 +100,14 @@ func main() {
         // fmt.Println(token)
 
         computer := Computer{}
-        err := app.DB().NewQuery("SELECT id, token, status FROM computers WHERE token = {:token}").Bind(dbx.Params{"token": token}).One(&computer)
+        err := app.Dao().DB().NewQuery("SELECT id, token, status FROM computers WHERE token = {:token}").Bind(dbx.Params{"token": token}).One(&computer)
 
         if err != nil {
             return err
         }
 
         if computer.Status != "0" {
-            _, err := app.DB().NewQuery("UPDATE computers SET status = 0 WHERE token = {:token}").Bind(dbx.Params{"token": token}).Execute()
+            _, err := app.Dao().DB().NewQuery("UPDATE computers SET status = 0 WHERE token = {:token}").Bind(dbx.Params{"token": token}).Execute()
 
             if err != nil {
                 return err
