@@ -12,8 +12,8 @@
 	}
 </script>
 
-<div class="w-[100vw] border-b border-input py-10 text-3xl font-medium">
-	<span class="ml-[calc(min(10vw,100px))]"> Members </span>
+<div class="w-[100%] border-b border-input py-10 text-3xl font-medium">
+	<span class="ml-[calc(min(10%,100px))]"> Members </span>
 </div>
 <button onclick={toastApi.execAsync(async () => sleep(1000), 'Done', 'Error')}>as</button>
 {$teamStore?.name}

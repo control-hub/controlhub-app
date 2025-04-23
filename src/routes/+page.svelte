@@ -1,1 +1,11 @@
-Hello! To start go <a href="/start">here</a>
+<script lang="ts">
+	import { userStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if ($userStore) {
+			goto('/teams');
+		}
+	});
+</script>
