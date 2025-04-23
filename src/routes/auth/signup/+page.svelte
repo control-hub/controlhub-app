@@ -21,7 +21,7 @@
 	async function formAction() {
 		loading = true;
 		await toastApi.post('/api/auth/signup', formData, () => {
-			goto('/start');
+			goto('/teams');
 		});
 		loading = false;
 	}

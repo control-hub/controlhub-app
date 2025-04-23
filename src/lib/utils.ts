@@ -3,11 +3,13 @@ import { twMerge } from 'tailwind-merge';
 import { browser } from '$app/environment';
 import { toast } from 'svelte-sonner';
 import { cubicOut } from 'svelte/easing';
-import type { Tab, AsyncFunction, UsersResponse, TeamsResponse, TeamsRecord } from '$lib/types';
+import type { Tab, AsyncFunction, TeamsResponse, TeamsRecord, ComputersResponse } from '$lib/types';
 import type { AuthProviderInfo } from 'pocketbase';
-import PocketBase from 'pocketbase';
+import { beforeNavigate } from '$app/navigation';
 import type { TransitionConfig } from 'svelte/transition';
 import type { CollectionStore } from 'pocketbase-store';
+import { computersStore, regionStore, userStore, teamsStore } from '$lib/stores';
+import { get } from 'svelte/store';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -32,6 +34,13 @@ export const sortProviders = (providers: AuthProviderInfo[], compareList: string
 	compareList.reverse();
 	providers.sort((a, b) => compareProviders(a, b, compareList));
 	providers.reverse();
+};
+
+export const contains = (where: any[], what: any[]): boolean => {
+	for (var i = 0; i < what.length; i++) {
+		if (where.indexOf(what[i]) == -1) return false;
+	}
+	return true;
 };
 
 export const answer = (data: any, status = 200) => {
@@ -252,9 +261,19 @@ export const ls = {
 	}
 };
 
-export const createTeam = async (teamsStore: CollectionStore<TeamsResponse>, team: TeamsRecord) => {
+export const generateToken = (length: number = 12): string => {
+	const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let token = '';
+	for (let i = 0; i < length; i++) {
+		token += chars.charAt(Math.floor(Math.random() * chars.length));
+	}
+	return token;
+};
+
+export const createTeam = async (name: string): Promise<TeamsResponse> => {
 	const result = teamsStore.create({
-		...team
+		name: name,
+		owner: get(userStore)?.id
 	});
 
 	const createdTeam = await result;
@@ -278,4 +297,41 @@ export const createTeam = async (teamsStore: CollectionStore<TeamsResponse>, tea
 	});
 
 	return createdTeam;
-} 
+};
+
+export const createComputer = async (name: string): Promise<ComputersResponse> => {
+	console.log('regionStore', get(regionStore));
+
+	const computer = {
+		name: name,
+		region: get(regionStore)?.id,
+		token: generateToken(12),
+		status: '0'
+	};
+
+	return await computersStore.create(computer);
+};
+
+export const randintSeed = (str: string, min: number, max: number): number => {
+	// Конвертируем seed-строку в 32битное число (простейший хэш)
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash * 31 + str.charCodeAt(i)) | 0; // умножение + сдвиг
+	}
+
+	// Псевдослучайное на базе хэша
+	const pseudoRand = Math.abs(Math.sin(hash) * 10000) % 1;
+
+	return Math.floor(pseudoRand * (max - min + 1)) + min;
+};
+
+export const beforeNavigateOut: Function = (func: Function) => {
+	beforeNavigate(({ to, from }) => {
+		const nextPath = from?.url.pathname || '';
+		const currentPath = to?.url.pathname.split('/').slice(0, 2).join('/') || '';
+
+		if (!nextPath.startsWith(currentPath)) {
+			func();
+		}
+	});
+};

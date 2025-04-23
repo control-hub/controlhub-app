@@ -6,12 +6,13 @@ import type PocketBase from 'pocketbase';
 import type { RecordService } from 'pocketbase';
 
 export enum Collections {
-	Commands = 'commands',
 	Computers = 'computers',
+	Executions = 'executions',
 	Regions = 'regions',
+	Scripts = 'scripts',
 	Teams = 'teams',
 	TeamsAccess = 'teams_access',
-	Test = 'test',
+	TeamsLink = 'teams_link',
 	Users = 'users'
 }
 
@@ -39,36 +40,40 @@ export type AuthSystemFields<T = never> = {
 
 // Record types for each collection
 
-export enum CommandsLangOptions {
-	'python' = 'python',
-	'cmd' = 'cmd',
-	'system' = 'system'
-}
-export type CommandsRecord = {
-	description?: HTMLString;
-	exec?: HTMLString;
-	lang?: CommandsLangOptions;
-	name?: string;
-	user?: RecordIdString;
-};
-
 export enum ComputersStatusOptions {
 	'E2' = '2',
 	'E1' = '1',
 	'E0' = '0'
 }
 export type ComputersRecord = {
-	active?: RecordIdString;
-	logs?: string;
+	ip?: string;
 	mac?: string;
 	name: string;
 	region: RecordIdString;
 	status: ComputersStatusOptions;
+	token: string;
+};
+
+export type ExecutionsRecord = {
+	completed?: boolean;
+	computer?: RecordIdString;
+	executable?: HTMLString;
+	logs?: HTMLString;
+	script?: RecordIdString;
+	user?: RecordIdString;
 };
 
 export type RegionsRecord = {
 	name: string;
 	team: RecordIdString;
+};
+
+export type ScriptsRecord = {
+	description?: HTMLString;
+	executable?: HTMLString;
+	name?: string;
+	public?: boolean;
+	user?: RecordIdString;
 };
 
 export type TeamsRecord = {
@@ -95,13 +100,23 @@ export type TeamsAccessRecord = {
 	user?: RecordIdString;
 };
 
-export enum TestFieldOptions {
-	'a' = 'a',
-	'b' = 'b',
-	'abo' = 'abo'
+export enum TeamsLinkPermissionsOptions {
+	'add_access' = 'add_access',
+	'delete_access' = 'delete_access',
+	'edit_access' = 'edit_access',
+	'delete_team' = 'delete_team',
+	'edit_team' = 'edit_team',
+	'add_region' = 'add_region',
+	'delete_region' = 'delete_region',
+	'edit_region' = 'edit_region',
+	'add_computer' = 'add_computer',
+	'delete_computer' = 'delete_computer',
+	'edit_computer' = 'edit_computer'
 }
-export type TestRecord = {
-	field?: TestFieldOptions[];
+export type TeamsLinkRecord = {
+	joined?: RecordIdString[];
+	permissions?: TeamsLinkPermissionsOptions;
+	secret?: string;
 };
 
 export type UsersRecord = {
@@ -110,37 +125,42 @@ export type UsersRecord = {
 };
 
 // Response types include system fields and match responses from the PocketBase API
-export type CommandsResponse<Texpand = unknown> = Required<CommandsRecord> &
-	BaseSystemFields<Texpand>;
 export type ComputersResponse<Texpand = unknown> = Required<ComputersRecord> &
 	BaseSystemFields<Texpand>;
+export type ExecutionsResponse<Texpand = unknown> = Required<ExecutionsRecord> &
+	BaseSystemFields<Texpand>;
 export type RegionsResponse<Texpand = unknown> = Required<RegionsRecord> &
+	BaseSystemFields<Texpand>;
+export type ScriptsResponse<Texpand = unknown> = Required<ScriptsRecord> &
 	BaseSystemFields<Texpand>;
 export type TeamsResponse<Texpand = unknown> = Required<TeamsRecord> & BaseSystemFields<Texpand>;
 export type TeamsAccessResponse<Texpand = unknown> = Required<TeamsAccessRecord> &
 	BaseSystemFields<Texpand>;
-export type TestResponse<Texpand = unknown> = Required<TestRecord> & BaseSystemFields<Texpand>;
+export type TeamsLinkResponse<Texpand = unknown> = Required<TeamsLinkRecord> &
+	BaseSystemFields<Texpand>;
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>;
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
 export type CollectionRecords = {
-	commands: CommandsRecord;
 	computers: ComputersRecord;
+	executions: ExecutionsRecord;
 	regions: RegionsRecord;
+	scripts: ScriptsRecord;
 	teams: TeamsRecord;
 	teams_access: TeamsAccessRecord;
-	test: TestRecord;
+	teams_link: TeamsLinkRecord;
 	users: UsersRecord;
 };
 
 export type CollectionResponses = {
-	commands: CommandsResponse;
 	computers: ComputersResponse;
+	executions: ExecutionsResponse;
 	regions: RegionsResponse;
+	scripts: ScriptsResponse;
 	teams: TeamsResponse;
 	teams_access: TeamsAccessResponse;
-	test: TestResponse;
+	teams_link: TeamsLinkResponse;
 	users: UsersResponse;
 };
 
@@ -148,14 +168,17 @@ export type CollectionResponses = {
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions
 
 export type TypedPocketBase = PocketBase & {
-	collection(idOrName: 'commands'): RecordService<CommandsResponse>;
 	collection(idOrName: 'computers'): RecordService<ComputersResponse>;
+	collection(idOrName: 'executions'): RecordService<ExecutionsResponse>;
 	collection(idOrName: 'regions'): RecordService<RegionsResponse>;
+	collection(idOrName: 'scripts'): RecordService<ScriptsResponse>;
 	collection(idOrName: 'teams'): RecordService<TeamsResponse>;
 	collection(idOrName: 'teams_access'): RecordService<TeamsAccessResponse>;
-	collection(idOrName: 'test'): RecordService<TestResponse>;
+	collection(idOrName: 'teams_link'): RecordService<TeamsLinkResponse>;
 	collection(idOrName: 'users'): RecordService<UsersResponse>;
 };
+
+// Other types
 
 export type Tab = {
 	name: string;

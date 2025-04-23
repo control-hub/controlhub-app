@@ -1,4 +1,5 @@
-import type { Tab } from '$lib/types';
+import type { Tab, TeamsResponse } from '$lib/types';
+import type { Team } from './components/sidebar-types';
 
 export const providersSortOrder = ['google', 'yandex', 'github'];
 
@@ -40,3 +41,9 @@ export const tabsConfig: { [key: string]: Tab[] } = {
 		}
 	]
 };
+
+export const emptyTeam: TeamsResponse = {
+	id: 'undefined',
+	name: 'Unselected',
+	empty: true
+} as any;

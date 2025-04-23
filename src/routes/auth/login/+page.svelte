@@ -14,7 +14,7 @@
 
 	let isLoginVisible = false;
 
-	export let data: { providers: any };
+	export let data;
 
 	let formData = {
 		login: '',

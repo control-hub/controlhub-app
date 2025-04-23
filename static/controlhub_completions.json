@@ -1,0 +1,220 @@
+[
+	{
+		"label": "click",
+		"type": "function",
+		"detail": "Simulates a mouse click at the given coordinates.\n\n    Args:\n        x (int, optional): X-coordinate. If None, uses current position.\n        y (int, optional): Y-coordinate. If None, uses current position.\n        button (str): Mouse button ('left', 'right', 'middle'). Defaults to 'left'.",
+		"info": "(x: int = None, y: int = None, button: str = 'left', delay: float = 0.1) -> None"
+	},
+	{
+		"label": "cmd",
+		"type": "function",
+		"detail": "Executes a command in the command line.\n\n    Args:\n        command (str): Command to execute.",
+		"info": "(command: str) -> None"
+	},
+	{
+		"label": "download",
+		"type": "function",
+		"detail": "Downloads a file from the specified URL and saves it to the given directory.\n    Handles HTTP 302 redirects and returns the final path of the downloaded file.\n\n    Args:\n        url (str): URL of the file to download.\n        directory (str): Directory to save the file. Defaults to 'download'.\n\n    Returns:\n        str: The final path of the downloaded file.",
+		"info": "(url: str, directory: str = 'download') -> str"
+	},
+	{
+		"label": "drag",
+		"type": "function",
+		"detail": "Simulates mouse dragging from one set of coordinates to another.\n\n    Args:\n        x (int, optional): Starting X-coordinate. If None, uses current position.\n        y (int, optional): Starting Y-coordinate. If None, uses current position.\n        x1 (int, optional): Ending X-coordinate. If None, uses current position.\n        y1 (int, optional): Ending Y-coordinate. If None, uses current position.\n        button (str): Mouse button ('left', 'right', 'middle'). Defaults to 'left'.",
+		"info": "(x: int = None, y: int = None, x1: int = None, y1: int = None, button: str = 'left', duration: float = 0) -> None"
+	},
+	{
+		"label": "fullscreen",
+		"type": "function",
+		"detail": "Toggles the active window to fullscreen mode.\n\n    Args:\n        absolute (bool): If True, uses F11 for absolute fullscreen mode.",
+		"info": "(absolute: bool = False, delay: float = 0.1) -> None"
+	},
+	{
+		"label": "get_position",
+		"type": "function",
+		"info": "() -> tuple[int, int]"
+	},
+	{
+		"label": "hold",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1)"
+	},
+	{
+		"label": "move",
+		"type": "function",
+		"detail": "Simulates mouse movement to the given coordinates.\n\n    Args:\n        x (int, optional): X-coordinate. If None, uses current position.\n        y (int, optional): Y-coordinate. If None, uses current position.",
+		"info": "(x: int = None, y: int = None) -> None"
+	},
+	{
+		"label": "open_file",
+		"type": "function",
+		"detail": "Opens a file in the appropriate application after converting it to an absolute path.\n\n    Args:\n        path (str): Path to the file to open.",
+		"info": "(path: str, delay: float = 0.2) -> None"
+	},
+	{
+		"label": "open_url",
+		"type": "function",
+		"detail": "Opens a URL in the default web browser.\n\n    Args:\n        url (str): URL to open.",
+		"info": "(url: str) -> None"
+	},
+	{
+		"label": "press",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(*keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1) -> None"
+	},
+	{
+		"label": "reload_window",
+		"type": "function",
+		"detail": "Reloads the active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "run_program",
+		"type": "function",
+		"detail": "Runs a program in the command line.\n\n    Args:\n        program_name (str): Name of the program to run.",
+		"info": "(program_name: str, delay: float = 0.4) -> None"
+	},
+	{
+		"label": "switch_to_last_window",
+		"type": "function",
+		"detail": "Switches to the last active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "switch_to_next_window",
+		"type": "function",
+		"detail": "Switches to the next active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "write",
+		"type": "function",
+		"detail": "Simulates keyboard input of the given text.\n\n    Args:\n        text (str): Text to type.",
+		"info": "(text: str) -> None"
+	},
+	{
+		"label": "cmd",
+		"type": "function",
+		"detail": "Executes a command in the command line.\n\n    Args:\n        command (str): Command to execute.",
+		"info": "(command: str) -> None"
+	},
+	{
+		"label": "fullscreen",
+		"type": "function",
+		"detail": "Toggles the active window to fullscreen mode.\n\n    Args:\n        absolute (bool): If True, uses F11 for absolute fullscreen mode.",
+		"info": "(absolute: bool = False, delay: float = 0.1) -> None"
+	},
+	{
+		"label": "hold",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1)"
+	},
+	{
+		"label": "open_file",
+		"type": "function",
+		"detail": "Opens a file in the appropriate application after converting it to an absolute path.\n\n    Args:\n        path (str): Path to the file to open.",
+		"info": "(path: str, delay: float = 0.2) -> None"
+	},
+	{
+		"label": "press",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(*keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1) -> None"
+	},
+	{
+		"label": "reload_window",
+		"type": "function",
+		"detail": "Reloads the active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "run_program",
+		"type": "function",
+		"detail": "Runs a program in the command line.\n\n    Args:\n        program_name (str): Name of the program to run.",
+		"info": "(program_name: str, delay: float = 0.4) -> None"
+	},
+	{
+		"label": "sleep",
+		"type": "variable"
+	},
+	{
+		"label": "switch_to_last_window",
+		"type": "function",
+		"detail": "Switches to the last active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "switch_to_next_window",
+		"type": "function",
+		"detail": "Switches to the next active window.",
+		"info": "(delay: float = 0.1) -> None"
+	},
+	{
+		"label": "write",
+		"type": "function",
+		"detail": "Simulates keyboard input of the given text.\n\n    Args:\n        text (str): Text to type.",
+		"info": "(text: str) -> None"
+	},
+	{
+		"label": "click",
+		"type": "function",
+		"detail": "Simulates a mouse click at the given coordinates.\n\n    Args:\n        x (int, optional): X-coordinate. If None, uses current position.\n        y (int, optional): Y-coordinate. If None, uses current position.\n        button (str): Mouse button ('left', 'right', 'middle'). Defaults to 'left'.",
+		"info": "(x: int = None, y: int = None, button: str = 'left', delay: float = 0.1) -> None"
+	},
+	{
+		"label": "convert_keys",
+		"type": "function",
+		"detail": "Converts a list of keys to their corresponding classes.\n\n    Args:\n        *keys (Union[str, Key]): A list of keys to be converted.",
+		"info": "(*keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]]) -> str"
+	},
+	{
+		"label": "drag",
+		"type": "function",
+		"detail": "Simulates mouse dragging from one set of coordinates to another.\n\n    Args:\n        x (int, optional): Starting X-coordinate. If None, uses current position.\n        y (int, optional): Starting Y-coordinate. If None, uses current position.\n        x1 (int, optional): Ending X-coordinate. If None, uses current position.\n        y1 (int, optional): Ending Y-coordinate. If None, uses current position.\n        button (str): Mouse button ('left', 'right', 'middle'). Defaults to 'left'.",
+		"info": "(x: int = None, y: int = None, x1: int = None, y1: int = None, button: str = 'left', duration: float = 0) -> None"
+	},
+	{
+		"label": "get_position",
+		"type": "function",
+		"info": "() -> tuple[int, int]"
+	},
+	{
+		"label": "hold",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1)"
+	},
+	{
+		"label": "move",
+		"type": "function",
+		"detail": "Simulates mouse movement to the given coordinates.\n\n    Args:\n        x (int, optional): X-coordinate. If None, uses current position.\n        y (int, optional): Y-coordinate. If None, uses current position.",
+		"info": "(x: int = None, y: int = None) -> None"
+	},
+	{
+		"label": "press",
+		"type": "function",
+		"detail": "Simulates key presses.\n\n    Args:\n        *keys: Sequence of keys to press.",
+		"info": "(*keys: Union[str, pynput.keyboard._win32.Key, Iterable[Union[str, pynput.keyboard._win32.Key]]], delay: float = 0.1) -> None"
+	},
+	{
+		"label": "write",
+		"type": "function",
+		"detail": "Simulates keyboard input of the given text.\n\n    Args:\n        text (str): Text to type.",
+		"info": "(text: str) -> None"
+	},
+	{
+		"label": "download",
+		"type": "function",
+		"detail": "Downloads a file from the specified URL and saves it to the given directory.\n    Handles HTTP 302 redirects and returns the final path of the downloaded file.\n\n    Args:\n        url (str): URL of the file to download.\n        directory (str): Directory to save the file. Defaults to 'download'.\n\n    Returns:\n        str: The final path of the downloaded file.",
+		"info": "(url: str, directory: str = 'download') -> str"
+	},
+	{
+		"label": "open_url",
+		"type": "function",
+		"detail": "Opens a URL in the default web browser.\n\n    Args:\n        url (str): URL to open.",
+		"info": "(url: str) -> None"
+	}
+]

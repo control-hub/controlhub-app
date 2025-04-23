@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Redirect } from '$lib/components/web/redirect';
-	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
-	if (browser) {
-		window.location.reload();
-	}
+	onMount(() => {
+		window.location.href = "/";
+	})
 </script>
 
 <Redirect type="inner" />

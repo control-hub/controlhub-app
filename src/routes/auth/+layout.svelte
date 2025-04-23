@@ -8,7 +8,7 @@
 	import { theme } from 'theme-selector';
 </script>
 
-<main class="h-[100vh] flex-1">
+<main class="h-[100svh] flex-1">
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>
 			{#snippet child({ props })}
@@ -40,7 +40,7 @@
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
-	<div class="flex h-[100vh]">
+	<div class="flex h-[100svh]">
 		<div class="container m-auto max-w-md">
 			<Card.Root class="my-6">
 				<slot />
