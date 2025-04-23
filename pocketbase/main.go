@@ -107,9 +107,14 @@ func main() {
         }
 
         if computer.Status != "0" {
-            _, err := app.Dao().DB().NewQuery("UPDATE computers SET status = 0 WHERE token = {:token}").Bind(dbx.Params{"token": token}).Execute()
-
+            record, err := app.Dao().FindFirstRecordByFilter("computers", "token = {:token}", dbx.Params{"token": token})
             if err != nil {
+                return err
+            }
+
+            record.Set("status", 0)
+
+            if err := app.Dao().SaveRecord(record); err != nil {
                 return err
             }
         }
