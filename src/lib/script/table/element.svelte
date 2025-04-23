@@ -11,6 +11,7 @@
 	// import { isOwner } from '$lib/store/team_store';
 
 	import type { ScriptsResponse, UsersResponse } from '$lib/types';
+	import { userStore } from '$lib/stores';
 
 	export let script: ScriptsResponse;
 </script>
@@ -33,15 +34,15 @@
 		<Button
 			variant="outline"
 			class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
-			href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||
-				''}/{script.name}"
+			href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username
+					|| $userStore?.username || ''}/{script.name}"
 		>
 			<DotsHorizontal class={icon.default} />
 		</Button>
 	</div>
 	<a
 		href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||
-			's'}/{script.name}"
+			$userStore?.username || ''}/{script.name}"
 		aria-label={script.name}
 	>
 		<div class="absolute inset-0 z-10"></div>

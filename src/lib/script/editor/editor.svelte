@@ -52,15 +52,12 @@
 		const handleKeyDown = async (e: KeyboardEvent) => {
 			if ((e.ctrlKey || e.metaKey) && e.key === 's') {
 				e.preventDefault();
-				// Translate all Russian text and comments to English before saving
-				await translateAllToEnglish();
 				if (!$hasCriticalErrors) {
-					try {
-						await updateScript();
-						toast.success(`Script ${$scriptStore?.name} updated.`);
-					} catch (err) {
-						toast.error(`Failed to update script ${$scriptStore?.name}, check syntax error.`);
-					}
+					await toastApi.execAsync(
+						updateScript,
+						`Script ${$scriptStore?.name} updated.`,
+						`Failed to update script ${$scriptStore?.name}, check syntax error.`
+					)
 				} else {
 					toast.error('Cannot save due to syntax errors.');
 				}
@@ -258,13 +255,6 @@
 	const hasChanges = derived([value, scriptStore], ([$value, $scriptStore]) => {
 		return $scriptStore?.executable !== $value;
 	});
-
-	// Function to translate all Russian text and comments to English
-	async function translateAllToEnglish() {
-		// This is a placeholder for actual translation logic.
-		// In a real application, you would integrate with a translation API or service.
-		// For now, all Russian text and comments in this file have been manually translated.
-	}
 </script>
 
 <div class="mb-2 flex items-center gap-2">
@@ -275,10 +265,11 @@
 				`Script ${$scriptStore?.name} updated.`,
 				`Failed to update script ${$scriptStore?.name}, check syntax error.`
 			)}
+			class="w-full"
+			variant={$hasCriticalErrors ? 'destructive' : (!$hasChanges ? 'outline' : 'default')}
 			disabled={$hasCriticalErrors || !$hasChanges}
 		>
 			Save
-		</Button>
 
 		{#if $hasChanges}
 			<span class="text-sm font-medium text-amber-500">* Unsaved changes</span>
@@ -287,6 +278,9 @@
 		{#if $hasCriticalErrors}
 			<span class="text-sm font-medium text-red-500">⚠️ Cannot save due to syntax errors</span>
 		{/if}
+		</Button>
+
+
 	{/if}
 </div>
 
