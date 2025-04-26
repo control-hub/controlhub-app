@@ -23,7 +23,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	response.headers.append(
 		'set-cookie',
-		event.locals.pb.authStore.exportToCookie({ httpOnly: false, secure: false }) // TODO: make secure on production
+		event.locals.pb.authStore.exportToCookie({ httpOnly: true, secure: true }) // TODO: make secure on production
 	);
 
 	return response;

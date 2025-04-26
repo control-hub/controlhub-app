@@ -15,13 +15,6 @@
 
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
-	const showPublic = writable(false);
-
-	const filteredScriptsStore = $derived(
-		$scriptsStore.filter((script) => {
-			return script.user === $userStore?.id || $showPublic;
-		})
-	);
 
 	onMount(async () => {
 		scriptsStore.getData();
@@ -61,18 +54,11 @@
 		<Command.Root>
 			<div class="flex">
 				<Command.Input placeholder="Search script..." class="h-9" />
-				<Button
-					class="w-32"
-					onclick={() => {
-						showPublic.update((showPublic) => !showPublic);
-					}}
-					variant={$showPublic ? 'default' : 'outline'}>Show public</Button
-				>
 			</div>
 			<Command.List>
 				<Command.Empty>No script found.</Command.Empty>
 				<Command.Group>
-					{#each filteredScriptsStore as script (script.id)}
+					{#each $scriptsStore as script (script.id)}
 						<Command.Item
 							class="flex h-12 justify-between"
 							value={script.id}

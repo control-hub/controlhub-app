@@ -1,5 +1,14 @@
 <script lang="ts">
-    import { goto } from '$app/navigation'
+	import { Input } from '$lib/components/ui/input';
+	import { ScriptsTable } from '$lib/script/table';
+	import { writable } from 'svelte/store';
 
-    goto('/scripts', { replaceState: true })
+    export let data: {username: string};
+	const filterPhrase = writable('');
 </script>
+
+<div class="mb-4 flex gap-4">
+	<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
+</div>
+
+<ScriptsTable {filterPhrase} username={data.username}/>

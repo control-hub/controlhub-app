@@ -17,6 +17,7 @@
 	import { pb } from '$lib/pocketbase/client';
 	import { toastApi } from '$lib/utils';
 	import { toast } from 'svelte-sonner';
+	import { browser } from '$app/environment';
 
 	let customCompletions: any[] = [];
 
@@ -285,33 +286,36 @@
 </div>
 
 <div class="overflow-hidden rounded-md">
-	<CodeMirror
-		bind:value={$value}
-		lang={python()}
-		theme={$theme == 'light' ? githubLight : githubDark}
-		tabSize={4}
-		{editable}
-		extensions={[
-			syntaxLinter,
-			autocompletion({
-				override: [controlHubModuleCompletionSource, globalCompletion, localCompletionSource]
-			})
-		]}
-		styles={{
-			'&': {
-				width: '100%',
-				maxWidth: '100%',
-				height: '60rem'
-			}
-		}}
-		on:ready={(e) => {
-			view = e.detail;
-			checkSyntax(view);
-		}}
-		on:change={() => {
-			if (view) {
+	{#if browser}
+		<CodeMirror
+			bind:value={$value}
+			lang={python()}
+			theme={$theme == 'light' ? githubLight : githubDark}
+			tabSize={4}
+			{editable}
+			extensions={[
+				syntaxLinter,
+				autocompletion({
+					override: [controlHubModuleCompletionSource, globalCompletion, localCompletionSource]
+				})
+			]}
+			styles={{
+				'&': {
+					width: '100%',
+					height: 'calc(100vh - 156px)',
+					'overflow-y': 'auto',
+					'overflow-x': 'hidden',
+				}
+			}}
+			on:ready={(e) => {
+				view = e.detail;
 				checkSyntax(view);
-			}
-		}}
-	/>
+			}}
+			on:change={() => {
+				if (view) {
+					checkSyntax(view);
+				}
+			}}
+		/>
+	{/if}
 </div>

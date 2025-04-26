@@ -14,34 +14,17 @@
 	import { icon } from '$lib/config';
 	// import { isOwner } from '$lib/store/team_store';
 
-	import { scriptsStore, teamStore, userStore } from '$lib/stores';
+	import { scriptsStore, userStore } from '$lib/stores';
 
 	export let filterPhrase: Writable<string>;
-	export let showPublic: Writable<boolean> = writable(false);
+	export let username: string | undefined = undefined;
 
-	const filteredScriptsStore = derived(
-		[scriptsStore, filterPhrase, showPublic],
+	const filteredScripts = derived(
+		[scriptsStore, filterPhrase],
 		([$scriptsStore, $filterPhrase]) => {
-			return $scriptsStore.filter((script) => {
-				return (
-					script.name.toLowerCase().includes($filterPhrase.toLowerCase()) &&
-					script.user === $userStore?.id
-				);
-			});
-		}
-	);
-
-	const otherPublicScriptsStore = derived(
-		[scriptsStore, filterPhrase, showPublic],
-		([$scriptsStore, $filterPhrase, $showPublic]) => {
-			return $showPublic
-				? $scriptsStore.filter((script) => {
-						return (
-							script.name.toLowerCase().includes($filterPhrase.toLowerCase()) &&
-							script.user !== $userStore?.id
-						);
-					})
-				: [];
+			return $scriptsStore.filter((script) =>
+				script.name.toLowerCase().includes($filterPhrase.toLowerCase())
+			);
 		}
 	);
 
@@ -61,12 +44,12 @@
 		await result;
 	}
 </script>
-
+separating
 <div
 	class="grid grid-cols-2 gap-4 pb-6 max-lg:grid-cols-1"
-	class:!grid-cols-1={$filteredScriptsStore.length === 0}
+	class:!grid-cols-1={$scriptsStore.length === 0}
 >
-	<!-- {#if $isOwner} -->
+	{#if $userStore?.username === username}
 	<Dialog.Root bind:open={$scriptDialogOpen}>
 		<Dialog.Trigger>
 			{#snippet child({ props })}
@@ -112,21 +95,8 @@
 			</form>
 		</Dialog.Content>
 	</Dialog.Root>
-	<!-- {/if} -->
-	{#each $filteredScriptsStore as script (script.id)}
+	{/if}
+	{#each $filteredScripts as script (script.id)}
 		<ScriptCard {script} />
 	{/each}
 </div>
-
-{#if $otherPublicScriptsStore.length > 0}
-	<Separator class="animate-fade-in-up" />
-
-	<div
-		class="grid animate-fade-in-up grid-cols-2 gap-4 py-6 max-lg:grid-cols-1"
-		class:!grid-cols-1={$filteredScriptsStore.length === 0}
-	>
-		{#each $otherPublicScriptsStore as script (script.id)}
-			<ScriptCard {script} />
-		{/each}
-	</div>
-{/if}

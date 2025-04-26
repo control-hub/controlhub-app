@@ -7,7 +7,7 @@
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import type { User } from './sidebar-types';
-	import { userStore } from '$lib/stores';
+	import { teamsStore, userStore, teamStore, teamAccessStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { toastApi } from '$lib/utils';
 
@@ -21,6 +21,9 @@
 		await toastApi.post('/api/auth/logout');
 		await goto('/auth/login');
 		userStore.set(undefined);
+		teamsStore.set([]);
+		teamStore.set(undefined);
+		teamAccessStore.set(undefined);
 	}
 </script>
 
