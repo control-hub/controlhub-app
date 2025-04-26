@@ -92,7 +92,7 @@ func main() {
     })
 
     app.OnRealtimeConnectRequest().Add(func(e *core.RealtimeConnectEvent) error {
-        e.IdleTimeout = 30 * 24 * time.Hour // A Month
+        e.IdleTimeout = time.Hour // A Hour
         return nil
     })
 
