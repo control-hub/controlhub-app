@@ -44,7 +44,7 @@
 		await result;
 	}
 </script>
-separating
+
 <div
 	class="grid grid-cols-2 gap-4 pb-6 max-lg:grid-cols-1"
 	class:!grid-cols-1={$scriptsStore.length === 0}
