@@ -244,7 +244,7 @@
 <div class="grid animate-fade-in-up grid-cols-2 gap-6 max-xl:grid-cols-1">
 	<!-- Disabled Computers Column -->
 	<div
-		class="rounded-xl bg-red-500/10 p-4 shadow-sm ring-1 ring-border"
+		class="min-h-[148px] rounded-xl bg-red-500/10 p-4 shadow-sm ring-1 ring-border"
 		use:droppable={{
 			container: 'disabled',
 			callbacks: { onDrop: async (state: any) => await handleDrop(state, '0') }
@@ -268,6 +268,9 @@
 				>
 					<Power class="size-5 py-[2px]" />
 				</button>
+			{:else}
+				<div class="p-[14px] opacity-0">
+				</div>
 			{/if}
 		</div>
 
@@ -286,7 +289,7 @@
 
 	<!-- Idle Computers Column -->
 	<div
-		class="rounded-xl bg-yellow-500/10 p-4 shadow-sm ring-1 ring-border"
+		class="min-h-[148px] rounded-xl bg-yellow-500/10 p-4 shadow-sm ring-1 ring-border"
 		use:droppable={{
 			container: 'idle',
 			callbacks: { onDrop: async (state: any) => await handleDrop(state, '1') }
@@ -325,6 +328,9 @@
 				>
 					<Minus />
 				</button>
+			{:else}
+				<div class="p-[14px] opacity-0">
+				</div>
 			{/if}
 		</div>
 
@@ -343,7 +349,7 @@
 
 	<!-- Active Computers Column -->
 	<div
-		class="rounded-xl bg-green-500/10 p-4 shadow-sm ring-1 ring-border"
+		class="min-h-[148px] rounded-xl bg-green-500/10 p-4 shadow-sm ring-1 ring-border"
 		use:droppable={{
 			container: 'active',
 			callbacks: { onDrop: async (state: any) => await handleDrop(state, '2') }
@@ -382,6 +388,9 @@
 				>
 					<Minus />
 				</button>
+			{:else}
+				<div class="p-[14px] opacity-0">
+				</div>
 			{/if}
 		</div>
 
@@ -400,7 +409,7 @@
 
 	<!-- Selected Computers Column -->
 	<div
-		class="rounded-xl bg-primary/10 p-4 shadow-sm ring-1 ring-border"
+		class="min-h-[148px] rounded-xl bg-primary/10 p-4 shadow-sm ring-1 ring-border"
 		use:droppable={{
 			container: 'selected',
 			callbacks: { onDrop: async (state: any) => await handleDrop(state, 'selected') }
@@ -413,8 +422,13 @@
 				</span>
 				<span class="ml-2"> Selected Computers </span>
 			</h2>
-			<ExecuteButton dialogVisible={$selectedComputers.length > 0} {selectedComputers} />
-		</div>
+			{#if $selectedComputers.length > 0}
+				<ExecuteButton {selectedComputers} />
+			{:else}
+				<div class="p-[14px] opacity-0">
+				</div>
+			{/if}
+			</div>
 		<div class="h-[calc(100%-44px)] min-h-[68px] space-y-3">
 			{#each $selectedComputers as computer (computer.id)}
 				<div animate:flip={{ duration: 200 }}>

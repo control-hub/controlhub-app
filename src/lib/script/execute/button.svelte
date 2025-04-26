@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Play } from 'lucide-svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import type { ComputersResponse, ScriptsResponse } from '$lib/types';
+	import type { ComputersResponse } from '$lib/types';
 	import { scriptsStore, userStore } from '$lib/stores';
-	import { writable, type Writable, derived, type Readable } from 'svelte/store';
+	import { writable, type Writable, derived } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
 
 	import { Input } from '$lib/components/ui/input';
@@ -12,7 +12,6 @@
 	import { toast } from 'svelte-sonner';
 
 	let visible: boolean = false;
-	export let dialogVisible: boolean = false;
 	const value: Writable<string> = writable('');
 	const selectedScript = derived([scriptsStore, value], ([$scriptsStore, $value]) => {
 		return $scriptsStore.find((script) => script.id === $value) || undefined;
@@ -79,9 +78,7 @@
 	<Dialog.Trigger>
 		{#snippet child({ props })}
 			<button
-				class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary/50 {dialogVisible
-					? ''
-					: 'opacity-0'}"
+				class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary/50"
 				{...props}
 			>
 				<Play class="size-5 py-[2px]" />
