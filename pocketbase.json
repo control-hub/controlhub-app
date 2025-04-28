@@ -118,6 +118,18 @@
 			},
 			{
 				"system": false,
+				"id": "mmbpnbwm",
+				"name": "data",
+				"type": "json",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {
+					"maxSize": 2000000
+				}
+			},
+			{
+				"system": false,
 				"id": "xujarcwe",
 				"name": "status",
 				"type": "select",
@@ -177,13 +189,30 @@
 			},
 			{
 				"system": false,
-				"id": "0cudx0m8",
-				"name": "completed",
-				"type": "bool",
+				"id": "j86sqla5",
+				"name": "duration",
+				"type": "number",
 				"required": false,
-				"presentable": false,
+				"presentable": true,
 				"unique": false,
-				"options": {}
+				"options": {
+					"min": null,
+					"max": null,
+					"noDecimal": false
+				}
+			},
+			{
+				"system": false,
+				"id": "zcwqepip",
+				"name": "status",
+				"type": "select",
+				"required": false,
+				"presentable": true,
+				"unique": false,
+				"options": {
+					"maxSelect": 1,
+					"values": ["0", "1", "2", "3"]
+				}
 			},
 			{
 				"system": false,
@@ -203,7 +232,7 @@
 				"name": "user",
 				"type": "relation",
 				"required": false,
-				"presentable": false,
+				"presentable": true,
 				"unique": false,
 				"options": {
 					"collectionId": "_pb_users_auth_",
@@ -219,7 +248,7 @@
 				"name": "computer",
 				"type": "relation",
 				"required": false,
-				"presentable": false,
+				"presentable": true,
 				"unique": false,
 				"options": {
 					"collectionId": "c7d9yo9oik9cl3k",
@@ -235,7 +264,7 @@
 				"name": "script",
 				"type": "relation",
 				"required": false,
-				"presentable": false,
+				"presentable": true,
 				"unique": false,
 				"options": {
 					"collectionId": "y5swzm9sjzt2xo7",
@@ -244,12 +273,22 @@
 					"maxSelect": 1,
 					"displayFields": null
 				}
+			},
+			{
+				"system": false,
+				"id": "y7ccyhbt",
+				"name": "invisible",
+				"type": "bool",
+				"required": false,
+				"presentable": false,
+				"unique": false,
+				"options": {}
 			}
 		],
 		"indexes": [],
 		"listRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
 		"viewRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
-		"createRule": "(computer.region.team.owner.id = @request.auth.id || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')) && user.id = @request.auth.id",
+		"createRule": "((computer.region.team.owner.id = @request.auth.id || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')) && user.id = @request.auth.id) || (@request.query.token = computer.token && invisible = true)",
 		"updateRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ~ 'edit_computer')",
 		"deleteRule": null,
 		"options": {}
