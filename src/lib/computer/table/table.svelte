@@ -74,38 +74,21 @@
 		2: 'Enabled'
 	};
 
+	const selectedComputersSet: Writable<Set<string>> = writable(new Set());
+
 	// Store для выбранных компьютеров
-	const selectedComputers: Writable<ComputersResponse[]> = writable<ComputersResponse[]>([]);
-
-	computersStore.subscribe((computers) => {
-		// Логика для обновления состояния выбранных компьютеров при изменении списка компьютеров
-		const find_pc = (id: string) => {
-			return computers.find((computer) => computer.id === id);
-		};
-
-		selectedComputers.update(($selected) => {
-			for (const computer of $selected) {
-				const found = find_pc(computer.id);
-				if (!found) {
-					$selected = $selected.filter((comp) => comp.id !== computer.id);
-				} else if (found !== computer) {
-					$selected = $selected.map((comp) => (comp.id === found.id ? found : comp));
-				}
-			}
-
-			return $selected;
-		});
-	});
+	const selectedComputers: Readable<ComputersResponse[]> = derived(
+		[selectedComputersSet, computersStore],
+		([$selectedComputersSet, $computersStore]) => {
+			return $computersStore.filter((computer) => $selectedComputersSet.has(computer.id));
+		}
+	);
 
 	// Derived stores для компьютеров разных категорий с учетом выбранных
 	const filteredComputers: Readable<ComputersResponse[]> = derived(
-		[computersStore, selectedComputers],
-		([$computersStore, $selectedComputers]) => {
-			// Создаем Set из ID выбранных компьютеров для быстрого поиска
-			const selectedIds = new Set($selectedComputers.map((comp) => comp.id));
-
-			// Возвращаем только те компьютеры, которые не выбраны
-			return $computersStore.filter((computer) => !selectedIds.has(computer.id));
+		[computersStore, selectedComputersSet],
+		([$computersStore, $selectedComputersSet]) => {
+			return $computersStore.filter((computer) => !$selectedComputersSet.has(computer.id));
 		}
 	);
 
@@ -128,44 +111,21 @@
 		oldStatus: '0' | '1' | '2',
 		newStatus: '0' | '1' | '2'
 	): Promise<void> {
-		if (oldStatus === '0' && newStatus === '2') {
-			await powerComputer(computer);
-		}
 		console.log(`Updating computer ${computer.id} to status ${newStatus} from ${oldStatus}`);
 	}
 
 	function selectComputer(computer: ComputersResponse): void {
-		if (computer.status === '0') {
-			toast.error("Can't select disabled computer");
-		} else {
-			selectedComputers.update(($selected) => {
-				if ($selected.some((comp) => comp.id === computer.id)) {
-					return $selected.filter((comp) => comp.id !== computer.id);
-				} else {
-					return [...$selected, computer];
-				}
-			});
-		}
+		selectedComputersSet.update(($selected) => {
+			$selected.add(computer.id);
+			return $selected;
+		});
 	}
 
 	function unselectComputer(computer: ComputersResponse): void {
-		selectedComputers.update(($selected) => $selected.filter((comp) => comp.id !== computer.id));
-	}
-
-	async function powerComputer(computer: ComputersResponse): Promise<void> {
-		console.log('Placeholder', 'Powering', computer);
-		// PLACEHOLDER
-
-		if (computer.mac === '') {
-			toast.error(
-				`Can't power ${computer.name} because pc is not connected, use token to connect your pc'`
-			);
-			return;
-		}
-
-		let newComputer = { ...computer, status: 2 };
-
-		await pb.collection('computers').update(computer.id, newComputer);
+		selectedComputersSet.update(($selected) => {
+			$selected.delete(computer.id);
+			return $selected;
+		});
 	}
 
 	// Обработчик перетаскивания
@@ -181,21 +141,15 @@
 
 		console.log(`Dragged from ${sourceContainer} to ${targetContainer}:`, draggedItem.name);
 
-		if (targetStatus === 'selected' && sourceContainer === 'disabled') {
-			toast.error("Can't select disabled computer");
-		} else if (targetStatus === 'selected') {
-			// Перетаскивание в выбранные компьютеры
+		if (targetStatus === 'selected') {
 			selectComputer(draggedItem);
 		} else if (sourceContainer === 'selected') {
-			// Перетаскивание из выбранных компьютеров обратно в основные категории
 			unselectComputer(draggedItem);
 
-			// Логируем изменение статуса
 			if (draggedItem.status !== targetStatus) {
 				await updateComputerStatus(draggedItem, draggedItem.status, targetStatus);
 			}
 		} else {
-			// Перетаскивание между категориями состояний
 			await updateComputerStatus(draggedItem, draggedItem.status, targetStatus);
 		}
 	}
@@ -259,14 +213,29 @@
 			</h2>
 			{#if $disabledComputers.length > 0}
 				<button
-					class="rounded-full bg-red-500/10 px-3 py-1 text-sm text-red-500/50"
-					onclick={async () => {
+					class="rounded-full bg-red-500/10 px-2.5 py-0.5 text-sm text-red-500/50"
+					onclick={() => {
 						for (const computer of $disabledComputers) {
-							powerComputer(computer);
+							selectComputer(computer);
 						}
 					}}
 				>
-					<Power class="size-5 py-[2px]" />
+					<Plus />
+				</button>
+			{:else if $selectedComputers.filter((computer) => {
+				return computer.status === '0';
+			}).length > 0}
+				<button
+					class="rounded-full bg-red-500/10 px-2.5 py-0.5 text-sm text-red-500/50"
+					onclick={() => {
+						for (const computer of $selectedComputers.filter((computer) => {
+							return computer.status === '0';
+						})) {
+							unselectComputer(computer);
+						}
+					}}
+				>
+					<Minus />
 				</button>
 			{:else}
 				<div class="p-[14px] opacity-0">
@@ -322,7 +291,7 @@
 						for (const computer of $selectedComputers.filter((computer) => {
 							return computer.status === '1';
 						})) {
-							selectComputer(computer);
+							unselectComputer(computer);
 						}
 					}}
 				>
@@ -382,7 +351,7 @@
 						for (const computer of $selectedComputers.filter((computer) => {
 							return computer.status === '2';
 						})) {
-							selectComputer(computer);
+							unselectComputer(computer);
 						}
 					}}
 				>
@@ -453,7 +422,7 @@
 	>
 		<div class="flex items-center gap-3">
 			<img
-				src={getAvatarUrl(computer.mac || computer.name, 48)}
+				src={getAvatarUrl(computer.id, 48)}
 				alt={computer.name}
 				class="h-12 w-12 rounded-full"
 			/>

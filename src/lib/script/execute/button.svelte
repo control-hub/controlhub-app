@@ -3,7 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import type { ComputersResponse } from '$lib/types';
 	import { scriptsStore, userStore } from '$lib/stores';
-	import { writable, type Writable, derived } from 'svelte/store';
+	import { writable, type Writable, type Readable, derived, readable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
 
 	import { Input } from '$lib/components/ui/input';
@@ -13,6 +13,8 @@
 
 	let visible: boolean = false;
 	const value: Writable<string> = writable('');
+	const searchInput = writable('core/');
+
 	const selectedScript = derived([scriptsStore, value], ([$scriptsStore, $value]) => {
 		return $scriptsStore.find((script) => script.id === $value) || undefined;
 	});
@@ -38,49 +40,43 @@
 
 	const dynamicVariablesForm = writable(new Map<string, string>());
 
-	export let selectedComputers: Writable<ComputersResponse[]> = writable([]);
+	export let selectedComputers: Readable<ComputersResponse[]> = readable([]);
 
-	const replaceExecutable = () => {
+	const replaceExecutable = (computer: ComputersResponse) => {
 		let executable = $selectedScript?.executable || '';
 		$dynamicVariables.forEach((variable) => {
 			// @ts-ignore
 			executable = executable.replace(`{{${variable}}}`, $dynamicVariablesForm[variable]);
 		});
-		return executable;
+		return "computers = " + JSON.stringify($selectedComputers.map((computer) => {return {...computer, token: ""}})) + '\ncomputer = ' + JSON.stringify(computer) + '\n' + executable;
 	};
 
 	const executeScript = async () => {
 		visible = false;
-		const replacedExecutable = replaceExecutable();
-
+		
 		try {
-			const promises = $selectedComputers.map((computer) => {
+			const promises = $selectedComputers.filter((computer) => computer.status !== '0').map((computer) => {
 				return pb.collection('executions').create({
 					completed: false,
-					executable: replacedExecutable,
+					executable: replaceExecutable(computer),
 					computer: computer.id,
 					script: $selectedScript?.id,
 					user: $userStore?.id
 				});
 			});
 
-			// await Promise.all(promises);
-			toast.success('Script executed successfully');
+			await Promise.all(promises);
+			toast.success('Script started successfully');
 		} catch (error) {
 			toast.error('Error executing script, may be you do not have permission');
 		}
-
-		console.log(replacedExecutable);
 	};
 </script>
 
 <Dialog.Root bind:open={visible}>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
-			<button
-				class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary/50"
-				{...props}
-			>
+			<button class="rounded-full bg-primary/10 px-3 py-1 text-sm text-primary/50" {...props}>
 				<Play class="size-5 py-[2px]" />
 			</button>
 		{/snippet}
@@ -92,11 +88,12 @@
 				This action executes your command on selected computers
 			</Dialog.Description>
 		</Dialog.Header>
-		<Search bind:value={$value} />
+		<Search {value} {searchInput}/>
 		<form class="grid grid-cols-2 gap-4" onsubmit={executeScript}>
-			{#each $dynamicVariables as variable}
+			{#each $dynamicVariables as variable (variable)}
 				<Input
 					id={variable}
+					class="col-span-2"
 					placeholder={variable}
 					bind:value={($dynamicVariablesForm as any)[variable]}
 					required

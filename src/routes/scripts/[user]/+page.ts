@@ -9,13 +9,6 @@ export const load = async ({ parent, params }) => {
 
 	const { user } = params;
 
-	const scriptsPromise = pb.collection('scripts').getFullList({
-		sort: '-created',
-		expand: 'user',
-		filter: `user.username = "${shield(user)}"`,
-		// filter: `user.id = "${shield(get(userStore)?.id as string)}"`
-	});
-
 	scriptsStore.updateOptions({
 		sort: '-created',
 		expand: 'user',
@@ -24,7 +17,7 @@ export const load = async ({ parent, params }) => {
 		autoSubGetData: false
 	});
 
-	scriptsStore.set(await scriptsPromise);
+	await scriptsStore.getData()
 	
 	return {
 		username: user,

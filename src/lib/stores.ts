@@ -14,11 +14,15 @@ import type {
 import { shield } from '$lib/utils';
 
 export const userStore = writable<UsersResponse | undefined>(undefined);
+export const usersStore = createCollectionStore<UsersResponse>(pb, 'users', {
+	sort: '-created',
+	autoSubGetData: false
+});
 
 export const teamStore = writable<TeamsResponse | undefined>(undefined);
 export const teamsStore = createCollectionStore<TeamsResponse>(pb, 'teams', {
-	autoSubGetData: false,
-	sort: '-created'
+	sort: '-created',
+	autoSubGetData: false
 });
 
 export const teamAccessStore = writable<TeamsAccessResponse | undefined>(undefined);

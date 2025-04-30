@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
-	import * as Dialog from '$lib/components/ui/dialog';
 
 	import { Button } from '$lib/components/ui/button';
 	import { DotsHorizontal } from 'svelte-radix';
@@ -16,19 +15,19 @@
 	export let script: ScriptsResponse;
 </script>
 
-<Card.Root class="relative col-[1/-1] h-[130px] animate-fade-in-up sm:col-auto">
-	<div class="mx-6 my-4 flex max-w-full flex-wrap justify-between">
+<Card.Root class="relative col-[1/-1] animate-fade-in-up sm:col-auto">
+	<div class="mx-6 my-4 flex min-w-[calc(100%-4rem)] min-h-[calc(100%-2rem)] max-h-[calc(100%-2rem)] justify-between gap-4">
 		<div class="block max-w-[calc(100%-4rem)]">
 			<Card.Header>
 				<div class="flex items-baseline gap-4">
-					<Card.Title class="mb-3 w-full">{shrinkString(script.name, 20)}</Card.Title>
+					<Card.Title class="mb-3">{shrinkString(script.name, 32)}</Card.Title>
 					<Badge variant={script.public ? 'secondary' : 'outline'}
 						>{script.public ? 'Public' : 'Private'}</Badge
 					>
 				</div>
 			</Card.Header>
 			<Card.Footer>
-				<Card.Description>{script.description}</Card.Description>
+				<Card.Description>{shrinkString(script.description, 144)}</Card.Description>
 			</Card.Footer>
 		</div>
 		<Button

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
-	import { ScriptsTable } from '$lib/script/table';
+	import { ScriptsTable, ScriptsCreateDialog } from '$lib/script/table';
 	import { writable } from 'svelte/store';
 
     export let data: {username: string};
@@ -9,6 +9,7 @@
 
 <div class="mb-4 flex gap-4">
 	<Input class="w-full" placeholder="Search..." bind:value={$filterPhrase} />
+	<ScriptsCreateDialog username={data.username}/>
 </div>
 
-<ScriptsTable {filterPhrase} username={data.username}/>
+<ScriptsTable {filterPhrase}/>
