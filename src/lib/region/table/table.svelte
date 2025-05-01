@@ -7,11 +7,11 @@
 	import { PlusCircle } from 'lucide-svelte';
 	import { DotsHorizontal } from 'svelte-radix';
 
-	import { CollectionStore } from 'pocketbase-store';
+	// import { CollectionStore } from 'pocketbase-store';
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { toastApi, shield, shrinkString } from '$lib/utils';
 	import { icon } from '$lib/config';
-	import type { RegionsResponse, TeamsResponse } from '$lib/types';
+	// import type { RegionsResponse, TeamsResponse } from '$lib/types';
 	// import { isOwner } from '$lib/store/team_store';
 
 	import { regionsStore, teamStore } from '$lib/stores';
@@ -86,7 +86,7 @@
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>
-						<Card.Title class="mb-3 w-full">{shrinkString(region.name, 20)}</Card.Title>
+						<Card.Title class="mb-3 w-full notranslate">{shrinkString(region.name, 20)}</Card.Title>
 					</Card.Header>
 					<Card.Footer>
 						<Card.Description>

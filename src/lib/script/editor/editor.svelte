@@ -18,6 +18,8 @@
 	import { toastApi } from '$lib/utils';
 	import { toast } from 'svelte-sonner';
 	import { browser } from '$app/environment';
+	import { Input } from '$lib/components/ui/input';
+	import { Textarea } from '$lib/components/ui/textarea';
 
 	let customCompletions: any[] = [];
 
@@ -41,7 +43,7 @@
 
 		// Add handler for closing tab/browser
 		const handleBeforeUnload = (e: any) => {
-			if (hasUnsavedChanges()) {
+			if ($hasChanges) {
 				e.preventDefault();
 				e.returnValue = '';
 			}
@@ -58,7 +60,7 @@
 						updateScript,
 						`Script ${$scriptStore?.name} updated.`,
 						`Failed to update script ${$scriptStore?.name}, check syntax error.`
-					)
+					);
 				} else {
 					toast.error('Cannot save due to syntax errors.');
 				}
@@ -72,7 +74,9 @@
 		};
 	});
 
-	export let value = writable($scriptStore?.executable);
+	export const scriptName = writable($scriptStore?.name);
+	export const scriptDescription = writable($scriptStore?.description);
+	export const scriptExecutable = writable($scriptStore?.executable);
 
 	// Writable store for tracking critical errors
 	export let hasCriticalErrors = writable(false);
@@ -81,14 +85,18 @@
 	// Variable to store EditorView
 	let view: EditorView;
 
-	// Function to check for unsaved changes
-	const hasUnsavedChanges = () => {
-		return editable && $scriptStore?.executable !== $value;
-	};
+	// Derived property to display change status
+	const hasChanges = derived([scriptExecutable, scriptStore, scriptName, scriptDescription], ([$value, $scriptStore, $scriptName, $scriptDescription]) => {
+		return (
+			$scriptStore?.executable !== $value ||
+			$scriptStore?.description !== $scriptDescription ||
+			$scriptStore?.name !== $scriptName
+		);
+	});
 
 	// SvelteKit navigation interception
 	beforeNavigate(({ cancel }) => {
-		if (hasUnsavedChanges()) {
+		if ($hasChanges) {
 			const shouldSave = confirm(
 				'You have unsaved changes. Do you want to save them before leaving?'
 			);
@@ -241,24 +249,23 @@
 
 		scriptStore.update((script) => {
 			if (script) {
-				script.executable = $value;
+				script.name = $scriptName;
+				script.description = $scriptDescription;
+				script.executable = $scriptExecutable;
 			}
 
 			return script;
 		});
 
 		await pb.collection('scripts').update($scriptStore?.id as string, {
-			executable: $value
+			name: $scriptName,
+			description: $scriptDescription,
+			executable: $scriptExecutable
 		});
 	};
-
-	// Derived property to display change status
-	const hasChanges = derived([value, scriptStore], ([$value, $scriptStore]) => {
-		return $scriptStore?.executable !== $value;
-	});
 </script>
 
-<div class="mb-2 flex items-center gap-2">
+<div class="grid grid-cols-1 gap-4">
 	{#if editable}
 		<Button
 			onclick={toastApi.execAsync(
@@ -267,55 +274,69 @@
 				`Failed to update script ${$scriptStore?.name}, check syntax error.`
 			)}
 			class="w-full"
-			variant={$hasCriticalErrors ? 'destructive' : (!$hasChanges ? 'outline' : 'default')}
+			variant={$hasCriticalErrors ? 'destructive' : !$hasChanges ? 'outline' : 'default'}
 			disabled={$hasCriticalErrors || !$hasChanges}
 		>
 			Save
 
-		{#if $hasChanges}
-			<span class="text-sm font-medium text-amber-500">* Unsaved changes</span>
-		{/if}
+			{#if $hasChanges}
+				<span class="text-sm font-medium text-amber-500">* Unsaved changes</span>
+			{/if}
 
-		{#if $hasCriticalErrors}
-			<span class="text-sm font-medium text-red-500">⚠️ Cannot save due to syntax errors</span>
-		{/if}
+			{#if $hasCriticalErrors}
+				<span class="text-sm font-medium text-red-500">⚠️ Cannot save due to syntax errors</span>
+			{/if}
 		</Button>
-
-
 	{/if}
-</div>
 
-<div class="overflow-hidden rounded-md">
-	{#if browser}
-		<CodeMirror
-			bind:value={$value}
-			lang={python()}
-			theme={$theme == 'light' ? githubLight : githubDark}
-			tabSize={4}
-			{editable}
-			extensions={[
-				syntaxLinter,
-				autocompletion({
-					override: [controlHubModuleCompletionSource, globalCompletion, localCompletionSource]
-				})
-			]}
-			styles={{
-				'&': {
-					width: '100%',
-					height: 'calc(100vh - 156px)',
-					'overflow-y': 'auto',
-					'overflow-x': 'hidden',
-				}
-			}}
-			on:ready={(e) => {
-				view = e.detail;
-				checkSyntax(view);
-			}}
-			on:change={() => {
-				if (view) {
-					checkSyntax(view);
-				}
-			}}
+	<div class="grid grid-cols-1 gap-4">
+		<Input
+			bind:value={$scriptName}
+			placeholder="Script name"
+			class="w-full"
+			disabled={!editable}
 		/>
-	{/if}
+		<Textarea
+			bind:value={$scriptDescription}
+			placeholder="Script description"
+			class="w-full"
+			rows={7}
+			disabled={!editable}
+		/>
+
+	<div class="overflow-hidden rounded-md">
+		{#if browser}
+			<CodeMirror
+				bind:value={$scriptExecutable}
+				lang={python()}
+				theme={$theme == 'light' ? githubLight : githubDark}
+				tabSize={4}
+				{editable}
+				extensions={[
+					syntaxLinter,
+					autocompletion({
+						override: [controlHubModuleCompletionSource, globalCompletion, localCompletionSource]
+					})
+				]}
+				styles={{
+					'&': {
+						width: '100%',
+						height: '100%',
+						'overflow-y': 'auto',
+						'overflow-x': 'hidden'
+					}
+				}}
+				on:ready={(e) => {
+					view = e.detail;
+					checkSyntax(view);
+				}}
+				on:change={() => {
+					if (view) {
+						checkSyntax(view);
+					}
+				}}
+			/>
+		{/if}
+	</div>
+</div>
 </div>

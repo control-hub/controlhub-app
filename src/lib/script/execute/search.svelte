@@ -31,11 +31,6 @@
 	});
 
 	searchInput.subscribe(async ($searchInput) => {
-		if ($searchInput == 'self') {
-			searchInput.set($userStore?.username + '/' || '');
-			return;
-		}
-
 		if (!$searchInput.includes('/')) {
 			scriptsStore.set([]);
 
@@ -54,7 +49,7 @@
 			}
 		} else {
 			if ($scriptsStore.length === 0) {
-				const user = $searchInput.split('/')[0];
+				const user = $searchInput.split('/')[0] || $userStore?.username || '';
 
 				scriptsStore.updateOptions({
 					filter: `user.username = "${user}"`,
