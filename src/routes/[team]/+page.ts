@@ -1,7 +1,7 @@
-import { shield } from '$lib/utils';
 import { pb } from '$lib/pocketbase/client';
-import { regionsStore, tabsStore } from '$lib/stores.js';
+import { regionsStore, tabsStore, teamStore } from '$lib/stores.js';
 import { tabsConfig } from '$lib/config';
+import { get } from 'svelte/store';
 
 export const prerender = false;
 
@@ -12,7 +12,7 @@ export const load = async ({ parent, params }) => {
 	try {
 		const regions = await pb
 			.collection('regions')
-			.getFullList({ filter: `team.name = "${shield(params.team)}"`, sort: '-created' });
+			.getFullList({ filter: `team.id = "${get(teamStore)?.id as string}"`, sort: '-created' });
 
 		regionsStore.set(regions);
 	} catch (err) {

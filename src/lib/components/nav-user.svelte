@@ -10,6 +10,7 @@
 	import { teamsStore, userStore, teamStore, teamAccessStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { toastApi } from '$lib/utils';
+	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 
 	import { theme } from 'theme-selector';
 	import { Moon, Sun, Bolt } from 'lucide-svelte';
@@ -38,7 +39,11 @@
 						{...props}
 					>
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.username} />
+							<Avatar.Image
+								class="object-cover"
+								src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
+								alt={user.username}
+							/>
 							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 								>{user.username[0].toUpperCase() +
 									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback
@@ -61,7 +66,11 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.username} />
+							<Avatar.Image
+								class="object-cover"
+								src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
+								alt={user.username}
+							/>
 							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 								>{user.username[0].toUpperCase() +
 									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback

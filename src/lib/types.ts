@@ -45,7 +45,8 @@ export enum ComputersStatusOptions {
 	'E1' = '1',
 	'E0' = '0'
 }
-export type ComputersRecord = {
+export type ComputersRecord<Tdata = unknown> = {
+	data?: null | Tdata;
 	ip?: string;
 	mac?: string;
 	name: string;
@@ -54,12 +55,20 @@ export type ComputersRecord = {
 	token: string;
 };
 
+export enum ExecutionsStatusOptions {
+	'E0' = '0',
+	'E1' = '1',
+	'E2' = '2',
+	'E3' = '3'
+}
 export type ExecutionsRecord = {
-	completed?: boolean;
-	computer?: RecordIdString;
+	computer: RecordIdString;
+	duration?: number;
 	executable?: HTMLString;
+	invisible?: boolean;
 	logs?: HTMLString;
 	script?: RecordIdString;
+	status?: ExecutionsStatusOptions;
 	user?: RecordIdString;
 };
 
@@ -71,6 +80,7 @@ export type RegionsRecord = {
 export type ScriptsRecord = {
 	description?: HTMLString;
 	executable?: HTMLString;
+	global_name?: string;
 	name?: string;
 	public?: boolean;
 	user?: RecordIdString;
@@ -125,7 +135,9 @@ export type UsersRecord = {
 };
 
 // Response types include system fields and match responses from the PocketBase API
-export type ComputersResponse<Texpand = unknown> = Required<ComputersRecord> &
+export type ComputersResponse<Tdata = unknown, Texpand = unknown> = Required<
+	ComputersRecord<Tdata>
+> &
 	BaseSystemFields<Texpand>;
 export type ExecutionsResponse<Texpand = unknown> = Required<ExecutionsRecord> &
 	BaseSystemFields<Texpand>;

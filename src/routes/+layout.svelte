@@ -37,7 +37,6 @@
 
 <Toaster richColors theme={$theme} />
 
-
 {#if $userStore}
 	<ScrollArea class="h-[100svh] w-full">
 		<Sidebar.Provider>

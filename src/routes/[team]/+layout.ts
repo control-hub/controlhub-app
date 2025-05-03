@@ -1,14 +1,13 @@
 import type { TeamsAccessResponse, TeamsResponse } from '$lib/types';
 import { shield } from '$lib/utils';
 import { pb } from '$lib/pocketbase/client';
-import { teamStore, teamAccessStore, teamsStore } from '$lib/stores.js';
+import { teamStore, teamAccessStore, teamsStore, userStore } from '$lib/stores.js';
+import { get } from 'svelte/store';
 
 export const prerender = false;
 
 export const load = async ({ parent, params }) => {
 	await parent();
-	const user = pb.authStore.model;
-
 	const teamsPromise = pb.collection('teams').getFullList<TeamsResponse>({ sort: '-created' });
 
 	const team = await pb
@@ -17,7 +16,7 @@ export const load = async ({ parent, params }) => {
 	const teamAccess = await pb
 		.collection('teams_access')
 		.getFirstListItem<TeamsAccessResponse>(
-			`team.name = "${shield(params.team)}" && user.id = "${user?.id}"`
+			`team.id = "${team.id}" && user.id = "${get(userStore)?.id}"`
 		);
 
 	teamStore.set(team);

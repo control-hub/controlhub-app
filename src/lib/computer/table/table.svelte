@@ -6,17 +6,63 @@
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
-	import { computersStore } from '$lib/stores';
+	import {
+		computersStore,
+		teamStore,
+		regionStore,
+		executionsStore,
+		executionStore
+	} from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
-	import { toast } from 'svelte-sonner';
-	import { pb } from '$lib/pocketbase/client';
-	import { toastApi, createComputer as utilsCreateComputer } from '$lib/utils';
+	import { toastApi, shield, createComputer as utilsCreateComputer } from '$lib/utils';
 	import { icon } from '$lib/config';
+	import { pb } from '$lib/pocketbase/client';
 
 	import ExecuteButton from '$lib/script/execute/button.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { onDestroy, onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+
+	let unsubscribe: () => Promise<void> = async () => {};
+
+	onMount(async () => {
+		unsubscribe = await pb.collection('executions').subscribe(
+			'*',
+			({ action, record }) => {
+				if (action === 'update' && record.status === '2') {
+					toast.success(
+						`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
+					);
+				} else if (action === 'update' && record.status === '3') {
+					const computer = $computersStore.find((c) => c.id === record.computer);
+					toast.error(
+						`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
+					);
+					goto(
+						'/' +
+							$teamStore?.name +
+							'/' +
+							$regionStore?.name +
+							'/' +
+							computer?.name +
+							'/' +
+							record.id
+					);
+				}
+			},
+			{
+				filter: `computer.region.id = "${shield($regionStore?.id as string)}"`
+			}
+		);
+	});
+
+	onDestroy(async () => {
+		await unsubscribe();
+	});
 
 	// Вспомогательные функции
 	function getAvatarUrl(id: string, size: number = 100): string {
@@ -42,7 +88,7 @@
 				return {
 					color: 'text-yellow-500',
 					bgColor: 'bg-yellow-500/10',
-					label: 'Idle',
+					label: 'Busy',
 					icon: BadgeMinus
 				};
 			case '2':
@@ -70,7 +116,7 @@
 
 	const statusLabelMap = {
 		0: 'Offline',
-		1: 'Idle',
+		1: 'Busy',
 		2: 'Enabled'
 	};
 
@@ -97,7 +143,7 @@
 		$filtered.filter((computer) => computer.status === '0')
 	);
 
-	const idleComputers = derived(filteredComputers, ($filtered) =>
+	const busyComputers = derived(filteredComputers, ($filtered) =>
 		$filtered.filter((computer) => computer.status === '1')
 	);
 
@@ -238,8 +284,7 @@
 					<Minus />
 				</button>
 			{:else}
-				<div class="p-[14px] opacity-0">
-				</div>
+				<div class="p-[14px] opacity-0"></div>
 			{/if}
 		</div>
 
@@ -256,26 +301,26 @@
 		</div>
 	</div>
 
-	<!-- Idle Computers Column -->
+	<!-- Busy Computers Column -->
 	<div
 		class="min-h-[148px] rounded-xl bg-yellow-500/10 p-4 shadow-sm ring-1 ring-border"
 		use:droppable={{
-			container: 'idle',
+			container: 'busy',
 			callbacks: { onDrop: async (state: any) => await handleDrop(state, '1') }
 		}}
 	>
 		<div class="mb-4 flex items-center justify-between">
 			<h2 class="font-semibold text-foreground">
 				<span class="rounded-full bg-yellow-500/20 px-2.5 py-0.5 text-sm text-yellow-500">
-					{$idleComputers.length}
+					{$busyComputers.length}
 				</span>
-				<span class="ml-2"> Idle Computers </span>
+				<span class="ml-2"> Busy Computers </span>
 			</h2>
-			{#if $idleComputers.length > 0}
+			{#if $busyComputers.length > 0}
 				<button
 					class="rounded-full bg-yellow-500/10 px-2.5 py-0.5 text-sm text-yellow-500/50"
 					onclick={() => {
-						for (const computer of $idleComputers) {
+						for (const computer of $busyComputers) {
 							selectComputer(computer);
 						}
 					}}
@@ -298,20 +343,19 @@
 					<Minus />
 				</button>
 			{:else}
-				<div class="p-[14px] opacity-0">
-				</div>
+				<div class="p-[14px] opacity-0"></div>
 			{/if}
 		</div>
 
 		<div class="h-[calc(100%-44px)] min-h-[68px] space-y-3">
-			{#each $idleComputers as computer (computer.id)}
+			{#each $busyComputers as computer (computer.id)}
 				<div animate:flip={{ duration: 200 }}>
-					{@render computerCard(computer, 'idle')}
+					{@render computerCard(computer, 'busy')}
 				</div>
 			{/each}
 
-			{#if $idleComputers.length === 0}
-				{@render emptyPlaceholder('No idle computers', 'border-yellow-500/30')}
+			{#if $busyComputers.length === 0}
+				{@render emptyPlaceholder('No busy computers', 'border-yellow-500/30')}
 			{/if}
 		</div>
 	</div>
@@ -358,8 +402,7 @@
 					<Minus />
 				</button>
 			{:else}
-				<div class="p-[14px] opacity-0">
-				</div>
+				<div class="p-[14px] opacity-0"></div>
 			{/if}
 		</div>
 
@@ -394,10 +437,9 @@
 			{#if $selectedComputers.length > 0}
 				<ExecuteButton {selectedComputers} />
 			{:else}
-				<div class="p-[14px] opacity-0">
-				</div>
+				<div class="p-[14px] opacity-0"></div>
 			{/if}
-			</div>
+		</div>
 		<div class="h-[calc(100%-44px)] min-h-[68px] space-y-3">
 			{#each $selectedComputers as computer (computer.id)}
 				<div animate:flip={{ duration: 200 }}>
@@ -414,20 +456,44 @@
 
 {#snippet computerCard(computer: ComputersResponse, containerType: string)}
 	<div
-		use:draggable={{ container: containerType, dragData: computer, interactive: ['button'] }}
+		use:draggable={{ container: containerType, dragData: computer, interactive: ['button', 'a'] }}
 		in:fade={{ duration: 150 }}
 		out:fade={{ duration: 150 }}
 		class="group cursor-move rounded-lg bg-card p-3 shadow-sm ring-1 ring-border
 		transition-all duration-200 hover:shadow-md hover:ring-2 hover:ring-primary/20"
 	>
 		<div class="flex items-center gap-3">
-			<img
-				src={getAvatarUrl(computer.id, 48)}
-				alt={computer.name}
-				class="h-12 w-12 rounded-full"
-			/>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<a
+						href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}"
+						class="z-50"
+					>
+						<img
+							src={getAvatarUrl(computer.id, 48)}
+							alt={computer.name}
+							class="h-12 w-12 rounded-full"
+						/>
+					</a>
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					<pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
+							{
+								id: computer.id,
+								name: computer.name,
+								ip: computer.ip,
+								mac: computer.mac,
+								status: computer.status,
+								token: computer.token
+							},
+							null,
+							4
+						)}</pre>
+				</Tooltip.Content>
+			</Tooltip.Root>
 			<div class="flex-1">
 				<h3 class="font-medium text-foreground">{computer.name}</h3>
+
 				<div class="flex items-center gap-1">
 					<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
 					<span class="text-{statusColorMap[computer.status]}">

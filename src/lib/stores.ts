@@ -9,9 +9,10 @@ import type {
 	TeamsAccessResponse,
 	ComputersResponse,
 	Tab,
-	ScriptsResponse
+	ScriptsResponse,
+	ExecutionsResponse
 } from '$lib/types';
-import { shield } from '$lib/utils';
+// import { shield } from '$lib/utils';
 
 export const userStore = writable<UsersResponse | undefined>(undefined);
 export const usersStore = createCollectionStore<UsersResponse>(pb, 'users', {
@@ -54,6 +55,12 @@ export const computersStore = createCollectionStore<ComputersResponse>(pb, 'comp
 	autoSubGetData: false
 });
 export const selectedComputers = writable<ComputersResponse[]>([]);
+
+export const executionsStore = createCollectionStore<ExecutionsResponse>(pb, 'executions', {
+	sort: '-status,-updated',
+	autoSubGetData: false
+});
+export const executionStore = writable<ExecutionsResponse | undefined>(undefined);
 
 export const scriptStore = writable<ScriptsResponse | undefined>(undefined);
 export const scriptsStore = createCollectionStore<ScriptsResponse>(pb, 'scripts', {
