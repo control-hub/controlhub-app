@@ -125,8 +125,9 @@ export enum TeamsLinkPermissionsOptions {
 }
 export type TeamsLinkRecord = {
 	joined?: RecordIdString[];
-	permissions?: TeamsLinkPermissionsOptions;
-	secret?: string;
+	permissions?: TeamsLinkPermissionsOptions[];
+	token?: string;
+	team: RecordIdString;
 };
 
 export type UsersRecord = {

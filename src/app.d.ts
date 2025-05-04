@@ -1,7 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import PocketBase from 'pocketbase';
-import type { UsersResponse as User } from '$lib/types.js';
+import type { UsersResponse as User, TypedPocketBase as PocketBase } from '$lib/types.js';
 
 declare global {
 	namespace App {
