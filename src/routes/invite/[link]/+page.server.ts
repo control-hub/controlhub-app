@@ -28,3 +28,5 @@ export const load = async ({ locals, params, parent }) => {
 
 	throw redirect(302, `/${encodeURIComponent(team.name)}`);
 };
+
+// TODO fix filter issue or not. I do not know...
