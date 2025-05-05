@@ -22,6 +22,10 @@ export const tabsConfig: { [key: string]: Tab[] } = {
 			href: ''
 		},
 		{
+			name: "Tokens",
+			href: '/~/tokens'
+		},
+		{
 			name: 'Settings',
 			href: '/~/settings'
 		}

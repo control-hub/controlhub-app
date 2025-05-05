@@ -15,7 +15,6 @@
 	onDestroy(async () => {
 		await computersStore.unsubscribeFromPocketBase();
 	});
-	// endregion
 
 	beforeNavigateOut(() => {
 		tabsStore.set([]);
@@ -23,5 +22,3 @@
 </script>
 
 <ComputersTable />
-
-<!-- <span class="mt-4">Selected: {$checkedList}</span> -->

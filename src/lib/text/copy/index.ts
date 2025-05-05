@@ -1,0 +1,1 @@
+export { default as CopyText } from './copy.svelte';

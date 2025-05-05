@@ -64,9 +64,6 @@
 
 	function closeAndFocusTrigger() {
 		open = false;
-		try {
-			tick().then(() => triggerRef ? triggerRef.focus() : null);
-		} catch (e) {}
 	}
 </script>
 

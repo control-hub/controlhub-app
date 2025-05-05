@@ -11,6 +11,14 @@
 	import Search from './search.svelte';
 	import { toast } from 'svelte-sonner';
 
+	const generateDefault = (variable: string): { key: string; default: string } => {
+		if (!variable.includes("or")) {
+			return { key: variable, default: ""};
+		} else {
+			return { key: variable.split('or')[0].trim(), default: variable.split('or')[1].trim() };
+		}
+	}
+
 	let visible: boolean = false;
 	const value: Writable<string> = writable('');
 	const searchInput = writable('core/');
@@ -39,8 +47,17 @@
 	});
 
 	const dynamicVariablesForm = writable(new Map<string, string>());
-
 	export let selectedComputers: Readable<ComputersResponse[]> = readable([]);
+
+	dynamicVariables.subscribe((variables) => {
+		dynamicVariablesForm.update((form) => {
+			variables.forEach((variable) => {
+				(form as any)[variable] = generateDefault(variable).default;
+			})
+
+			return form
+		});
+	})
 
 	const replaceExecutable = (computer: ComputersResponse) => {
 		let executable = $selectedScript?.executable || '';
@@ -48,22 +65,47 @@
 			// @ts-ignore
 			executable = executable.replace(`{{${variable}}}`, $dynamicVariablesForm[variable]);
 		});
-		return "computers = " + JSON.stringify($selectedComputers.map((computer) => {return {...computer, token: ""}})) + '\ncomputer = ' + JSON.stringify(computer) + '\n' + executable;
+
+		let includeComputers = false;
+		let includeComputer = false;
+
+		executable.split('\n').forEach((line) => {
+			if (line.replaceAll(' ', '').toLowerCase() == '#computers') {
+				includeComputers = true;
+			} else if (line.replaceAll(' ', '').toLowerCase() == '#computer') {
+				includeComputer = true;
+			}
+		});
+
+		const computersPart = includeComputers
+			? 'computers = ' +
+				JSON.stringify(
+					$selectedComputers.map((computer) => {
+						return { ...computer, token: '' };
+					})
+				)
+			: '';
+
+		const computerPart = includeComputer ? '\ncomputer = ' + JSON.stringify(computer) : '\n';
+
+		return computersPart + computerPart + '\n' + executable;
 	};
 
 	const executeScript = async () => {
 		visible = false;
-		
+
 		try {
-			const promises = $selectedComputers.filter((computer) => computer.status !== '0').map((computer) => {
-				return pb.collection('executions').create({
-					completed: false,
-					executable: replaceExecutable(computer),
-					computer: computer.id,
-					script: $selectedScript?.id,
-					user: $userStore?.id
+			const promises = $selectedComputers
+				.filter((computer) => computer.status !== '0')
+				.map((computer) => {
+					return pb.collection('executions').create({
+						completed: false,
+						executable: replaceExecutable(computer),
+						computer: computer.id,
+						script: $selectedScript?.id,
+						user: $userStore?.id
+					});
 				});
-			});
 
 			await Promise.all(promises);
 			toast.success('Script started successfully');
@@ -72,6 +114,7 @@
 		}
 	};
 </script>
+
 
 <Dialog.Root bind:open={visible}>
 	<Dialog.Trigger>
@@ -88,13 +131,13 @@
 				This action executes your command on selected computers
 			</Dialog.Description>
 		</Dialog.Header>
-		<Search {value} {searchInput}/>
+		<Search {value} {searchInput} />
 		<form class="grid grid-cols-2 gap-4" onsubmit={executeScript}>
 			{#each $dynamicVariables as variable (variable)}
 				<Input
 					id={variable}
 					class="col-span-2"
-					placeholder={variable}
+					placeholder={generateDefault(variable).key}
 					bind:value={($dynamicVariablesForm as any)[variable]}
 					required
 				/>

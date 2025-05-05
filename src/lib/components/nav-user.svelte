@@ -1,5 +1,4 @@
 <script lang="ts">
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
@@ -7,10 +6,11 @@
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import type { User } from './sidebar-types';
+	import type { UsersResponse } from '$lib/types';
 	import { teamsStore, userStore, teamStore, teamAccessStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { toastApi } from '$lib/utils';
-	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+	import { UserAvatar } from '$lib/user';
 
 	import { theme } from 'theme-selector';
 	import { Moon, Sun, Bolt } from 'lucide-svelte';
@@ -38,17 +38,7 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						{...props}
 					>
-						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image
-								class="object-cover"
-								src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
-								alt={user.username}
-							/>
-							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
-								>{user.username[0].toUpperCase() +
-									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback
-							>
-						</Avatar.Root>
+						<UserAvatar user={user as UsersResponse} />
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold" translate="no">{user.username}</span>
 							<span class="truncate text-xs" translate="no">{user.email}</span>
@@ -65,17 +55,7 @@
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-						<Avatar.Root class="h-8 w-8 rounded-lg">
-							<Avatar.Image
-								class="object-cover"
-								src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
-								alt={user.username}
-							/>
-							<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
-								>{user.username[0].toUpperCase() +
-									user.username[user.username.length - 1].toUpperCase()}</Avatar.Fallback
-							>
-						</Avatar.Root>
+						<UserAvatar user={user as UsersResponse} />
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-semibold" translate="no">{user.username}</span>
 							<span class="truncate text-xs" translate="no">{user.email}</span>

@@ -10,7 +10,8 @@ import type {
 	ComputersResponse,
 	Tab,
 	ScriptsResponse,
-	ExecutionsResponse
+	ExecutionsResponse,
+	TeamsLinkResponse
 } from '$lib/types';
 // import { shield } from '$lib/utils';
 
@@ -42,6 +43,11 @@ export const havePermission = derived(
 		};
 	}
 );
+
+export const teamsLinkStore = createCollectionStore<TeamsLinkResponse>(pb, 'teams_link', {
+	sort: '-created',
+	autoSubGetData: false
+})
 
 export const regionStore = writable<RegionsResponse | undefined>(undefined);
 export const regionsStore = createCollectionStore<RegionsResponse>(pb, 'regions', {

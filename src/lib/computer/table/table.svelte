@@ -6,19 +6,13 @@
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
-	import {
-		computersStore,
-		teamStore,
-		regionStore,
-		executionsStore,
-		executionStore
-	} from '$lib/stores';
+	import { computersStore, teamStore, regionStore, userStore } from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
 	import { toastApi, shield, createComputer as utilsCreateComputer } from '$lib/utils';
 	import { icon } from '$lib/config';
 	import { pb } from '$lib/pocketbase/client';
 
-	import ExecuteButton from '$lib/script/execute/button.svelte';
+	import { ExecutionsButton } from '$lib/execution';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -55,7 +49,7 @@
 				}
 			},
 			{
-				filter: `computer.region.id = "${shield($regionStore?.id as string)}"`
+				filter: `invisible = false && status = '2' || status = '3' && computer.region.id = "${shield($regionStore?.id as string)} && user.id = "${shield($userStore?.id as string)}"`
 			}
 		);
 	});
@@ -435,7 +429,7 @@
 				<span class="ml-2"> Selected Computers </span>
 			</h2>
 			{#if $selectedComputers.length > 0}
-				<ExecuteButton {selectedComputers} />
+				<ExecutionsButton {selectedComputers} />
 			{:else}
 				<div class="p-[14px] opacity-0"></div>
 			{/if}
@@ -462,18 +456,32 @@
 		class="group cursor-move rounded-lg bg-card p-3 shadow-sm ring-1 ring-border
 		transition-all duration-200 hover:shadow-md hover:ring-2 hover:ring-primary/20"
 	>
-		<div class="flex items-center gap-3">
+		<div class="flex items-center justify-between gap-3">
 			<Tooltip.Root>
 				<Tooltip.Trigger>
 					<a
+						class="z-50 flex flex-row items-center"
 						href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}"
-						class="z-50"
 					>
 						<img
 							src={getAvatarUrl(computer.id, 48)}
 							alt={computer.name}
 							class="h-12 w-12 rounded-full"
 						/>
+
+						<div class="ml-3 flex-1">
+							<h3 class="text-left font-medium text-foreground">{computer.name}</h3>
+
+							<div class="flex items-center gap-1">
+								<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
+								<span class="text-{statusColorMap[computer.status]}">
+									<svelte:component
+										this={getStatusInfo(computer.status).icon}
+										class="h-3.5 w-3.5"
+									/>
+								</span>
+							</div>
+						</div>
 					</a>
 				</Tooltip.Trigger>
 				<Tooltip.Content>
@@ -484,50 +492,43 @@
 								ip: computer.ip,
 								mac: computer.mac,
 								status: computer.status,
-								token: computer.token
+								token: computer.token,
+								data: computer.data
 							},
 							null,
 							4
 						)}</pre>
 				</Tooltip.Content>
 			</Tooltip.Root>
-			<div class="flex-1">
-				<h3 class="font-medium text-foreground">{computer.name}</h3>
-
-				<div class="flex items-center gap-1">
-					<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
-					<span class="text-{statusColorMap[computer.status]}">
-						<svelte:component this={getStatusInfo(computer.status).icon} class="h-3.5 w-3.5" />
-					</span>
-				</div>
-			</div>
-			<Badge
-				class="bg-{statusColorMap[computer.status]} hover:bg-{statusColorMap[
-					computer.status
-				]}/60 shadow-sm ring-1
+			<div class="flex gap-3">
+				<Badge
+					class="bg-{statusColorMap[computer.status]} hover:bg-{statusColorMap[
+						computer.status
+					]}/60 shadow-sm ring-1
 		ring-border hover:shadow-md hover:ring-2 hover:ring-primary/20 max-sm:hidden"
-			>
-				<span>{statusLabelMap[computer.status]}</span>
-			</Badge>
-			{#if containerType !== 'selected'}
-				<button
-					class="text-right text-card-foreground/50"
-					onclick={() => {
-						selectComputer(computer);
-					}}
 				>
-					<SquarePlus />
-				</button>
-			{:else}
-				<button
-					class="text-right text-card-foreground/50"
-					onclick={() => {
-						unselectComputer(computer);
-					}}
-				>
-					<SquareMinus />
-				</button>
-			{/if}
+					<span>{statusLabelMap[computer.status]}</span>
+				</Badge>
+				{#if containerType !== 'selected'}
+					<button
+						class="text-right text-card-foreground/50"
+						onclick={() => {
+							selectComputer(computer);
+						}}
+					>
+						<SquarePlus />
+					</button>
+				{:else}
+					<button
+						class="text-right text-card-foreground/50"
+						onclick={() => {
+							unselectComputer(computer);
+						}}
+					>
+						<SquareMinus />
+					</button>
+				{/if}
+			</div>
 		</div>
 	</div>
 {/snippet}
