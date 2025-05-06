@@ -10,7 +10,6 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { userStore, teamStore, teamsStore } from '$lib/stores.js';
 
-	import { pb } from '$lib/pocketbase/client';
 	import { tabsStore } from '$lib/stores.js';
 	import { generateTabUrl, cn } from '$lib/utils';
 	import { page } from '$app/stores';
@@ -64,33 +63,41 @@
 						</Breadcrumb.Root>
 					</div>
 					{#if $tabsStore.length > 0}
-						<div class="flex h-12 w-full items-center justify-between px-4" transition:slide>
-							<div class="flex h-full">
-								{#each $tabsStore as tab}
-									{@const url = generateTabUrl($page.url.pathname, tab, $tabsStore)}
-									{@const isActive = url === $page.url.pathname}
-									<div
-										class={cn(
-											'h-full px-2 py-2',
-											isActive ? 'border-b-2 border-gray-300' : 'pb-[10px]'
-										)}
-									>
-										<Button
-											variant="ghost"
-											href={url}
-											class={cn(
-												'h-full font-medium',
-												!isActive ? 'text-muted-foreground hover:text-foreground' : ''
-											)}
-										>
-											{tab.name}
-										</Button>
+						<div transition:slide>
+							<ScrollArea
+								class="w-[100vw] whitespace-nowrap sm:w-full"
+								scrollbarXClasses="hidden"
+								orientation="horizontal"
+							>
+								<div class="flex h-12 w-max items-center justify-between px-4">
+									<div class="flex h-full">
+										{#each $tabsStore as tab}
+											{@const url = generateTabUrl($page.url.pathname, tab, $tabsStore)}
+											{@const isActive = url === $page.url.pathname}
+											<div
+												class={cn(
+													'h-full px-2 py-2',
+													isActive ? 'border-b-2 border-gray-300' : 'pb-[10px]'
+												)}
+											>
+												<Button
+													variant="ghost"
+													href={url}
+													class={cn(
+														'h-full font-medium',
+														!isActive ? 'text-muted-foreground hover:text-foreground' : ''
+													)}
+												>
+													{tab.name}
+												</Button>
+											</div>
+										{/each}
 									</div>
-								{/each}
-							</div>
+								</div>
+							</ScrollArea>
 						</div>
 					{/if}
-					<div class="border-b border-input"></div>
+					<div class="w-[min(100vw,100%)] border-b border-input"></div>
 				</header>
 				<div class="container flex justify-center">
 					<div class="my-6 w-full">

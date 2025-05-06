@@ -10,10 +10,9 @@
 	import { linter, type Diagnostic } from '@codemirror/lint';
 	import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 	import type { EditorView } from '@codemirror/view';
-	import { writable, derived, get } from 'svelte/store';
+	import { writable, derived } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
-	import type { ScriptsResponse } from '$lib/types';
 	import { pb } from '$lib/pocketbase/client';
 	import { toastApi } from '$lib/utils';
 	import { toast } from 'svelte-sonner';
@@ -22,6 +21,45 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 
 	let customCompletions: any[] = [];
+
+	export const scriptName = writable($scriptStore?.name);
+	export const scriptDescription = writable($scriptStore?.description);
+	export const scriptExecutable = writable($scriptStore?.executable);
+
+	export let hasCriticalErrors = writable(false);
+	export let editable = true;
+
+	let view: EditorView;
+
+	const hasChanges = derived([scriptExecutable, scriptStore, scriptName, scriptDescription], ([$value, $scriptStore, $scriptName, $scriptDescription]) => {
+		return (
+			$scriptStore?.executable !== $value ||
+			$scriptStore?.description !== $scriptDescription ||
+			$scriptStore?.name !== $scriptName
+		);
+	});
+	
+	const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+		if ($hasChanges) {
+			e.preventDefault();
+			e.returnValue = '';
+		}
+	};
+
+	const handleKeyDown = async (e: KeyboardEvent) => {
+		if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+			e.preventDefault();
+			if (!$hasCriticalErrors) {
+				await toastApi.execAsync(
+					updateScript,
+					`Script ${$scriptStore?.name} updated.`,
+					`Failed to update script ${$scriptStore?.name}, check syntax error.`
+				);
+			} else {
+				toast.error('Cannot save due to syntax errors.');
+			}
+		}
+	};
 
 	// @ts-ignore
 	onMount(async () => {
@@ -41,58 +79,16 @@
 			console.error('Error loading completions:', error);
 		}
 
-		// Add handler for closing tab/browser
-		const handleBeforeUnload = (e: any) => {
-			if ($hasChanges) {
-				e.preventDefault();
-				e.returnValue = '';
-			}
-		};
-
 		window.addEventListener('beforeunload', handleBeforeUnload);
-
-		// Add Ctrl+S handler for save and translation
-		const handleKeyDown = async (e: KeyboardEvent) => {
-			if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-				e.preventDefault();
-				if (!$hasCriticalErrors) {
-					await toastApi.execAsync(
-						updateScript,
-						`Script ${$scriptStore?.name} updated.`,
-						`Failed to update script ${$scriptStore?.name}, check syntax error.`
-					);
-				} else {
-					toast.error('Cannot save due to syntax errors.');
-				}
-			}
-		};
 		window.addEventListener('keydown', handleKeyDown);
 
-		return () => {
+		return async () => {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
-			window.removeEventListener('keydown', handleKeyDown);
-		};
+		window.removeEventListener('keydown', handleKeyDown);
+		console.log('Editor component destroyed, event listeners removed');
+		}
 	});
 
-	export const scriptName = writable($scriptStore?.name);
-	export const scriptDescription = writable($scriptStore?.description);
-	export const scriptExecutable = writable($scriptStore?.executable);
-
-	// Writable store for tracking critical errors
-	export let hasCriticalErrors = writable(false);
-	export let editable = true;
-
-	// Variable to store EditorView
-	let view: EditorView;
-
-	// Derived property to display change status
-	const hasChanges = derived([scriptExecutable, scriptStore, scriptName, scriptDescription], ([$value, $scriptStore, $scriptName, $scriptDescription]) => {
-		return (
-			$scriptStore?.executable !== $value ||
-			$scriptStore?.description !== $scriptDescription ||
-			$scriptStore?.name !== $scriptName
-		);
-	});
 
 	// SvelteKit navigation interception
 	beforeNavigate(({ cancel }) => {
@@ -105,40 +101,33 @@
 				if (!$hasCriticalErrors) {
 					updateScript()
 						.then(() => {
-							// Navigation will continue after successful save
 						})
 						.catch((err) => {
 							console.error('Error while saving:', err);
-							// If the user wants to continue without saving
 							if (!confirm('Error while saving. Do you want to continue without saving?')) {
 								cancel();
 							}
 						});
 				} else {
 					alert('Cannot save script due to syntax errors.');
-					// If the user wants to continue without saving
 					if (!confirm('Do you want to continue without saving?')) {
 						cancel();
 					}
 				}
 			} else if (!confirm('Are you sure you want to leave the page without saving changes?')) {
-				// Cancel navigation if the user does not want to leave without saving
 				cancel();
 			}
 		}
 	});
 
-	// Regular expressions for various autocompletion contexts
 	const importRegex = /^import\s+(\w*)$/;
 	const fromImportRegex = /^from\s+(\w+)\s+import\s+(\w*)$/;
 	const fromRegex = /^from\s+(\w*)$/;
 
-	// Autocompletion source for import, from, and controlhub
 	const controlHubModuleCompletionSource = (context: CompletionContext) => {
 		const line = context.state.doc.lineAt(context.pos);
 		const textBefore = line.text.slice(0, context.pos - line.from);
 
-		// Check for "import ..."
 		const importMatch = textBefore.match(importRegex);
 		if (importMatch) {
 			return {
@@ -148,7 +137,6 @@
 			};
 		}
 
-		// Check for "from ..."
 		const fromMatch = textBefore.match(fromRegex);
 		if (fromMatch && !textBefore.includes('import')) {
 			return {
@@ -158,7 +146,6 @@
 			};
 		}
 
-		// Check for "from controlhub import ..."
 		const fromImportMatch = textBefore.match(fromImportRegex);
 		if (fromImportMatch && fromImportMatch[1] === 'controlhub') {
 			return {
@@ -168,7 +155,6 @@
 			};
 		}
 
-		// Check for normal "controlhub." access
 		const word = context.matchBefore(/[\w.]*/);
 		if (!word || word.from == word.to) return null;
 
@@ -185,7 +171,6 @@
 			};
 		}
 
-		// Suggest controlhub module
 		if (!context.explicit && !textBefore.trim().match(/^(import|from)/)) {
 			return {
 				from: word.from,
@@ -197,7 +182,6 @@
 		return null;
 	};
 
-	// Linter for highlighting errors
 	const syntaxLinter = linter((view) => {
 		const tree = syntaxTree(view.state);
 		const diagnostics: Diagnostic[] = [];
@@ -222,7 +206,6 @@
 		return diagnostics;
 	});
 
-	// Function to check for syntax errors
 	const checkSyntax = (view: EditorView) => {
 		const tree = syntaxTree(view.state);
 		const errors = [];

@@ -75,7 +75,7 @@
 	</Dialog.Root>
 	<!-- {/if} -->
 	{#each $filtered as team (team.id)}
-		<Card.Root class="relative col-[1/-1] h-[130px] animate-fade-in-up sm:col-auto">
+		<Card.Root class="relative col-[1/-1] animate-fade-in-up sm:col-auto">
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>

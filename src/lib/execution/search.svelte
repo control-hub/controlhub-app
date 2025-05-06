@@ -10,7 +10,9 @@
 	import { derived, writable, type Writable } from 'svelte/store';
 
 	export let value: Writable<string> = writable('');
-	export let searchInput = writable('core/');
+
+	let previousSearchInput: string = 'core/';
+	export let searchInput = writable(previousSearchInput);
 
 	let open = false;
 	let triggerRef: HTMLButtonElement;
@@ -22,6 +24,7 @@
 			(script) => !$inputUser && script.name.includes($searchInput.split('/')[1])
 		);
 	});
+
 	const filteredUsers = derived([usersStore, searchInput], ([$usersStore, $searchInput]) => {
 		return $usersStore.filter((user) => $inputUser && user.username.includes($searchInput));
 	});
@@ -31,35 +34,37 @@
 	});
 
 	searchInput.subscribe(async ($searchInput) => {
-		if (!$searchInput.includes('/')) {
-			scriptsStore.set([]);
+		const previousUser = previousSearchInput.split('/')[0] || '';
+		const previousScript = previousSearchInput.split('/')[1] || '';
 
+		const user = $searchInput.split('/')[0] || $userStore?.username || '';
+		const script = $searchInput.split('/')[1] || '';
+
+		if (!$searchInput.includes('/')) {
 			if ($searchInput.length < 3) {
 				usersStore.set([]);
-			} else {
-				if ($usersStore.length === 0) {
-					usersStore.updateOptions({
-						filter: `username ~ "${$searchInput}"`,
-						sort: '-created',
-						autoSubGetData: false
-					});
-
-					await usersStore.getData();
-				}
-			}
-		} else {
-			if ($scriptsStore.length === 0) {
-				const user = $searchInput.split('/')[0] || $userStore?.username || '';
-
-				scriptsStore.updateOptions({
-					filter: `user.username = "${user}"`,
+			} else if (previousUser !== user) {
+				usersStore.updateOptions({
+					filter: `username ~ "${$searchInput}"`,
 					sort: '-created',
 					autoSubGetData: false
 				});
 
-				await scriptsStore.getData();
+				await usersStore.getData();
 			}
 		}
+
+		if ($searchInput.includes('/') && (user !== previousUser || !previousScript.includes('/'))) {
+			scriptsStore.updateOptions({
+				filter: `user.username = "${user}"`,
+				sort: '-created',
+				autoSubGetData: false
+			});
+
+			await scriptsStore.getData();
+		}
+
+		previousSearchInput = $searchInput;
 	});
 
 	function closeAndFocusTrigger() {
@@ -82,7 +87,11 @@
 	<Popover.Content class="w-full p-0">
 		<Command.Root class="w-full" shouldFilter={false}>
 			<div class="flex w-full">
-				<Command.Input placeholder="Search script..." class="h-9 w-full" bind:value={$searchInput} />
+				<Command.Input
+					placeholder="Search script..."
+					class="h-9 w-full"
+					bind:value={$searchInput}
+				/>
 			</div>
 			<!-- {#key $searchInput} -->
 			{#if $inputUser}
