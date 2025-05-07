@@ -1,7 +1,6 @@
 import { shield } from '$lib/utils';
 import { pb } from '$lib/pocketbase/client';
 import { regionStore, teamStore } from '$lib/stores';
-import { tabsConfig } from '$lib/config';
 import { get } from 'svelte/store';
 
 export const prerender = false;

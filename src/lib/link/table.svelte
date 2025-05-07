@@ -46,7 +46,7 @@
 							<div class="flex max-w-full flex-row flex-wrap gap-2">
 								<span>Permissions:</span>
 								{#each link.permissions as permission}
-									<Badge>{permission}</Badge>
+									<Badge variant="secondary">{permission}</Badge>
 								{/each}
 							</div>
                             <div class="flex max-w-full flex-row flex-wrap gap-2">

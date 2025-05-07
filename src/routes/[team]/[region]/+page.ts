@@ -16,5 +16,4 @@ export const load = async ({ parent, params }) => {
 	});
 
 	await computersStore.getData();
-	tabsStore.set(tabsConfig.region);
 };

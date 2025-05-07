@@ -5,9 +5,8 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { executionStore } from '$lib/stores';
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-	import type { UsersResponse, ScriptsResponse } from '$lib/types';
-	import { pb } from '$lib/pocketbase/client';
-	import { onMount } from 'svelte';
+	import type { UsersResponse, ScriptsResponse, ComputersResponse } from '$lib/types';
+	import { formatDate } from '$lib/utils';
 	import { CopyText } from '$lib/text/copy';
 
 	const statusLabelMap = {
@@ -23,26 +22,8 @@
 		'bg-red-500 text-red-900'
 	];
 
-	$: user = ($executionStore?.expand as { user: UsersResponse; script: ScriptsResponse }).user;
-	$: script = ($executionStore?.expand as { user: UsersResponse; script: ScriptsResponse }).script;
-
-	let scriptUser: UsersResponse;
-
-	onMount(async () => {
-		scriptUser = await pb.collection('users').getOne(script?.user);
-	});
-
-	const formatDate = (isoString: string): string => {
-		const date = new Date(isoString);
-		return date.toLocaleString('en-EN', {
-			day: '2-digit',
-			month: 'long',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false
-		});
-	};
+	$: user = ($executionStore?.expand as { user: UsersResponse }).user;
+	$: script = ($executionStore?.expand as { script: ScriptsResponse }).script;
 </script>
 
 <Card.Root
@@ -67,7 +48,7 @@
 			<div class="flex justify-between">
 				<span class="text-muted-foreground">Script:</span>
 				<a
-					href="/scripts/{scriptUser?.username}/{script.name}"
+					href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username}/{script.name}"
 					class="font-medium underline underline-offset-4 hover:opacity-80"
 				>
 					{script.name}
@@ -89,9 +70,7 @@
 	<Card.Footer class="flex w-full justify-end px-6 pb-6">
 		<div class="flex w-full items-baseline justify-between">
 			{#if user}
-				<span class="text-muted-foreground"
-					>{formatDate($executionStore?.updated as string)}</span
-				>
+				<span class="text-muted-foreground">{formatDate($executionStore?.updated as string)}</span>
 				<div class="flex items-center gap-2">
 					<span class="text-muted-foreground">by</span>
 					<a href="/scripts/{user.username}">
@@ -110,9 +89,11 @@
 								</Avatar.Root>
 							</Tooltip.Trigger>
 							<Tooltip.Content>
-								<pre class="max-w-xs overflow-x-auto text-xs">
-{JSON.stringify({ id: user.id, email: user.email, username: user.username }, null, 4)}
-							</pre>
+								<pre class="max-w-xs items-start text-start">{JSON.stringify(
+										{ id: user.id, email: user.email, username: user.username },
+										null,
+										4
+									)}</pre>
 							</Tooltip.Content>
 						</Tooltip.Root>
 					</a>

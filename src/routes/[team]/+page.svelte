@@ -1,19 +1,21 @@
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { tabsStore } from '$lib/stores';
+	import { tabsConfig } from '$lib/config';
 	import { Input } from '$lib/components/ui/input';
 	import { RegionsTable } from '$lib/region/table';
 
 	import { writable } from 'svelte/store';
 
-	import { teamStore, teamAccessStore, tabsStore } from '$lib/stores.js';
-	import { beforeNavigateOut } from '$lib/utils';
+	const filterPhrase = writable('');
 
-	beforeNavigateOut(() => {
-		teamAccessStore.set(undefined);
-		teamStore.set(undefined);
-		tabsStore.set([]);
+	onMount(async () => {
+		tabsStore.set(tabsConfig.team)
 	});
 
-	const filterPhrase = writable('');
+	onDestroy(async () => {
+		tabsStore.update((tabs) => (tabs === tabsConfig.team) ? [] : tabs)
+	});
 </script>
 
 <div class="mb-4 flex gap-4">

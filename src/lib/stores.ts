@@ -28,6 +28,11 @@ export const teamsStore = createCollectionStore<TeamsResponse>(pb, 'teams', {
 });
 
 export const teamAccessStore = writable<TeamsAccessResponse | undefined>(undefined);
+export const teamsAccessStore = createCollectionStore<TeamsAccessResponse>(pb, 'teams_access', {
+	sort: '-created',
+	expand: 'user',
+	autoSubGetData: false
+});
 
 export const havePermission = derived(
 	[teamAccessStore, teamStore],

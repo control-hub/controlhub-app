@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { tabsConfig } from '$lib/config.js';
-	import { tabsStore } from '$lib/stores.js';
+    import { onMount, onDestroy } from 'svelte';
+	import { tabsStore } from '$lib/stores';
+	import { tabsConfig } from '$lib/config';
 
-	tabsStore.set(tabsConfig.team);
+	onMount(async () => {
+		tabsStore.set(tabsConfig.team)
+	});
+
+	onDestroy(async () => {
+		tabsStore.update((tabs) => (tabs === tabsConfig.team) ? [] : tabs)
+	});
 </script>
 
 <slot />

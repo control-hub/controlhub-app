@@ -313,16 +313,25 @@ export const createComputer = async (name: string): Promise<ComputersResponse> =
 };
 
 export const randintSeed = (str: string, min: number, max: number): number => {
-	// Конвертируем seed-строку в 32битное число (простейший хэш)
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
-		hash = (hash * 31 + str.charCodeAt(i)) | 0; // умножение + сдвиг
+		hash = (hash * 31 + str.charCodeAt(i)) | 0;
 	}
 
-	// Псевдослучайное на базе хэша
 	const pseudoRand = Math.abs(Math.sin(hash) * 10000) % 1;
-
 	return Math.floor(pseudoRand * (max - min + 1)) + min;
+};
+
+export const formatDate = (isoString: string): string => {
+	const date = new Date(isoString);
+	return date.toLocaleString('en-EN', {
+		day: '2-digit',
+		month: 'long',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+		hour12: false
+	});
 };
 
 export const beforeNavigateOut: Function = (func: Function) => {

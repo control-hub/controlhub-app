@@ -1,6 +1,5 @@
 import { get } from 'svelte/store';
-import { tabsStore, executionsStore, computerStore } from '$lib/stores';
-import { tabsConfig } from '$lib/config';
+import { executionsStore, computerStore } from '$lib/stores';
 
 export const prerender = false;
 
@@ -15,5 +14,4 @@ export const load = async ({ parent, params }) => {
 	});
 
 	await executionsStore.getData();
-	tabsStore.set([]);
 };

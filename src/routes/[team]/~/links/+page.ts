@@ -1,13 +1,10 @@
-import { pb } from '$lib/pocketbase/client';
-import { teamsLinkStore, tabsStore, teamStore } from '$lib/stores.js';
-import { tabsConfig } from '$lib/config';
+import { teamsLinkStore, teamStore } from '$lib/stores.js';
 import { get } from 'svelte/store';
 
 export const prerender = false;
 
 export const load = async ({ parent, params }) => {
     await parent();
-    tabsStore.set(tabsConfig.team as any);
 
     try {
         teamsLinkStore.updateOptions({
