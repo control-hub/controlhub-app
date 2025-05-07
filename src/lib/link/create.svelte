@@ -51,7 +51,7 @@
 		{#snippet child({ props })}
 			<Button
 				{...props}
-				class="relative h-[130px] w-full animate-fade-in-up text-center max-lg:h-[80px] sm:col-auto"
+				class="relative w-full animate-fade-in-up text-center h-[80px] sm:col-auto"
 				variant="outline"
 			>
 				Create link

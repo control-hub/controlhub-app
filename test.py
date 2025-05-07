@@ -134,17 +134,35 @@
     
 #     generate_completions_json(package_name, output_file)
 
-from controlhub import press, write, fullscreen
-from time import sleep
+# from controlhub import press, write, fullscreen
+# from time import sleep
 
-press(["win", "r"])
-write("cmd")
-press("enter")
-sleep(0.5)
-fullscreen(absolute=True)
-write("color 0a")
-press("enter")
-write("cd ../../../../../../..")
-press("enter")
-write("dir /s")
-press("enter")
+# press(["win", "r"])
+# write("cmd")
+# press("enter")
+# sleep(0.5)
+# fullscreen(absolute=True)
+# write("color 0a")
+# press("enter")
+# write("cd ../../../../../../..")
+# press("enter")
+# write("dir /s")
+# press("enter")
+
+import os
+
+url = r"https://i.ytimg.com/vi/WLsUnyBswcc/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDIWN3EvG3TNl5p7xtqVoWmeqJGkg"
+install_path = r"Default download path"
+os.environ["CH_DELAY"] = "0.8"
+
+from controlhub import download, open_file
+
+if install_path == "Default download path":
+    install_path = os.getenv("USERPROFILE") + r"\Downloads"
+
+print(f"Downloading from {url} to {install_path}...")
+file_path = download(url, install_path)
+print(f"Downloaded file: {file_path}")
+
+open_file(file_path)
+print(f"Opened file: {file_path}")

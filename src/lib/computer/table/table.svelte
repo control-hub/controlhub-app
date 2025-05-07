@@ -27,6 +27,8 @@
 		unsubscribe = await pb.collection('executions').subscribe(
 			'*',
 			({ action, record }) => {
+				if (record.user !== $userStore?.id) return;
+
 				if (action === 'update' && record.status === '2') {
 					toast.success(
 						`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
@@ -47,9 +49,6 @@
 							record.id
 					);
 				}
-			},
-			{
-				filter: `invisible = false && status = '2' || status = '3' && computer.region.id = "${shield($regionStore?.id as string)} && user.id = "${shield($userStore?.id as string)}"`
 			}
 		);
 	});
@@ -58,7 +57,6 @@
 		await unsubscribe();
 	});
 
-	// Вспомогательные функции
 	function getAvatarUrl(id: string, size: number = 100): string {
 		const hash = id.trim().toLowerCase();
 		return `https://avatar.vercel.sh/${hash}?size=${size}`;
@@ -116,7 +114,6 @@
 
 	const selectedComputersSet: Writable<Set<string>> = writable(new Set());
 
-	// Store для выбранных компьютеров
 	const selectedComputers: Readable<ComputersResponse[]> = derived(
 		[selectedComputersSet, computersStore],
 		([$selectedComputersSet, $computersStore]) => {
@@ -124,7 +121,6 @@
 		}
 	);
 
-	// Derived stores для компьютеров разных категорий с учетом выбранных
 	const filteredComputers: Readable<ComputersResponse[]> = derived(
 		[computersStore, selectedComputersSet],
 		([$computersStore, $selectedComputersSet]) => {
@@ -132,7 +128,6 @@
 		}
 	);
 
-	// Создаем derived stores для разных категорий
 	const disabledComputers = derived(filteredComputers, ($filtered) =>
 		$filtered.filter((computer) => computer.status === '0')
 	);
@@ -145,7 +140,6 @@
 		$filtered.filter((computer) => computer.status === '2')
 	);
 
-	// Функция для обновления статуса компьютера - теперь просто логирует
 	async function updateComputerStatus(
 		computer: ComputersResponse,
 		oldStatus: '0' | '1' | '2',
@@ -168,7 +162,6 @@
 		});
 	}
 
-	// Обработчик перетаскивания
 	async function handleDrop(
 		state: DragDropState<ComputersResponse>,
 		targetStatus: '0' | '1' | '2' | 'selected'

@@ -30,15 +30,18 @@
 	});
 
 	onMount(() => {
+		scriptsStore.updateOptions({
+			filter: `user.username = "core"`,
+			sort: '-created',
+			autoSubGetData: false
+		});
+
 		scriptsStore.getData();
 	});
 
 	searchInput.subscribe(async ($searchInput) => {
 		const previousUser = previousSearchInput.split('/')[0] || '';
-		const previousScript = previousSearchInput.split('/')[1] || '';
-
 		const user = $searchInput.split('/')[0] || $userStore?.username || '';
-		const script = $searchInput.split('/')[1] || '';
 
 		if (!$searchInput.includes('/')) {
 			if ($searchInput.length < 3) {
@@ -54,7 +57,7 @@
 			}
 		}
 
-		if ($searchInput.includes('/') && (user !== previousUser || !previousScript.includes('/'))) {
+		if ($searchInput.includes('/') && (user !== previousUser || !previousSearchInput.includes('/'))) {
 			scriptsStore.updateOptions({
 				filter: `user.username = "${user}"`,
 				sort: '-created',

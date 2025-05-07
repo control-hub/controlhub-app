@@ -9,15 +9,11 @@
 
 	// This is sample data.
 	let data: {
-		user: User;
+		user?: User;
 		teams: Team[];
 		navMain: NavPage[];
 	} = {
-		user: {
-			username: 'johndoe',
-			email: 'Hl7oZ@example.com',
-			avatar: 'https://github.com/shadcn.png'
-		},
+		user: undefined,
 		teams: [
 			{
 				id: '1',

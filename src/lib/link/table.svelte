@@ -4,18 +4,17 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 
-	import { DotsHorizontal } from 'svelte-radix';
-
+	import { Ellipsis, Trash2, Copy } from 'lucide-svelte';
 	// import { CollectionStore } from 'pocketbase-store';
-	import { shrinkString } from '$lib/utils';
+	import { shrinkString, toastApi } from '$lib/utils';
 	import { icon } from '$lib/config';
 	// import type { LinksResponse, TeamsResponse } from '$lib/types';
 	// import { isOwner } from '$lib/store/team_store';
 
 	import CreateLink from './create.svelte';
 	import { teamsLinkStore } from '$lib/stores';
-	import { toast } from 'svelte-sonner';
 	import { browser } from '$app/environment';
+	import type { TeamsLinkResponse } from '$lib/types';
 
 	let host: string = '';
 
@@ -23,10 +22,13 @@
 		host = window.location.host;
 	}
 
-	const copyLink = async (link: any) => {
+	const copyLink = async (link: TeamsLinkResponse) => {
 		await navigator.clipboard.writeText(host + '/invite/' + link.token);
-		toast.success('Link copied to clipboard');
 	};
+
+	const deleteLink = async (link: TeamsLinkResponse) => {
+		await teamsLinkStore.delete(link)
+	}
 </script>
 
 <div class="grid grid-cols-1 gap-4 pb-6" class:!grid-cols-1={$teamsLinkStore.length === 0}>
@@ -61,7 +63,7 @@
 								class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
 								{...props}
 							>
-								<DotsHorizontal class={icon.default} />
+								<Ellipsis class={icon.default} />
 							</Button>
 						{/snippet}
 					</DropdownMenu.Trigger>
@@ -69,8 +71,8 @@
 						<DropdownMenu.Group>
 							<DropdownMenu.GroupHeading>Actions</DropdownMenu.GroupHeading>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item onclick={() => copyLink(link)}>Copy link</DropdownMenu.Item>
-							<DropdownMenu.Item>Delete</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={toastApi.execAsync(async () => await copyLink(link), "Copied link successfully")}><Copy />Copy link</DropdownMenu.Item>
+							<DropdownMenu.Item onclick={toastApi.execAsync(async () => await deleteLink(link), "Deleted link successfully")} class="text-red-500"><Trash2 />Delete</DropdownMenu.Item>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
