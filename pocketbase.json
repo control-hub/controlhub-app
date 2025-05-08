@@ -305,7 +305,7 @@
             "CREATE INDEX `idx_yMrWjwe` ON `executions` (`script`)",
             "CREATE INDEX `idx_sYynNaV` ON `executions` (`user`)"
         ],
-        "listRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
+        "listRule": "@request.query.token = computer.token || (invisible = false && computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
         "viewRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
         "createRule": "((computer.region.team.owner.id = @request.auth.id || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')) && user.id = @request.auth.id) || (@request.query.token = computer.token && invisible = true)",
         "updateRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
@@ -572,7 +572,7 @@
         "viewRule": "team.owner.id = @request.auth.id || team.teams_access_via_team.user.id ?= @request.auth.id",
         "createRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ?~ 'add_access')",
         "updateRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ?~ 'edit_access')",
-        "deleteRule": "team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ?~ 'delete_access')",
+        "deleteRule": "(team.owner.id = @request.auth.id || (team.teams_access_via_team.user.id ?= @request.auth.id && team.teams_access_via_team.permissions ?~ 'delete_access') || user.id = @request.auth.id) && (permissions !~ 'access' || team.owner.id = @request.auth.id) && team.owner.id != user.id",
         "options": {}
     },
     {

@@ -8,7 +8,7 @@ export const load = async ({ parent, params }) => {
 
 	executionsStore.updateOptions({
 		sort: '-updated',
-		filter: `computer.id = "${get(computerStore)?.id as string}" && invisible = false`,
+		filter: `computer.id = "${get(computerStore)?.id as string}"`,
 		expand: `script,user`,
 		autoSubGetData: false
 	});
