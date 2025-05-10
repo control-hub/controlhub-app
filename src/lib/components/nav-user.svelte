@@ -5,7 +5,6 @@
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 	import LogOut from '@lucide/svelte/icons/log-out';
-	import type { User } from './sidebar-types';
 	import type { UsersResponse } from '$lib/types';
 	import { teamsStore, userStore, teamStore, teamAccessStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
@@ -15,7 +14,6 @@
 	import { theme } from 'theme-selector';
 	import { Moon, Sun, Bolt } from 'lucide-svelte';
 
-	let { user }: { user: User } = $props();
 	const sidebar = useSidebar();
 
 	async function logout() {
@@ -38,10 +36,10 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						{...props}
 					>
-						<UserAvatar user={user as UsersResponse} />
+						<UserAvatar user={$userStore as UsersResponse} />
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold" translate="no">{user.username}</span>
-							<span class="truncate text-xs" translate="no">{user.email}</span>
+							<span class="truncate font-semibold" translate="no">{$userStore?.username}</span>
+							<span class="truncate text-xs" translate="no">{$userStore?.email}</span>
 						</div>
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>
@@ -55,10 +53,10 @@
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-						<UserAvatar user={user as UsersResponse} />
+						<UserAvatar user={$userStore as UsersResponse} />
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-semibold" translate="no">{user.username}</span>
-							<span class="truncate text-xs" translate="no">{user.email}</span>
+							<span class="truncate font-semibold" translate="no">{$userStore?.username}</span>
+							<span class="truncate text-xs" translate="no">{$userStore?.email}</span>
 						</div>
 					</div>
 				</DropdownMenu.Label>

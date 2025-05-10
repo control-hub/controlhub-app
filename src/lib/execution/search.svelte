@@ -32,7 +32,7 @@
 	onMount(() => {
 		scriptsStore.updateOptions({
 			filter: `user.username = "core"`,
-			sort: '-created',
+			sort: '-executed,-created',
 			autoSubGetData: false
 		});
 
@@ -60,7 +60,7 @@
 		if ($searchInput.includes('/') && (user !== previousUser || !previousSearchInput.includes('/'))) {
 			scriptsStore.updateOptions({
 				filter: `user.username = "${user}"`,
-				sort: '-created',
+				sort: '-executed,-created',
 				autoSubGetData: false
 			});
 
@@ -74,11 +74,6 @@
 		open = false;
 	}
 </script>
-
-<!-- 
-{JSON.stringify($usersStore)}
-{$inputUser} -->
-<!-- {JSON.stringify($scriptsStore)} -->
 
 <Popover.Root bind:open>
 	<Popover.Trigger bind:this={triggerRef as any}>

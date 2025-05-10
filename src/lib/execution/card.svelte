@@ -8,6 +8,7 @@
 	import type { UsersResponse, ScriptsResponse, ComputersResponse } from '$lib/types';
 	import { formatDate } from '$lib/utils';
 	import { CopyText } from '$lib/text/copy';
+	import { UserAvatar } from '$lib/user';
 
 	const statusLabelMap = {
 		0: 'Waiting',
@@ -48,7 +49,8 @@
 			<div class="flex justify-between">
 				<span class="text-muted-foreground">Script:</span>
 				<a
-					href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username}/{script.name}"
+					href="/scripts/{(script.expand as { user?: UsersResponse })?.user
+						?.username}/{script.name}"
 					class="font-medium underline underline-offset-4 hover:opacity-80"
 				>
 					{script.name}
@@ -74,28 +76,7 @@
 				<div class="flex items-center gap-2">
 					<span class="text-muted-foreground">by</span>
 					<a href="/scripts/{user.username}">
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<Avatar.Root class="h-8 w-8 rounded-lg border">
-									<Avatar.Image
-										class="object-cover"
-										src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
-										alt={user.username}
-									/>
-									<Avatar.Fallback class="rounded-lg bg-muted text-foreground">
-										{user.username[0].toUpperCase() +
-											user.username[user.username.length - 1].toUpperCase()}
-									</Avatar.Fallback>
-								</Avatar.Root>
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								<pre class="max-w-xs items-start text-start">{JSON.stringify(
-										{ id: user.id, email: user.email, username: user.username },
-										null,
-										4
-									)}</pre>
-							</Tooltip.Content>
-						</Tooltip.Root>
+						<UserAvatar {user} />
 					</a>
 				</div>
 			{/if}

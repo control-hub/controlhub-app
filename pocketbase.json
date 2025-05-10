@@ -42,7 +42,9 @@
                 }
             }
         ],
-        "indexes": [],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_YErkYGa` ON `users` (`username`)"
+        ],
         "listRule": "",
         "viewRule": "",
         "createRule": "",
@@ -251,7 +253,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "_pb_users_auth_",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null
@@ -267,7 +269,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "c7d9yo9oik9cl3k",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null
@@ -283,7 +285,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "y5swzm9sjzt2xo7",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null
@@ -298,12 +300,24 @@
                 "presentable": false,
                 "unique": false,
                 "options": {}
+            },
+            {
+                "system": false,
+                "id": "kyqfxjha",
+                "name": "marked",
+                "type": "bool",
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
             }
         ],
         "indexes": [
             "CREATE INDEX `idx_vWsX6Cf` ON `executions` (`computer`)",
             "CREATE INDEX `idx_yMrWjwe` ON `executions` (`script`)",
-            "CREATE INDEX `idx_sYynNaV` ON `executions` (`user`)"
+            "CREATE INDEX `idx_sYynNaV` ON `executions` (`user`)",
+            "CREATE INDEX `idx_LlXhbxP` ON `executions` (`marked`)",
+            "CREATE INDEX `idx_jRZUNrX` ON `executions` (`invisible`)"
         ],
         "listRule": "@request.query.token = computer.token || (invisible = false && computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
         "viewRule": "@request.query.token = computer.token || (computer.region.team.teams_access_via_team.user.id ?= @request.auth.id && computer.region.team.teams_access_via_team.permissions ?~ 'edit_computer')",
@@ -381,20 +395,6 @@
             },
             {
                 "system": false,
-                "id": "gloys3m7",
-                "name": "global_name",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
                 "id": "lj5tlsrd",
                 "name": "description",
                 "type": "editor",
@@ -419,6 +419,20 @@
             },
             {
                 "system": false,
+                "id": "ztnhgsqb",
+                "name": "executed",
+                "type": "number",
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "system": false,
                 "id": "putbtxw0",
                 "name": "public",
                 "type": "bool",
@@ -437,7 +451,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "_pb_users_auth_",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null
@@ -476,6 +490,20 @@
             },
             {
                 "system": false,
+                "id": "t2rr5olq",
+                "name": "logo",
+                "type": "number",
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": 20,
+                    "noDecimal": false
+                }
+            },
+            {
+                "system": false,
                 "id": "g7vxxbez",
                 "name": "owner",
                 "type": "relation",
@@ -497,7 +525,7 @@
         "listRule": "owner.id = @request.auth.id || teams_access_via_team.user.id ?= @request.auth.id",
         "viewRule": "owner.id = @request.auth.id || teams_access_via_team.user.id ?= @request.auth.id",
         "createRule": "owner.id = @request.auth.id",
-        "updateRule": "owner.id = @request.auth.id || (teams_access_via_team.user.id ?= @request.auth.id && teams_access_via_team.permissions ?~ 'edit_team')",
+        "updateRule": "owner.id = @request.auth.id || ((@request.data.owner.length = 0 || @request.data.owner = owner.id) && teams_access_via_team.user.id ?= @request.auth.id && teams_access_via_team.permissions ?~ 'edit_team')",
         "deleteRule": "owner.id = @request.auth.id || (teams_access_via_team.user.id ?= @request.auth.id && teams_access_via_team.permissions ?~ 'delete_team')",
         "options": {}
     },
@@ -542,7 +570,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "_pb_users_auth_",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null
@@ -646,7 +674,7 @@
                 "unique": false,
                 "options": {
                     "collectionId": "kwsgdujc9jey3j8",
-                    "cascadeDelete": false,
+                    "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": null

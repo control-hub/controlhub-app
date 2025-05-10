@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
-	import { TeamsTable } from '$lib/team/table';
+	import { TeamsTable } from '$lib/team';
 	import { writable } from 'svelte/store';
 	import { teamsStore, teamStore } from '$lib/stores';
 

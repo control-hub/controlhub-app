@@ -12,12 +12,12 @@
 	import { toast } from 'svelte-sonner';
 
 	const generateDefault = (variable: string): { key: string; default: string } => {
-		if (!variable.includes("or")) {
-			return { key: variable, default: ""};
+		if (!variable.includes('or')) {
+			return { key: variable, default: '' };
 		} else {
 			return { key: variable.split('or')[0].trim(), default: variable.split('or')[1].trim() };
 		}
-	}
+	};
 
 	let visible: boolean = false;
 	const value: Writable<string> = writable('');
@@ -53,13 +53,13 @@
 		dynamicVariablesForm.update((form) => {
 			variables.forEach((variable) => {
 				(form as any)[variable] = generateDefault(variable).default;
-			})
+			});
 
-			return form
+			return form;
 		});
-	})
+	});
 
-	const replaceExecutable = (computer: ComputersResponse) => {
+	const replaceExecutable = () => {
 		let executable = $selectedScript?.executable || '';
 		$dynamicVariables.forEach((variable) => {
 			// @ts-ignore
@@ -67,13 +67,10 @@
 		});
 
 		let includeComputers = false;
-		let includeComputer = false;
 
 		executable.split('\n').forEach((line) => {
 			if (line.replaceAll(' ', '').toLowerCase() == '#computers') {
 				includeComputers = true;
-			} else if (line.replaceAll(' ', '').toLowerCase() == '#computer') {
-				includeComputer = true;
 			}
 		});
 
@@ -86,35 +83,39 @@
 				)
 			: '';
 
-		const computerPart = includeComputer ? '\ncomputer = ' + JSON.stringify(computer) : '\n';
+		return computersPart + '\n\n' + executable;
+	};
 
-		return computersPart + computerPart + '\n' + executable;
+	const createExecution = async (computer: ComputersResponse, replacedExecutable: string) => {
+		await pb.collection('executions').create({
+			completed: false,
+			executable: replacedExecutable,
+			computer: computer.id,
+			script: $selectedScript?.id,
+			user: $userStore?.id
+		});
 	};
 
 	const executeScript = async () => {
 		visible = false;
-
+		const replacedExecutable = replaceExecutable();
+		
 		try {
-			const promises = $selectedComputers
-				.filter((computer) => computer.status !== '0')
-				.map((computer) => {
-					return pb.collection('executions').create({
-						completed: false,
-						executable: replaceExecutable(computer),
-						computer: computer.id,
-						script: $selectedScript?.id,
-						user: $userStore?.id
-					});
-				});
+			const promises: Promise<any>[] = [];
+			
+			for (const computer of $selectedComputers) {
+				promises.push(createExecution(computer, replacedExecutable));
+			}
 
 			await Promise.all(promises);
+			await fetch('/api/script/mark/', { method: 'POST' });
+			
 			toast.success('Script started successfully');
 		} catch (error) {
 			toast.error('Error executing script, may be you do not have permission');
 		}
 	};
 </script>
-
 
 <Dialog.Root bind:open={visible}>
 	<Dialog.Trigger>

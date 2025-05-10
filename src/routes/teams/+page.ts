@@ -1,12 +1,7 @@
-import { pb } from '$lib/pocketbase/client';
-import { teamsStore, teamStore } from '$lib/stores';
-import { emptyTeam } from '$lib/config';
+import { teamsStore } from '$lib/stores';
 
 export const prerender = false;
 
 export const load = async () => {
-	teamStore.set(emptyTeam);
 	await teamsStore.getData();
-
-	return {};
 };

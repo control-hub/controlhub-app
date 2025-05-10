@@ -16,7 +16,7 @@
 </script>
 
 <Card.Root class="relative col-[1/-1] animate-fade-in-up sm:col-auto">
-	<div class="mx-6 my-4 flex min-w-[calc(100%-4rem)] min-h-[calc(100%-2rem)] max-h-[calc(100%-2rem)] justify-between gap-4">
+	<div class="mx-6 my-4 flex min-w-[calc(100%-4rem)] min-h-[calc(100%-2rem)] max-h-[calc(100%-2rem)] items-center justify-between gap-4">
 		<div class="block max-w-[calc(100%-4rem)]">
 			<Card.Header>
 				<div class="flex items-baseline gap-4">
@@ -30,14 +30,7 @@
 				<Card.Description>{shrinkString(script.description, 144)}</Card.Description>
 			</Card.Footer>
 		</div>
-		<Button
-			variant="outline"
-			class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
-			href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username
-					|| $userStore?.username || ''}/{script.name}"
-		>
-			<DotsHorizontal class={icon.default} />
-		</Button>
+		<Badge variant="secondary" class="h-6">Executed:&nbsp;{script.executed}</Badge>
 	</div>
 	<a
 		href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||

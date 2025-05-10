@@ -2,83 +2,27 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
-	import { randintSeed } from '$lib/utils';
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
-	import Plus from '@lucide/svelte/icons/plus';
+	import { TeamIcon } from '$lib/team';
+	import { Plus } from 'lucide-svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { toastApi, createTeam as utilsCreateTeam } from '$lib/utils';
-	import { teamsStore, userStore } from '$lib/stores';
 
 	const dialogOpen = writable(false);
 
-	import {
-		Cuboid,
-		Radar,
-		Airplay,
-		BookUser,
-		Cast,
-		Cylinder,
-		Diameter,
-		Eclipse,
-		Radius,
-		Box,
-		Package,
-		PackageOpen,
-		Bolt,
-		Container,
-		Pyramid,
-		TriangleRight,
-		Blend,
-		Pentagon,
-		Hexagon,
-		CircleDot,
-		CircleDotDashed,
-		Cone,
-		Square,
-		Triangle,
-		Tangent,
-		Torus,
-		SquareDashed
-	} from 'lucide-svelte';
-	import type { Team } from './sidebar-types';
+	import type { TeamsResponse } from '$lib/types';
 	import { writable } from 'svelte/store';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';
-	import { slide } from 'svelte/transition';
+	import { teamsStore, teamStore } from '$lib/stores';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let { teams, activeTeam }: { teams: Team[]; activeTeam?: Team } = $props();
-
-	let createTeamName = $state('');
+	let createTeamName = '';
 	const sidebar = useSidebar();
-
-	const logos = [
-		Cuboid,
-		Cylinder,
-		Diameter,
-		Eclipse,
-		Radius,
-		Box,
-		Package,
-		Bolt,
-		Container,
-		Pyramid,
-		TriangleRight,
-		Blend,
-		Pentagon,
-		Hexagon,
-		CircleDot,
-		CircleDotDashed,
-		Cone,
-		Square,
-		Triangle,
-		Tangent,
-		Torus
-	];
 
 	const createTeam = async () => {
 		const result = await utilsCreateTeam(createTeamName);
@@ -89,16 +33,13 @@
 	};
 </script>
 
-{#if activeTeam}
+{#if $teamStore}
 	<Sidebar.Menu>
 		<Sidebar.MenuItem>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
-						{@const activeTeamLogo =
-							activeTeam.logo ?? logos[randintSeed(activeTeam.id, 0, logos.length - 1)]}
-
-						{#if !activeTeam.empty}
+						{#if $teamStore !== undefined}
 							<Sidebar.MenuButton
 								{...props}
 								size="lg"
@@ -107,30 +48,12 @@
 								<div
 									class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 								>
-									<svelte:component this={activeTeamLogo} class="size-4" />
+									<TeamIcon team={$teamStore} class="size-4"/>
 								</div>
 								<div class="grid flex-1 text-left text-sm leading-tight">
 									<span class="truncate font-semibold">
-										{activeTeam.name}
+										{$teamStore.name}
 									</span>
-									<span class="truncate text-xs">{activeTeam.plan}</span>
-								</div>
-								<ChevronsUpDown class="ml-auto" />
-							</Sidebar.MenuButton>
-						{:else if activeTeam}
-							<Sidebar.MenuButton
-								{...props}
-								size="lg"
-								class="animate-fade-in-up data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-							>
-								<div class="flex aspect-square size-8 items-center justify-center rounded-lg">
-									<SquareDashed class="size-6" />
-								</div>
-								<div class="grid flex-1 text-left text-sm leading-tight">
-									<span class="truncate font-semibold">
-										{activeTeam.name}
-									</span>
-									<span class="truncate text-xs">{activeTeam.plan}</span>
 								</div>
 								<ChevronsUpDown class="ml-auto" />
 							</Sidebar.MenuButton>
@@ -145,11 +68,10 @@
 				>
 					<DropdownMenu.Label class="text-xs text-muted-foreground">Teams</DropdownMenu.Label>
 					<ScrollArea class={`max-h-[20vh]-scroll`}>
-						{#each teams as team, index (team.id)}
-							{@const logo = team.logo ?? logos[randintSeed(team.id, 0, logos.length - 1)]}
+						{#each $teamsStore as team, index (team.id)}
 							<DropdownMenu.Item onSelect={() => goto('/' + team.name)} class="gap-2 p-2">
 								<div class="flex size-6 items-center justify-center rounded-sm border">
-									<svelte:component this={logo} class="size-4 shrink-0" />
+									<TeamIcon team={team} class="size-3"/>
 								</div>
 								{team.name}
 							</DropdownMenu.Item>

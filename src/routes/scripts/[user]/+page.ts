@@ -10,7 +10,7 @@ export const load = async ({ parent, params }) => {
 	const { user } = params;
 
 	scriptsStore.updateOptions({
-		sort: '-created',
+		sort: '-executed,-created',
 		expand: 'user',
 		filter: `user.username = "${shield(user)}"`,
 		// filter: `user.id = "${shield(get(userStore)?.id as string)}"`,

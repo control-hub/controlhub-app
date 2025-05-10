@@ -8,7 +8,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { Toaster } from 'svelte-sonner';
 	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { userStore, teamStore, teamsStore } from '$lib/stores.js';
+	import { userStore } from '$lib/stores.js';
 
 	import { tabsStore } from '$lib/stores.js';
 	import { generateTabUrl, cn } from '$lib/utils';
@@ -39,7 +39,7 @@
 {#if $userStore}
 	<ScrollArea class="h-[100svh] w-full">
 		<Sidebar.Provider>
-			<AppSidebar user={$userStore} activeTeam={$teamStore} teams={$teamsStore} />
+			<AppSidebar />
 			<Sidebar.Inset>
 				<header
 					class="sticky top-0 z-40 shrink-0 items-center gap-2 bg-background/95 backdrop-blur transition-[width] ease-linear supports-[backdrop-filter]:bg-background/60"

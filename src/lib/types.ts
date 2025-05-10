@@ -65,8 +65,9 @@ export type ExecutionsRecord = {
 	computer: RecordIdString;
 	duration?: number;
 	executable?: HTMLString;
-	invisible?: boolean;
 	logs?: HTMLString;
+	invisible?: boolean;
+	marked?: boolean;
 	script?: RecordIdString;
 	status?: ExecutionsStatusOptions;
 	user?: RecordIdString;
@@ -78,10 +79,10 @@ export type RegionsRecord = {
 };
 
 export type ScriptsRecord = {
+	name?: string;
 	description?: HTMLString;
 	executable?: HTMLString;
-	global_name?: string;
-	name?: string;
+	executed: number;
 	public?: boolean;
 	user?: RecordIdString;
 };

@@ -1,36 +1,13 @@
 <script lang="ts">
-	import AudioWaveform from '@lucide/svelte/icons/audio-waveform';
 	import { FileCode2 } from 'lucide-svelte';
-	import Command from '@lucide/svelte/icons/command';
-	import GalleryVerticalEnd from '@lucide/svelte/icons/gallery-vertical-end';
 	import Settings2 from '@lucide/svelte/icons/settings-2';
 	import SquareTerminal from '@lucide/svelte/icons/square-terminal';
-	import type { User, NavPage, Team } from './sidebar-types';
+	import type { NavPage } from './sidebar-types';
 
 	// This is sample data.
 	let data: {
-		user?: User;
-		teams: Team[];
 		navMain: NavPage[];
 	} = {
-		user: undefined,
-		teams: [
-			{
-				id: '1',
-				name: 'Acme Inc',
-				plan: 'Enterprise'
-			},
-			{
-				id: '2',
-				name: 'Acme Corp.',
-				plan: 'Startup'
-			},
-			{
-				id: '3',
-				name: 'Evil Corp.',
-				plan: 'Free'
-			}
-		],
 		navMain: [
 			{
 				title: 'Teams',
@@ -69,26 +46,20 @@
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
-		user,
-		teams,
-		activeTeam,
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> & {
-		user: User;
-		teams: Team[];
-		activeTeam?: Team;
 	} = $props();
 </script>
 
 <Sidebar.Root bind:ref {collapsible} {...restProps} class="z-50">
 	<Sidebar.Header>
-		<TeamSwitcher {activeTeam} {teams} />
+		<TeamSwitcher />
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser {user} />
+		<NavUser />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
