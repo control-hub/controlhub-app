@@ -11,7 +11,7 @@
 
 	export let value: Writable<string> = writable('');
 
-	let previousSearchInput: string = 'core/';
+	let previousSearchInput: string = ($userStore?.defaultSearch || 'core') + '/';
 	export let searchInput = writable(previousSearchInput);
 
 	let open = false;
@@ -30,8 +30,9 @@
 	});
 
 	onMount(() => {
+		console.log($userStore?.defaultSearch);
 		scriptsStore.updateOptions({
-			filter: `user.username = "core"`,
+			filter: `user.username = "${$userStore?.defaultSearch || 'core'}"`,
 			sort: '-executed,-created',
 			autoSubGetData: false
 		});

@@ -12,7 +12,7 @@
 	// import type { RegionsResponse, TeamsResponse } from '$lib/types';
 	// import { isOwner } from '$lib/store/team_store';
 
-	import { regionsStore, teamStore } from '$lib/stores';
+	import { havePermission, regionsStore, teamStore } from '$lib/stores';
 
 	const regionDialogOpen = writable(false);
 	const regionForm = writable({
@@ -29,7 +29,7 @@
 	}
 </script>
 
-<!-- {#if $isOwner} -->
+{#if $havePermission('add_region')}
 <Dialog.Root bind:open={$regionDialogOpen}>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
@@ -63,3 +63,4 @@
 		</form>
 	</Dialog.Content>
 </Dialog.Root>
+{/if}

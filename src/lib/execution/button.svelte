@@ -21,7 +21,7 @@
 
 	let visible: boolean = false;
 	const value: Writable<string> = writable('');
-	const searchInput = writable('core/');
+	const searchInput = writable(($userStore?.defaultSearch || 'core') + '/');
 
 	const selectedScript = derived([scriptsStore, value], ([$scriptsStore, $value]) => {
 		return $scriptsStore.find((script) => script.id === $value) || undefined;

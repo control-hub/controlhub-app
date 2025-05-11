@@ -3,7 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import type { AsyncFunction } from '$lib/types';
-	import { cn, toastApi } from '$lib/utils';
+	import { cn } from '$lib/utils';
 
 	let className: string = '';
 	export { className as class };
@@ -14,39 +14,56 @@
 	export let footer: string = '';
 	export let destructive: boolean = false;
 	export let useAlert: boolean = false;
+	export let alertMessage: string =
+		'This action cannot be undone. This will permanently change or delete your data from our servers.';
 	export let disabledSave: boolean = false;
 	export let saveButtonText: string = 'Save';
 	export let act = true;
+	export let putSlotInHeader: boolean = false;
 
 	let openAlertDialog = false;
 	const realFunction = async () => {
-		await toastApi.execAsync(execute)();
+		await execute();
 		openAlertDialog = false;
 	};
 </script>
 
-<Card.Root class={cn('w-[min(80%,90vw)]', destructive ? 'border-red-500/40' : className)}>
-	<Card.Header class="gap-1">
-		<Card.Title>{title}</Card.Title>
-		<Card.Description>
-			{description}
-		</Card.Description>
-	</Card.Header>
+<Card.Root class={cn('w-[min(100%,60rem)]', destructive ? 'border-red-500/40' : '', className)}>
+	{#if !putSlotInHeader}
+		<Card.Header class="gap-1">
+			<Card.Title class="text-lg">{title}</Card.Title>
+			<Card.Description>
+				{description}
+			</Card.Description>
+		</Card.Header>
+	{:else}
+		<Card.Header class="flex flex-row justify-between pb-6">
+			<div class="flex flex-col gap-1 mr-4">
+				<Card.Title class="text-lg">{title}</Card.Title>
+				<Card.Description>
+					{description}
+				</Card.Description>
+			</div>
+			<slot />
+		</Card.Header>
+	{/if}
 
 	<form on:submit|preventDefault={realFunction}>
-		<Card.Content>
-			<slot />
-		</Card.Content>
+		{#if !putSlotInHeader}
+			<Card.Content>
+				<slot />
+			</Card.Content>
+		{/if}
 
-		{#if act}
-			<Card.Footer
-				class={cn(
-					'flex items-center justify-between border-t px-6 py-4',
-					destructive ? 'bg-red-500/20' : 'bg-background/60'
-				)}
-			>
-				<p class="text-sm text-muted-foreground">{footer}</p>
+		<Card.Footer
+			class={cn(
+				'flex items-center justify-between border-t px-6 py-4',
+				destructive ? 'bg-red-500/20 border-red-500/40' : 'bg-background/60'
+			)}
+		>
+			<p class="text-sm text-muted-foreground">{footer}</p>
 
+			{#if act}
 				{#if !useAlert}
 					<Button
 						type="submit"
@@ -69,8 +86,7 @@
 							<AlertDialog.Header>
 								<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
 								<AlertDialog.Description>
-									This action cannot be undone. This will permanently change or delete your data
-									from our servers.
+									{alertMessage}
 								</AlertDialog.Description>
 							</AlertDialog.Header>
 							<AlertDialog.Footer>
@@ -80,7 +96,7 @@
 						</AlertDialog.Content>
 					</AlertDialog.Root>
 				{/if}
-			</Card.Footer>
-		{/if}
+			{/if}
+		</Card.Footer>
 	</form>
 </Card.Root>

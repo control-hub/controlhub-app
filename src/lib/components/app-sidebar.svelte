@@ -21,18 +21,8 @@
 			},
 			{
 				title: 'Settings',
-				url: '#',
-				icon: Settings2,
-				items: [
-					{
-						title: 'General',
-						url: '#'
-					},
-					{
-						title: 'Team',
-						url: '#'
-					}
-				]
+				url: '/settings',
+				icon: Settings2
 			}
 		]
 	};

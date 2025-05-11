@@ -5,7 +5,9 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import UsersAvatar from './avatar.svelte';
 	import { Ellipsis, Ban, View } from 'lucide-svelte';
+	import { pb } from '$lib/pocketbase/client';
 
 	import { ExecutionsTable } from '$lib/execution';
 
@@ -18,9 +20,12 @@
 		userStore,
 		teamStore,
 		executionsStore,
+		executionsStoreCount,
+		executionsPerPage
 	} from '$lib/stores';
 
 	let openDialog: boolean = false;
+	executionsPerPage.set(10);
 
 	const excludeUserViaAccess = async (access: TeamsAccessResponse) => {
 		await teamsAccessStore.delete(access);
@@ -38,7 +43,10 @@
 			autoSubGetData: false
 		});
 
-		await executionsStore.getData();
+		const data = await pb.collection('executions').getList(1, $executionsPerPage, executionsStore.options);
+		executionsStoreCount.set(data.totalItems);
+		executionsStore.set(data.items);
+
 		openDialog = true;
 	};
 </script>
@@ -51,9 +59,6 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-
-
-
 <div class="grid grid-cols-2 gap-4 pb-6 max-lg:grid-cols-1">
 	{#each $teamsAccessStore as access (access.id)}
 		{@const user = (access.expand as { user: UsersResponse }).user}
@@ -62,7 +67,8 @@
 			<div class="mx-6 my-4 flex max-w-full flex-wrap items-start justify-between align-middle">
 				<div class="block max-w-[calc(100%-4rem)]">
 					<Card.Header>
-						<Card.Title class="notranslate mb-3 flex w-full items-baseline gap-2">
+						<Card.Title class="notranslate mb-3 flex w-full items-center gap-2">
+							<UsersAvatar {user} class="size-12 mr-2"/>
 							<span>{user.username}</span>
 							{#if user.id === $teamStore?.owner}
 								<Badge class="text-sm">Owner</Badge>

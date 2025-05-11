@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import * as Alert from '$lib/components/ui/alert';
+	import { Code } from '$lib/components/ui/code';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { pb } from '$lib/pocketbase/client';
 	import { teamStore, regionStore, computerStore } from '$lib/stores';
 	import type { ExecutionsResponse, ScriptsResponse, UsersResponse } from '$lib/types';
 	import { UserAvatar } from '$lib/user';
-	import { Expand } from 'lucide-svelte';
 
 	export let execution: ExecutionsResponse;
 
@@ -50,14 +50,17 @@
 					<Alert.Title>
 						{execution.id}
 					</Alert.Title>
+					<span class="text-muted-foreground">
+						Id: {execution.id}
+					</span>
 				{/if}
 				<span class="text-muted-foreground">
 					Duration: {readableDuration(execution.duration)}
 				</span>
 			</div>
 		</div>
-		{#if showUser}
-			{@const user = (execution.expand as { user: UsersResponse }).user}
+		{@const user = (execution.expand as { user: UsersResponse })?.user}
+		{#if user !== undefined && showUser}
 			<div class="flex items-center gap-2">
 				<span class="text-muted-foreground"> by </span>
 				<a href="/scripts/{user.username}">
@@ -65,12 +68,13 @@
 						<Tooltip.Trigger>
 							<UserAvatar {user} />
 						</Tooltip.Trigger>
-						<Tooltip.Content>
-							<pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
+						<Tooltip.Content class="bg-opacity-0 flex justify-start">
+							<Code lang="json" code={JSON.stringify({ id: user.id, email: user.email, username: user.username }, null, 4)} />
+							<!-- <pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
 									{ id: user.id, email: user.email, username: user.username },
 									null,
 									4
-								)}</pre>
+								)}</pre> -->
 						</Tooltip.Content>
 					</Tooltip.Root>
 				</a>

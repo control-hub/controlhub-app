@@ -2,14 +2,17 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import type { UsersResponse } from '$lib/types';
+	import { cn } from '$lib/utils';
 
 	export let user: UsersResponse;
+	let className: string = '';
+	export { className as class };
 </script>
 
-<Avatar.Root class="h-8 w-8 rounded-lg">
+<Avatar.Root class={cn("h-8 w-8 rounded-lg", className)}>
 	<Avatar.Image
 		class="object-cover"
-		src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}"
+		src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}?thumb=100x100"
 		alt={user.username}
 	/>
 	<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"

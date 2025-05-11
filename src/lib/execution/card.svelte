@@ -1,13 +1,10 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
-	import * as Avatar from '$lib/components/ui/avatar';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Code } from '$lib/components/ui/code';
 	import { executionStore } from '$lib/stores';
-	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-	import type { UsersResponse, ScriptsResponse, ComputersResponse } from '$lib/types';
+	import type { UsersResponse, ScriptsResponse } from '$lib/types';
 	import { formatDate } from '$lib/utils';
-	import { CopyText } from '$lib/text/copy';
 	import { UserAvatar } from '$lib/user';
 
 	const statusLabelMap = {
@@ -60,12 +57,12 @@
 
 		{#if $executionStore?.executable}
 			<p class="mb-1 text-muted-foreground">Executable:</p>
-			<CopyText value={$executionStore.executable.split('\n').slice(2).join('\n')} />
+			<Code lang="python" code={$executionStore.executable.split('\n').slice(2).join('\n')} />
 		{/if}
 
 		{#if $executionStore?.logs != '\n' && $executionStore?.logs}
 			<p class="mb-1 text-muted-foreground">Logs:</p>
-			<CopyText value={$executionStore.logs} />
+			<Code lang="bash" code={$executionStore.logs} />
 		{/if}
 	</Card.Content>
 

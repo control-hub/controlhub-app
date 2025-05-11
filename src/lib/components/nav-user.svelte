@@ -2,28 +2,16 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
-	import BadgeCheck from '@lucide/svelte/icons/badge-check';
-	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
-	import LogOut from '@lucide/svelte/icons/log-out';
+	import { Settings2, LogOut, ChevronsUpDown } from 'lucide-svelte';
 	import type { UsersResponse } from '$lib/types';
-	import { teamsStore, userStore, teamStore, teamAccessStore } from '$lib/stores';
-	import { goto } from '$app/navigation';
-	import { toastApi } from '$lib/utils';
+	import { userStore } from '$lib/stores';
+	import { logout } from '$lib/utils';
 	import { UserAvatar } from '$lib/user';
 
 	import { theme } from 'theme-selector';
 	import { Moon, Sun, Bolt } from 'lucide-svelte';
 
 	const sidebar = useSidebar();
-
-	async function logout() {
-		await toastApi.post('/api/auth/logout');
-		await goto('/auth/login');
-		userStore.set(undefined);
-		teamsStore.set([]);
-		teamStore.set(undefined);
-		teamAccessStore.set(undefined);
-	}
 </script>
 
 <Sidebar.Menu>
@@ -64,8 +52,12 @@
 				<DropdownMenu.Group></DropdownMenu.Group>
 				<DropdownMenu.Group>
 					<DropdownMenu.Item>
-						<BadgeCheck />
-						Account
+						{#snippet child({ props })}
+							<a href="/settings" {...props}>
+								<Settings2 />
+								Settings
+							</a>
+						{/snippet}
 					</DropdownMenu.Item>
 					<DropdownMenu.Sub>
 						<DropdownMenu.SubTrigger>

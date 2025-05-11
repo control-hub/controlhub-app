@@ -7,8 +7,8 @@ import type { Tab, AsyncFunction, TeamsResponse, TeamsRecord, ComputersResponse 
 import type { AuthProviderInfo } from 'pocketbase';
 import { beforeNavigate } from '$app/navigation';
 import type { TransitionConfig } from 'svelte/transition';
-import type { CollectionStore } from 'pocketbase-store';
-import { computersStore, regionStore, userStore, teamsStore } from '$lib/stores';
+import { goto } from '$app/navigation';
+import { computersStore, regionStore, userStore, teamsStore, teamStore, teamAccessStore } from '$lib/stores';
 import { get } from 'svelte/store';
 
 export function cn(...inputs: ClassValue[]) {
@@ -311,6 +311,15 @@ export const createComputer = async (name: string): Promise<ComputersResponse> =
 
 	return await computersStore.create(computer);
 };
+
+export const logout = async () => {
+	await toastApi.post('/api/auth/logout');
+	await goto('/auth/login');
+	userStore.set(undefined);
+	teamsStore.set([]);
+	teamStore.set(undefined);
+	teamAccessStore.set(undefined);
+}
 
 export const randintSeed = (str: string, min: number, max: number): number => {
 	let hash = 0;

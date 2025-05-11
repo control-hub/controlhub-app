@@ -71,6 +71,8 @@ export const executionsStore = createCollectionStore<ExecutionsResponse>(pb, 'ex
 	sort: '-status,-updated',
 	autoSubGetData: false
 });
+export const executionsStoreCount = writable(0);
+export const executionsPerPage = writable(11);
 export const executionStore = writable<ExecutionsResponse | undefined>(undefined);
 
 export const scriptStore = writable<ScriptsResponse | undefined>(undefined);

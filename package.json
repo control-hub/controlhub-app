@@ -72,10 +72,14 @@
 		"@fsegurai/codemirror-theme-github-light": "^6.1.2",
 		"@thisux/sveltednd": "^0.0.20",
 		"codemirror": "^6.0.1",
+		"isomorphic-dompurify": "^2.24.0",
 		"pocketbase": "^0.21.5",
 		"pocketbase-store": "^0.2.3",
+		"shiki": "^3.4.0",
 		"svelte": "^5.0.0",
 		"svelte-codemirror-editor": "^1.4.1",
+		"svelte-easy-crop": "^4.0.1",
+		"svelte-toolbelt": "^0.7.1",
 		"theme-selector": "^0.1.3"
 	}
 }

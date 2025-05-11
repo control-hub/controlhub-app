@@ -23,7 +23,6 @@ const markExecutions = async (execution: ExecutionsResponse, admin: TypedPocketB
 };
 
 export const POST = async ({ locals }) => {
-    
     try {
         const executions = await locals.admin.collection('executions').getFullList({
             filter: `marked = false && user = "${locals.user?.id}"`,

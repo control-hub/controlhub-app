@@ -6,9 +6,9 @@
 	import { writable, derived, type Writable, type Readable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
-	import { computersStore, teamStore, regionStore, userStore } from '$lib/stores';
+	import { computersStore, teamStore, regionStore, userStore, havePermission } from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
-	import { toastApi, shield, createComputer as utilsCreateComputer } from '$lib/utils';
+	import { toastApi, createComputer as utilsCreateComputer } from '$lib/utils';
 	import { icon } from '$lib/config';
 	import { pb } from '$lib/pocketbase/client';
 
@@ -20,8 +20,10 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import { Code } from '$lib/components/ui/code';
 
 	let unsubscribe: () => Promise<void> = async () => {};
+	let cachedExecutions = new Set<string>();
 
 	onMount(async () => {
 		unsubscribe = await pb.collection('executions').subscribe(
@@ -34,6 +36,9 @@
 						`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
 					);
 				} else if (action === 'update' && record.status === '3') {
+					if (cachedExecutions.has(record.id)) return;
+
+					cachedExecutions.add(record.id);
 					const computer = $computersStore.find((c) => c.id === record.computer);
 					toast.error(
 						`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
@@ -198,13 +203,13 @@
 		await result;
 	}
 </script>
-
+{#if $havePermission('add_computer')}
 <Dialog.Root bind:open={$computerDialogOpen}>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" class="mb-4 w-full"
-				>Create computer<CirclePlus class={icon.left} /></Button
-			>
+		<Button {...props} variant="outline" class="mb-4 w-full"
+		>Create computer<CirclePlus class={icon.left} /></Button
+		>
 		{/snippet}
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
@@ -213,20 +218,21 @@
 			<Dialog.Description>Enter your new computer name.</Dialog.Description>
 		</Dialog.Header>
 		<form
-			class="flex gap-2"
-			onsubmit={toastApi.execAsync(
-				async () => await createComputer($computerForm.name),
-				`Computer ${$computerForm.name} created.`,
-				`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
-			)}
+		class="flex gap-2"
+		onsubmit={toastApi.execAsync(
+			async () => await createComputer($computerForm.name),
+			`Computer ${$computerForm.name} created.`,
+			`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
+		)}
 		>
-			<div class="grid w-full grid-cols-1 gap-2">
-				<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
-			</div>
-			<Button type="submit" class="h-full">Create</Button>
-		</form>
-	</Dialog.Content>
+		<div class="grid w-full grid-cols-1 gap-2">
+			<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
+		</div>
+		<Button type="submit" class="h-full">Create</Button>
+	</form>
+</Dialog.Content>
 </Dialog.Root>
+{/if}
 
 <div class="grid animate-fade-in-up grid-cols-2 gap-6 max-xl:grid-cols-1">
 	<!-- Disabled Computers Column -->
@@ -477,8 +483,8 @@
 						</div>
 					</a>
 				</Tooltip.Trigger>
-				<Tooltip.Content>
-					<pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
+				<Tooltip.Content class="bg-opacity-0" side="right">
+					<!-- <pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
 							{
 								id: computer.id,
 								name: computer.name,
@@ -490,7 +496,16 @@
 							},
 							null,
 							4
-						)}</pre>
+						)}</pre> -->
+						<Code lang="json" code={JSON.stringify({
+							id: computer.id,
+							name: computer.name,
+							ip: computer.ip,
+							mac: computer.mac,
+							status: computer.status,
+							token: computer.token,
+							data: computer.data
+						}, null, 4)} />
 				</Tooltip.Content>
 			</Tooltip.Root>
 			<div class="flex gap-3">

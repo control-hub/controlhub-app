@@ -2,6 +2,7 @@
 	import { ExecutionsTable } from '$lib/execution';
 	import { executionsStore } from '$lib/stores';
 	import { onMount, onDestroy } from 'svelte';
+	
 	onMount(async () => {
 		await executionsStore.subscribeOnPocketBase();
 	});

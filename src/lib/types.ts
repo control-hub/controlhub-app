@@ -134,6 +134,7 @@ export type TeamsLinkRecord = {
 export type UsersRecord = {
 	avatar?: string;
 	name?: string;
+	defaultSearch?: string;
 };
 
 // Response types include system fields and match responses from the PocketBase API

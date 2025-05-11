@@ -14,6 +14,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 	await event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	if (event.locals.pb.authStore.isValid) {
+		try {
+			await event.locals.pb.collection('users').authRefresh();
+		} catch (err) {
+			event.locals.pb.authStore.clear();
+		}
+	}
+
+	if (event.locals.pb.authStore.isValid) {
 		event.locals.user = toPOJO(event.locals.pb.authStore.model as UsersResponse);
 	} else {
 		event.locals.user = undefined;

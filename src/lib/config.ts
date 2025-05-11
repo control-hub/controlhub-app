@@ -1,5 +1,5 @@
 import type { Tab, TeamsResponse } from '$lib/types';
-import type { Team } from './components/sidebar-types';
+import { writable } from 'svelte/store';
 
 export const providersSortOrder = ['google', 'yandex', 'github'];
 
@@ -14,6 +14,8 @@ export const logos = {
 		dark: '/github-light.svg'
 	}
 };
+
+export const defaultUser = writable('core');
 
 export const tabsConfig: { [key: string]: Tab[] } = {
 	region: [
