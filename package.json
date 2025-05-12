@@ -70,6 +70,7 @@
 		"@fsegurai/codemirror-theme-basic-light": "^6.1.2",
 		"@fsegurai/codemirror-theme-github-dark": "^6.1.2",
 		"@fsegurai/codemirror-theme-github-light": "^6.1.2",
+		"@sveltejs/adapter-node": "^5.2.12",
 		"@thisux/sveltednd": "^0.0.20",
 		"codemirror": "^6.0.1",
 		"isomorphic-dompurify": "^2.24.0",
