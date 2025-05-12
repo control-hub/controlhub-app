@@ -8,7 +8,7 @@
 	import { CopyButton } from '$lib/components/ui/copy-button';
 
 	const style = tv({
-		base: 'not-prose relative h-full max-h-[650px] overflow-auto rounded-lg border',
+		base: 'not-prose relative h-full max-h-[min(100%,650px)] overflow-auto rounded-lg border',
 		variants: {
 			variant: {
 				default: 'border-border bg-background',
@@ -103,7 +103,7 @@
 	});
 </script>
 
-<div class={cn(style({ variant }), className)}>
+<div class={cn("max-w-[min(650px,100%)]", style({ variant }), className)}>
 	{@html highlighted}
 	{#if !hideCopy}
 		<div
@@ -128,7 +128,7 @@
 
 	:global(pre.shiki) {
 		@apply overflow-auto rounded-lg bg-inherit py-4 text-sm;
-		max-height: min(100%, 650px);
+		max-height: calc(min(100%,650px));
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 	}

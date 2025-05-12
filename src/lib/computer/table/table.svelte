@@ -30,15 +30,17 @@
 			'*',
 			({ action, record }) => {
 				if (record.user !== $userStore?.id) return;
+				if (cachedExecutions.has(record.id)) return;
 
 				if (action === 'update' && record.status === '2') {
+					cachedExecutions.add(record.id);
+
 					toast.success(
 						`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
 					);
 				} else if (action === 'update' && record.status === '3') {
-					if (cachedExecutions.has(record.id)) return;
-
 					cachedExecutions.add(record.id);
+					
 					const computer = $computersStore.find((c) => c.id === record.computer);
 					toast.error(
 						`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
@@ -427,7 +429,7 @@
 				</span>
 				<span class="ml-2"> Selected Computers </span>
 			</h2>
-			{#if $selectedComputers.length > 0}
+			{#if $selectedComputers.length > 0 && $havePermission('edit_computer')}
 				<ExecutionsButton {selectedComputers} />
 			{:else}
 				<div class="p-[14px] opacity-0"></div>

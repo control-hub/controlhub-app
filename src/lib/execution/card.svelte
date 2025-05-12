@@ -25,7 +25,7 @@
 </script>
 
 <Card.Root
-	class="mx-auto w-full max-w-2xl overflow-hidden break-words rounded-2xl border bg-background shadow-md"
+	class="mx-auto w-full max-w-[min(80vw,680px)] overflow-hidden break-words rounded-2xl border bg-background shadow-md"
 >
 	<Card.Header class="flex items-center justify-between px-6 pt-6">
 		<div class="flex flex-row items-center gap-4">
@@ -57,7 +57,7 @@
 
 		{#if $executionStore?.executable}
 			<p class="mb-1 text-muted-foreground">Executable:</p>
-			<Code lang="python" code={$executionStore.executable.split('\n').slice(2).join('\n')} />
+			<Code lang="python" code={$executionStore.executable} />
 		{/if}
 
 		{#if $executionStore?.logs != '\n' && $executionStore?.logs}

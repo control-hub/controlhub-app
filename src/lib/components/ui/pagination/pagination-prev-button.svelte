@@ -13,7 +13,6 @@
 </script>
 
 {#snippet Fallback()}
-	<span>Previous</span>
 	<ChevronLeft />
 {/snippet}
 

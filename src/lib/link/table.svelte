@@ -3,6 +3,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
+	import * as Alert from "$lib/components/ui/alert"
 
 	import { Ellipsis, Trash2, Copy } from 'lucide-svelte';
 	// import { CollectionStore } from 'pocketbase-store';
@@ -12,7 +13,7 @@
 	// import { isOwner } from '$lib/store/team_store';
 
 	import CreateLink from './create.svelte';
-	import { teamsLinkStore } from '$lib/stores';
+	import { havePermission, teamsLinkStore } from '$lib/stores';
 	import { browser } from '$app/environment';
 	import type { TeamsLinkResponse } from '$lib/types';
 
@@ -32,7 +33,15 @@
 </script>
 
 <div class="grid grid-cols-1 gap-4 pb-6" class:!grid-cols-1={$teamsLinkStore.length === 0}>
+	{#if $havePermission("add_access")}
 	<CreateLink />
+	{:else if $teamsLinkStore.length === 0}
+		<Alert.Root>
+		  <Alert.Description>
+			There is nothing for you to see here, not enough permissions
+		  </Alert.Description>
+		</Alert.Root>
+	{/if}
 	<!-- {/if} -->
 	{#each $teamsLinkStore as link (link.id)}
 		<Card.Root class="relative col-[1/-1] h-full animate-fade-in-up sm:col-auto">

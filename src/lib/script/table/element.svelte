@@ -16,8 +16,8 @@
 </script>
 
 <Card.Root class="relative col-[1/-1] animate-fade-in-up sm:col-auto">
-	<div class="mx-6 my-4 flex min-w-[calc(100%-4rem)] min-h-[calc(100%-2rem)] max-h-[calc(100%-2rem)] items-center justify-between gap-4">
-		<div class="block max-w-[calc(100%-4rem)]">
+	<div class="mx-6 my-4 flex min-w-[calc(100%-4rem)] min-h-[calc(100%-2rem)] max-h-[calc(100%-2rem)] items-center justify-between max-sm:items-start max-sm:flex-col gap-4">
+		<div class="block max-w-[calc(100%-4rem)] max-sm:max-w-full">
 			<Card.Header>
 				<div class="flex items-baseline gap-4">
 					<Card.Title class="mb-3">{shrinkString(script.name, 32)}</Card.Title>
@@ -30,7 +30,7 @@
 				<Card.Description>{shrinkString(script.description, 144)}</Card.Description>
 			</Card.Footer>
 		</div>
-		<Badge variant="secondary" class="h-6">Executed:&nbsp;{script.executed}</Badge>
+		<Badge variant="secondary" class="h-6 max-sm:ml-6">Executed:&nbsp;{script.executed}</Badge>
 	</div>
 	<a
 		href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||

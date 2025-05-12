@@ -75,15 +75,16 @@
 		});
 
 		const computersPart = includeComputers
-			? 'computers = ' +
+			? 'import json\ncomputers = json.loads("' +
 				JSON.stringify(
 					$selectedComputers.map((computer) => {
 						return { ...computer, token: '' };
 					})
-				)
-			: '';
+				).replaceAll('\\', '\\\\').replaceAll('"', '\\"') +
+				'")\n'
+			: '\n\n';
 
-		return computersPart + '\n\n' + executable;
+		return computersPart + executable;
 	};
 
 	const createExecution = async (computer: ComputersResponse, replacedExecutable: string) => {
@@ -99,17 +100,17 @@
 	const executeScript = async () => {
 		visible = false;
 		const replacedExecutable = replaceExecutable();
-		
+
 		try {
 			const promises: Promise<any>[] = [];
-			
+
 			for (const computer of $selectedComputers) {
 				promises.push(createExecution(computer, replacedExecutable));
 			}
 
 			await Promise.all(promises);
 			await fetch('/api/script/mark/', { method: 'POST' });
-			
+
 			toast.success('Script started successfully');
 		} catch (error) {
 			toast.error('Error executing script, may be you do not have permission');
