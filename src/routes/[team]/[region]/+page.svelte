@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { computersStore, tabsStore } from '$lib/stores';
-	import { ComputersTable } from '$lib/computer/table';
+	import { ComputersTable } from '$lib/computer';
 	import { tabsConfig } from '$lib/config';
 
 	onMount(async () => {

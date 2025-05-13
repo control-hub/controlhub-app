@@ -105,7 +105,9 @@
 			const promises: Promise<any>[] = [];
 
 			for (const computer of $selectedComputers) {
-				promises.push(createExecution(computer, replacedExecutable));
+				if (computer.status !== '0') {
+					promises.push(createExecution(computer, replacedExecutable));
+				}
 			}
 
 			await Promise.all(promises);

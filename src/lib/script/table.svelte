@@ -1,9 +1,7 @@
 <script lang="ts">
-	import ScriptCard from '$lib/script/table/element.svelte';
+	import ScriptCard from './element.svelte';
 
 	import { derived, type Writable } from 'svelte/store';
-	// import { isOwner } from '$lib/store/team_store';
-
 	import { scriptsStore } from '$lib/stores';
 
 	export let filterPhrase: Writable<string>;

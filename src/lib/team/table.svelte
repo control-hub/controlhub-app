@@ -4,15 +4,13 @@
 
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import { PlusCircle } from 'lucide-svelte';
-	import { DotsHorizontal } from 'svelte-radix';
+	import { PlusCircle, Ellipsis } from 'lucide-svelte';
 
 	import { writable, derived, type Writable } from 'svelte/store';
 	import { toastApi, createTeam as utilsCreateTeam, shrinkString } from '$lib/utils';
 	import { icon } from '$lib/config';
-	import { userStore, teamsStore } from '$lib/stores';
-	// import { isOwner } from '$lib/store/team_store';
-	import { fly } from 'svelte/transition';
+	import { teamsStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	export let filterPhrase: Writable<string>;
 
@@ -27,11 +25,13 @@
 		});
 	});
 
-	async function createTeam(name: string) {
-		await utilsCreateTeam(name);
+	async function createTeam() {
+		const result = await utilsCreateTeam($teamForm.name);
 
 		teamDialogOpen.set(false);
 		teamForm.set({ name: '' });
+
+		goto('/' + result.name);
 	}
 </script>
 
@@ -39,7 +39,6 @@
 	class="grid grid-cols-2 gap-4 pb-6 max-lg:grid-cols-1"
 	class:!grid-cols-1={$filtered.length === 0}
 >
-	<!-- {#if $isOwner} -->
 	<Dialog.Root bind:open={$teamDialogOpen}>
 		<Dialog.Trigger>
 			{#snippet child({ props })}
@@ -61,7 +60,7 @@
 			<form
 				class="flex gap-2"
 				on:submit|preventDefault={toastApi.execAsync(
-					async () => await createTeam($teamForm.name),
+					createTeam,
 					`Team ${$teamForm.name} created.`,
 					`Failed to create team ${$teamForm.name}, my be this team already exists.`
 				)}
@@ -92,7 +91,7 @@
 					class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
 					href="/{team.name}/~/settings"
 				>
-					<DotsHorizontal class={icon.default} />
+					<Ellipsis class={icon.default} />
 				</Button>
 			</div>
 			<a href="/{team.name}" aria-label={team.name}>

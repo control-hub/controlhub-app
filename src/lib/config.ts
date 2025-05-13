@@ -18,6 +18,26 @@ export const logos = {
 export const defaultUser = writable('core');
 
 export const tabsConfig: { [key: string]: Tab[] } = {
+	script: [
+		{
+			name: 'Overview',
+			href: ''
+		},
+		{
+			name: 'Settings',
+			href: '/~/settings'
+		}
+	],
+	computer: [
+		{
+			name: 'Overview',
+			href: ''
+		},
+		{
+			name: 'Settings',
+			href: '/~/settings'
+		}
+	],
 	region: [
 		{
 			name: 'Overview',

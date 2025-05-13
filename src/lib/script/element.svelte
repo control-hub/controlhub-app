@@ -1,13 +1,8 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
-
-	import { Button } from '$lib/components/ui/button';
-	import { DotsHorizontal } from 'svelte-radix';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 
 	import { shrinkString } from '$lib/utils';
-	import { icon } from '$lib/config';
-	// import { isOwner } from '$lib/store/team_store';
 
 	import type { ScriptsResponse, UsersResponse } from '$lib/types';
 	import { userStore } from '$lib/stores';

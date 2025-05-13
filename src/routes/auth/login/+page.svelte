@@ -9,7 +9,7 @@
 	import { toastApi } from '$lib/utils';
 	import { slide } from 'svelte/transition';
 	import { logos } from '$lib/config';
-	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import type { AuthProviderInfo } from 'pocketbase';
 
 	let isLoginVisible = false;
@@ -29,7 +29,7 @@
 			// @ts-ignore
 			return logos[provider.name][currentTheme];
 		} else {
-			return `${PUBLIC_POCKETBASE_URL}/_/images/oauth2/${provider.name}.svg`;
+			return `${env.PUBLIC_POCKETBASE_URL}/_/images/oauth2/${provider.name}.svg`;
 		}
 	}
 

@@ -6,11 +6,8 @@
 	import * as Alert from "$lib/components/ui/alert"
 
 	import { Ellipsis, Trash2, Copy } from 'lucide-svelte';
-	// import { CollectionStore } from 'pocketbase-store';
 	import { shrinkString, toastApi } from '$lib/utils';
 	import { icon } from '$lib/config';
-	// import type { LinksResponse, TeamsResponse } from '$lib/types';
-	// import { isOwner } from '$lib/store/team_store';
 
 	import CreateLink from './create.svelte';
 	import { havePermission, teamsLinkStore } from '$lib/stores';

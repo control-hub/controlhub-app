@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
-	import { ScriptsTable, ScriptsCreateDialog } from '$lib/script/table';
+	import { ScriptsTable, ScriptsCreateDialog } from '$lib/script';
 	import { writable } from 'svelte/store';
 
     export let data: {username: string};

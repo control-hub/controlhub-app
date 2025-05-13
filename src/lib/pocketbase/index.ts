@@ -1,9 +1,9 @@
 import PocketBase from 'pocketbase';
 import type { TypedPocketBase } from '$lib/types';
-import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
 export const createPb = (autoCancellation: boolean = false): TypedPocketBase => {
-	const pb = new PocketBase(PUBLIC_POCKETBASE_URL) as TypedPocketBase;
+	const pb = new PocketBase(env.PUBLIC_POCKETBASE_URL) as TypedPocketBase;
 
 	pb.autoCancellation(autoCancellation);
 

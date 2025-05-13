@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Avatar from '$lib/components/ui/avatar';
-	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import type { UsersResponse } from '$lib/types';
 	import { cn } from '$lib/utils';
 
@@ -12,7 +12,7 @@
 <Avatar.Root class={cn("h-8 w-8 rounded-lg", className)}>
 	<Avatar.Image
 		class="object-cover"
-		src="{PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}?thumb=100x100"
+		src="{env.PUBLIC_POCKETBASE_URL}/api/files/users/{user.id}/{user.avatar}?thumb=100x100"
 		alt={user.username}
 	/>
 	<Avatar.Fallback class="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"

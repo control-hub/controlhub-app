@@ -1,19 +1,13 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
-
 	import { Button } from '$lib/components/ui/button';
-	import { DotsHorizontal } from 'svelte-radix';
+	import { Ellipsis } from 'lucide-svelte';
 
-	// import { CollectionStore } from 'pocketbase-store';
 	import { derived, type Writable } from 'svelte/store';
 	import { shrinkString } from '$lib/utils';
 	import { icon } from '$lib/config';
-	// import type { RegionsResponse, TeamsResponse } from '$lib/types';
-	// import { isOwner } from '$lib/store/team_store';
-
-	import CreateRegion from './create.svelte';
-
 	import { regionsStore, teamStore } from '$lib/stores';
+	import CreateRegion from './create.svelte';
 
 	export let filterPhrase: Writable<string>;
 
@@ -51,7 +45,7 @@
 					class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
 					href="/{$teamStore?.name as string}/{region.name}/~/settings"
 				>
-					<DotsHorizontal class={icon.default} />
+					<Ellipsis class={icon.default} />
 				</Button>
 			</div>
 			<a href="/{$teamStore?.name as string}/{region.name}" aria-label={region.name}>

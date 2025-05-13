@@ -86,4 +86,3 @@
 		</form>
 	</Dialog.Content>
 </Dialog.Root>
-<!-- TODO add links table (list) -->

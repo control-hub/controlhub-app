@@ -1,9 +1,9 @@
-import { POCKETBASE_ADMIN_LOGIN, POCKETBASE_ADMIN_PASSWORD } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { createPb } from '.';
 
 const admin_ = createPb();
 
-await admin_.admins.authWithPassword(POCKETBASE_ADMIN_LOGIN, POCKETBASE_ADMIN_PASSWORD, {
+await admin_.admins.authWithPassword(env.POCKETBASE_ADMIN_LOGIN, env.POCKETBASE_ADMIN_PASSWORD, {
 	autoRefreshThreshold: 30 * 60
 });
 

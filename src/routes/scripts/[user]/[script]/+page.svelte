@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-
-	import { ScriptsEditor } from '$lib/script/editor';
+	import { ScriptsEditor } from '$lib/script';
 	import { scriptStore, userStore } from '$lib/stores';
 	import { derived, writable } from 'svelte/store';
 

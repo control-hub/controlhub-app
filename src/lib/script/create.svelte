@@ -11,6 +11,7 @@
 	import { icon } from '$lib/config';
 
 	import { scriptsStore, userStore } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	export let username: string | undefined = undefined;
 
@@ -18,7 +19,8 @@
 	const scriptForm = writable({
 		name: '',
 		description: '',
-		public: false
+		public: false,
+		executed: 0
 	});
 
 	async function createScript() {
@@ -28,6 +30,8 @@
 		});
 		scriptDialogOpen.set(false);
 		await result;
+
+		goto('/scripts/' + $userStore?.username + '/' + $scriptForm.name);
 	}
 </script>
 

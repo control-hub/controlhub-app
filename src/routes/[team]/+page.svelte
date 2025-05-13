@@ -3,7 +3,7 @@
 	import { tabsStore } from '$lib/stores';
 	import { tabsConfig } from '$lib/config';
 	import { Input } from '$lib/components/ui/input';
-	import { RegionsTable } from '$lib/region/table';
+	import { RegionsTable } from '$lib/region';
 
 	import { writable } from 'svelte/store';
 

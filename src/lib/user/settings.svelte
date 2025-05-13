@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { userStore } from '$lib/stores';
 	import * as ImageCropper from '$lib/components/ui/image-cropper';
-	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { logout, toastApi } from '$lib/utils';
 	import type { UsersResponse } from '$lib/types';
 	import { writable } from 'svelte/store';
@@ -118,7 +118,7 @@
 		putSlotInHeader={true}
 	>
 		<ImageCropper.Root
-			src="{PUBLIC_POCKETBASE_URL}/api/files/users/{$userStore?.id}/{$userStore?.avatar}?thumb=300x300"
+			src="{env.PUBLIC_POCKETBASE_URL}/api/files/users/{$userStore?.id}/{$userStore?.avatar}?thumb=300x300"
 			onCropped={handleCrop}
 		>
 			<ImageCropper.UploadTrigger>

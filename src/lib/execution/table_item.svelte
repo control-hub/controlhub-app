@@ -63,20 +63,9 @@
 		{#if user !== undefined && showUser}
 			<div class="flex items-center gap-2">
 				<span class="text-muted-foreground"> by </span>
-				<a href="/scripts/{user.username}">
-					<Tooltip.Root>
-						<Tooltip.Trigger>
-							<UserAvatar {user} />
-						</Tooltip.Trigger>
-						<Tooltip.Content class="bg-opacity-0 flex justify-start">
-							<Code lang="json" code={JSON.stringify({ id: user.id, email: user.email, username: user.username }, null, 4)} />
-							<!-- <pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
-									{ id: user.id, email: user.email, username: user.username },
-									null,
-									4
-								)}</pre> -->
-						</Tooltip.Content>
-					</Tooltip.Root>
+				<a href="/scripts/{user.username}" class="flex gap-2 items-center text-md text-foreground/75">
+					<u>{user.username}</u>
+					<UserAvatar {user} />
 				</a>
 			</div>
 		{/if}

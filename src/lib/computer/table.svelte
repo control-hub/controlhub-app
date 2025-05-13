@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SquareMinus, SquarePlus, Plus, Minus, Power, Play, CirclePlus } from 'lucide-svelte';
+	import { SquareMinus, SquarePlus, Plus, Minus, CirclePlus } from 'lucide-svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { droppable, draggable, type DragDropState } from '@thisux/sveltednd';
 	import { flip } from 'svelte/animate';
