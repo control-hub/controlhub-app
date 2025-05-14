@@ -300,8 +300,6 @@ export const createTeam = async (name: string): Promise<TeamsResponse> => {
 };
 
 export const createComputer = async (name: string): Promise<ComputersResponse> => {
-	console.log('regionStore', get(regionStore));
-
 	const computer = {
 		name: name,
 		region: get(regionStore)?.id,

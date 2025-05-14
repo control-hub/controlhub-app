@@ -30,8 +30,6 @@
 	const previousPaths = derived(paths, ($paths) =>
 		$paths.map((_, i) => $paths.slice(0, i + 1).join('/'))
 	);
-
-	$: console.log($previousPaths, $paths);
 </script>
 
 <Toaster richColors theme={$theme} />

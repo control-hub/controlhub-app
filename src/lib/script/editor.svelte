@@ -82,7 +82,6 @@
 	// 			label: item.label.slice(0, item.label.length - 2),
 	// 			...item
 	// 		}));
-	// 		console.log('Loaded completions:', customCompletions); // Debugging
 	// 	} catch (error) {
 	// 		console.error('Error loading completions:', error);
 	// 	}
@@ -93,7 +92,6 @@
 	// 	return async () => {
 	// 		window.removeEventListener('beforeunload', handleBeforeUnload);
 	// 		window.removeEventListener('keydown', handleKeyDown);
-	// 		console.log('Editor component destroyed, event listeners removed');
 	// 	};
 	// });
 

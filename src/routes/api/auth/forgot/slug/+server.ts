@@ -20,7 +20,6 @@ export const POST = async ({ locals, request }) => {
 			.confirmPasswordReset(body.token, body.password, body.passwordConfirm);
 		return answer({ code: 200, message: 'Password reset successful.' }, 200);
 	} catch (err) {
-		// console.log(err);
 		return answer({ code: 403, message: 'Something went wrong :(' }, 403);
 	}
 };

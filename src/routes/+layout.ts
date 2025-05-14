@@ -9,6 +9,5 @@ export const load = async ({ data }) => {
 	userStore.set(data.user);
 	pb.authStore.loadFromCookie(data.cookie);
 
-	console.log(data.user);
 	return data;
 };

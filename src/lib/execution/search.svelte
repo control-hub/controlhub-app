@@ -40,8 +40,6 @@
 	});
 
 	searchInput.subscribe(async ($searchInput) => {
-		console.log($searchInput);
-
 		const previousUser = previousSearchInput.split('/')[0] || '';
 		const user = $searchInput.split('/')[0] || $userStore?.username || '';
 

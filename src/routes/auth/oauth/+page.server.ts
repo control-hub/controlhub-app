@@ -15,12 +15,10 @@ export const load = async ({ locals, url, cookies }) => {
 	);
 
 	if (!currentAuthProvider) {
-		// console.log('No auth providers');
 		throw redirect(302, '/auth/login');
 	}
 
 	if (state !== expectedState) {
-		// console.log('Invalid state', state, expectedState);
 		throw redirect(302, '/auth/login');
 	}
 
@@ -41,6 +39,6 @@ export const load = async ({ locals, url, cookies }) => {
 		cookies.delete('oauth_state', { path: '/' });
 		cookies.delete('oauth_verifier', { path: '/' });
 	} catch (err) {
-		console.log('Fuck!', err);
+		throw redirect(302, '/auth/login');
 	}
 };

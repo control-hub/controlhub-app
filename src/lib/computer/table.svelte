@@ -137,14 +137,6 @@
 		$filtered.filter((computer) => computer.status === '2')
 	);
 
-	async function updateComputerStatus(
-		computer: ComputersResponse,
-		oldStatus: '0' | '1' | '2',
-		newStatus: '0' | '1' | '2'
-	): Promise<void> {
-		console.log(`Updating computer ${computer.id} to status ${newStatus} from ${oldStatus}`);
-	}
-
 	function selectComputer(computer: ComputersResponse): void {
 		selectedComputersSet.update(($selected) => {
 			$selected.add(computer.id);
@@ -169,18 +161,10 @@
 			return;
 		}
 
-		console.log(`Dragged from ${sourceContainer} to ${targetContainer}:`, draggedItem.name);
-
 		if (targetStatus === 'selected') {
 			selectComputer(draggedItem);
 		} else if (sourceContainer === 'selected') {
 			unselectComputer(draggedItem);
-
-			if (draggedItem.status !== targetStatus) {
-				await updateComputerStatus(draggedItem, draggedItem.status, targetStatus);
-			}
-		} else {
-			await updateComputerStatus(draggedItem, draggedItem.status, targetStatus);
 		}
 	}
 
