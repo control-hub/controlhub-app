@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { FileCode2 } from 'lucide-svelte';
-	import Settings2 from '@lucide/svelte/icons/settings-2';
-	import SquareTerminal from '@lucide/svelte/icons/square-terminal';
+	import { FileCode2, Settings2, Users, Github, Download } from 'lucide-svelte';
 	import type { NavPage } from './sidebar-types';
-
 	// This is sample data.
 	let data: {
 		navMain: NavPage[];
@@ -12,7 +9,7 @@
 			{
 				title: 'Teams',
 				url: '/teams',
-				icon: SquareTerminal
+				icon: Users
 			},
 			{
 				title: 'Scripts',
@@ -23,6 +20,16 @@
 				title: 'Settings',
 				url: '/settings',
 				icon: Settings2
+			},
+			{
+				title: 'Download',
+				url: 'https://github.com/control-hub/controlhub-client/releases',
+				icon: Download
+			},
+			{
+				title: 'GitHub',
+				url: 'https://github.com/orgs/control-hub/repositories',
+				icon: Github
 			}
 		]
 	};

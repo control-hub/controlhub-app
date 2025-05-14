@@ -2,7 +2,7 @@
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import {goto} from "$app/navigation"
+	import { goto } from '$app/navigation';
 
 	import type { NavPage } from './sidebar-types';
 
@@ -22,30 +22,32 @@
 					<Sidebar.MenuItem {...props}>
 						<Collapsible.Trigger>
 							{#snippet child({ props })}
-							{#if mainItem.items}
-								<Sidebar.MenuButton {...props}>
-									{#snippet tooltipContent()}
-										{mainItem.title}
-									{/snippet}
-									{#if mainItem.icon}
-										<mainItem.icon />
-									{/if}
-									<span>{mainItem.title}</span>
-									<ChevronRight
-										class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-									/>
-								</Sidebar.MenuButton>
-							{:else}
-								<Sidebar.MenuButton {...props} onclick={() => goto(mainItem.url)}>
-									{#snippet tooltipContent()}
-										{mainItem.title}
-									{/snippet}
-									{#if mainItem.icon}
-										<mainItem.icon />
-									{/if}
-									<span>{mainItem.title}</span>
-								</Sidebar.MenuButton>
-							{/if}
+								{#if mainItem.items}
+									<Sidebar.MenuButton {...props}>
+										{#snippet tooltipContent()}
+											{mainItem.title}
+										{/snippet}
+										{#if mainItem.icon}
+											<mainItem.icon />
+										{/if}
+										<span>{mainItem.title}</span>
+										<ChevronRight
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{:else}
+									<Sidebar.MenuButton {...props}>
+										{#snippet child({ props })}
+											<a href={mainItem.url} {...props}>
+												{#if mainItem.icon}
+													<mainItem.icon />
+												{/if}
+												{mainItem.title}
+											</a>
+										{/snippet}
+										<span>{mainItem.title}</span>
+									</Sidebar.MenuButton>
+								{/if}
 							{/snippet}
 						</Collapsible.Trigger>
 						<Collapsible.Content>
