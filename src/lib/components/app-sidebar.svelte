@@ -24,12 +24,14 @@
 			{
 				title: 'Download',
 				url: 'https://github.com/control-hub/controlhub-client/releases',
-				icon: Download
+				icon: Download,
+				ctrl: true
 			},
 			{
 				title: 'GitHub',
 				url: 'https://github.com/orgs/control-hub/repositories',
-				icon: Github
+				icon: Github,
+				ctrl: true
 			}
 		]
 	};

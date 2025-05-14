@@ -38,12 +38,21 @@
 								{:else}
 									<Sidebar.MenuButton {...props}>
 										{#snippet child({ props })}
-											<a href={mainItem.url} {...props}>
-												{#if mainItem.icon}
-													<mainItem.icon />
-												{/if}
-												{mainItem.title}
-											</a>
+											{#if mainItem.ctrl}
+												<a target="_blank" rel="noopener noreferrer" href={mainItem.url} {...props}>
+													{#if mainItem.icon}
+														<mainItem.icon />
+													{/if}
+													{mainItem.title}
+												</a>
+											{:else}
+												<a href={mainItem.url} {...props}>
+													{#if mainItem.icon}
+														<mainItem.icon />
+													{/if}
+													{mainItem.title}
+												</a>
+											{/if}
 										{/snippet}
 										<span>{mainItem.title}</span>
 									</Sidebar.MenuButton>

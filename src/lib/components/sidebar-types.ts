@@ -4,4 +4,5 @@ export type NavPage = {
 	icon?: any;
 	isActive?: boolean;
 	items?: { title: string; url: string }[];
+	ctrl?: boolean;
 };
