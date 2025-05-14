@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import * as Alert from '$lib/components/ui/alert';
-	import { Code } from '$lib/components/ui/code';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { pb } from '$lib/pocketbase/client';
 	import { teamStore, regionStore, computerStore } from '$lib/stores';
 	import type { ExecutionsResponse, ScriptsResponse, UsersResponse } from '$lib/types';

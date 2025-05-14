@@ -3,6 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import type { ComputersResponse } from '$lib/types';
 	import { scriptsStore, userStore } from '$lib/stores';
+	import { getUserDefaultSearch } from '$lib/utils';
 	import { writable, type Writable, type Readable, derived, readable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
 
@@ -21,7 +22,8 @@
 
 	let visible: boolean = false;
 	const value: Writable<string> = writable('');
-	const searchInput = writable(($userStore?.defaultSearch || 'core') + '/');
+	const defaultSearchInput = getUserDefaultSearch($userStore) + '/';
+	const searchInput = writable(defaultSearchInput);
 
 	const selectedScript = derived([scriptsStore, value], ([$scriptsStore, $value]) => {
 		return $scriptsStore.find((script) => script.id === $value) || undefined;
@@ -80,7 +82,9 @@
 					$selectedComputers.map((computer) => {
 						return { ...computer, token: '' };
 					})
-				).replaceAll('\\', '\\\\').replaceAll('"', '\\"') +
+				)
+					.replaceAll('\\', '\\\\')
+					.replaceAll('"', '\\"') +
 				'")\n'
 			: '';
 
@@ -113,6 +117,15 @@
 			await Promise.all(promises);
 			await fetch('/api/script/mark/', { method: 'POST' });
 
+			searchInput.set(defaultSearchInput);
+			value.set('');
+
+			scriptsStore.updateOptions({
+				filter: `user.username = "${$searchInput.split('/')[0]}"`,
+				sort: '-executed,-created',
+				autoSubGetData: false
+			});
+
 			toast.success('Script started successfully');
 		} catch (error) {
 			toast.error('Error executing script, may be you do not have permission');
@@ -135,7 +148,7 @@
 				This action executes your command on selected computers
 			</Dialog.Description>
 		</Dialog.Header>
-		<Search {value} {searchInput} />
+		<Search {value} {searchInput} previousSearchInput={defaultSearchInput} />
 		<form class="grid grid-cols-2 gap-4" onsubmit={executeScript}>
 			{#each $dynamicVariables as variable (variable)}
 				<Input

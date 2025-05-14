@@ -2,7 +2,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
-	import { Settings2, LogOut, ChevronsUpDown } from 'lucide-svelte';
+	import { Settings2, LogOut, ChevronsUpDown, Github } from 'lucide-svelte';
 	import type { UsersResponse } from '$lib/types';
 	import { userStore } from '$lib/stores';
 	import { logout } from '$lib/utils';
@@ -51,6 +51,14 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group></DropdownMenu.Group>
 				<DropdownMenu.Group>
+					<DropdownMenu.Item>
+						{#snippet child({ props })}
+							<a target="_blank" rel="noopener noreferrer" href="https://github.com/control-hub/controlhub" {...props}>
+								<Github />
+								GitHub
+							</a>
+						{/snippet}
+					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						{#snippet child({ props })}
 							<a href="/settings" {...props}>

@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { browser } from '$app/environment';
 import { toast } from 'svelte-sonner';
 import { cubicOut } from 'svelte/easing';
-import type { Tab, AsyncFunction, TeamsResponse, TeamsRecord, ComputersResponse } from '$lib/types';
+import type { Tab, AsyncFunction, TeamsResponse, UsersResponse, ComputersResponse } from '$lib/types';
 import type { AuthProviderInfo } from 'pocketbase';
 import { beforeNavigate } from '$app/navigation';
 import type { TransitionConfig } from 'svelte/transition';
@@ -310,6 +310,11 @@ export const createComputer = async (name: string): Promise<ComputersResponse> =
 	};
 
 	return await computersStore.create(computer);
+};
+
+export const getUserDefaultSearch = (user?: UsersResponse): string => {
+	const subResult = (user?.defaultSearch === "none" ? "" : user?.defaultSearch);
+	return subResult === undefined ? "" : subResult;
 };
 
 export const logout = async () => {

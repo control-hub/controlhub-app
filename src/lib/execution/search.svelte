@@ -5,13 +5,13 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
+	import { cn, getUserDefaultSearch } from '$lib/utils.js';
 	import { userStore, usersStore, scriptsStore } from '$lib/stores';
 	import { derived, writable, type Writable } from 'svelte/store';
 
 	export let value: Writable<string> = writable('');
 
-	let previousSearchInput: string = ($userStore?.defaultSearch || 'core') + '/';
+	export let previousSearchInput: string = getUserDefaultSearch($userStore) + '/';
 	export let searchInput = writable(previousSearchInput);
 
 	let open = false;
@@ -30,9 +30,8 @@
 	});
 
 	onMount(() => {
-		console.log($userStore?.defaultSearch);
 		scriptsStore.updateOptions({
-			filter: `user.username = "${$userStore?.defaultSearch || 'core'}"`,
+			filter: `user.username = "${getUserDefaultSearch($userStore) || $userStore?.username}"`,
 			sort: '-executed,-created',
 			autoSubGetData: false
 		});
@@ -41,6 +40,8 @@
 	});
 
 	searchInput.subscribe(async ($searchInput) => {
+		console.log($searchInput);
+
 		const previousUser = previousSearchInput.split('/')[0] || '';
 		const user = $searchInput.split('/')[0] || $userStore?.username || '';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileCode2, Settings2, Users, Github, Download } from 'lucide-svelte';
+	import { FileCode2, Settings2, Users, Download } from 'lucide-svelte';
 	import type { NavPage } from './sidebar-types';
 	// This is sample data.
 	let data: {
@@ -25,12 +25,6 @@
 				title: 'Download',
 				url: 'https://github.com/control-hub/controlhub-client/releases',
 				icon: Download,
-				ctrl: true
-			},
-			{
-				title: 'GitHub',
-				url: 'https://github.com/orgs/control-hub/repositories',
-				icon: Github,
 				ctrl: true
 			}
 		]

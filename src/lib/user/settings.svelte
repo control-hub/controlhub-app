@@ -2,7 +2,7 @@
 	import { userStore } from '$lib/stores';
 	import * as ImageCropper from '$lib/components/ui/image-cropper';
 	import { env } from '$env/dynamic/public';
-	import { logout, toastApi } from '$lib/utils';
+	import { logout, toastApi, getUserDefaultSearch } from '$lib/utils';
 	import type { UsersResponse } from '$lib/types';
 	import { writable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
@@ -13,7 +13,7 @@
 	import { onMount } from 'svelte';
 
 	const userNameChangeValue = writable<string>($userStore?.username);
-	const userDefaultSearchValue = writable<string>($userStore?.defaultSearch || 'core');
+	const userDefaultSearchValue = writable<string>(getUserDefaultSearch($userStore));
 	const ableToEraseAccount = writable<boolean>(false);
 
 	onMount(async () => {
@@ -47,18 +47,8 @@
 
 	const changeDefaultSearch = toastApi.execAsync(
 		async () => {
-			const defaultSearchUser = await pb
-				.collection('users')
-				.getFirstListItem(`username = "${$userDefaultSearchValue}"`);
-
-			console.log(defaultSearchUser);
-
-			if (!defaultSearchUser) {
-				throw new Error('Failed to change default search, this user might not exist.');
-			}
-
 			const result = await pb.collection('users').update<UsersResponse>($userStore?.id as string, {
-				defaultSearch: $userDefaultSearchValue
+				defaultSearch: $userDefaultSearchValue || 'none'
 			});
 
 			userStore.set(result);
@@ -137,10 +127,10 @@
 	<BasicElement
 		title="User default search"
 		description="This is username that will be searched by default when searching script for execution."
-		footer="Be sure to use a username that exists."
+		footer="Can be empty to search for your own scripts."
 		execute={changeDefaultSearch}
 	>
-		<Input bind:value={$userDefaultSearchValue} class="w-[min(20rem,100%)]" required />
+		<Input bind:value={$userDefaultSearchValue} class="w-[min(20rem,100%)]" />
 	</BasicElement>
 
 	<BasicElement
