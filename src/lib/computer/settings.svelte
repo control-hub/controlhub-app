@@ -8,6 +8,7 @@
 	import { Snippet } from '$lib/components/ui/snippet';
 	import { Input } from '$lib/components/ui/input';
 	import { BasicElement } from '$lib/settings';
+	import { Code } from '$lib/components/ui/code';
 
 	const computerNameChangeValue = writable<string>($computerStore?.name);
 
@@ -19,7 +20,15 @@
 			});
 
 			computerStore.set(result);
-			goto('/' + $teamStore?.name + '/' + $regionStore?.name + '/' + $computerNameChangeValue + '/~/settings');
+			goto(
+				'/' +
+					$teamStore?.name +
+					'/' +
+					$regionStore?.name +
+					'/' +
+					$computerNameChangeValue +
+					'/~/settings'
+			);
 		},
 		'Computer name changed successfully.',
 		'Failed to change computer name.'
@@ -54,13 +63,30 @@
 		</BasicElement>
 	{/if}
 	<BasicElement
-	title="Computer Token"
-	description="This is your computer token within ControlHub. Used in client app to connect to this computer."
-	footer="Use this token to access this computer in our client app, or in our API."
-	act={false}
->
-	<Snippet text={$computerStore?.token as string} class="w-[min(16rem,100%)]" />
-</BasicElement>
+		title="Computer Token"
+		description="This is your computer token within ControlHub. Used in client app to connect to this computer."
+		footer="Use this token to access this computer in our client app, or in our API."
+		act={false}
+	>
+		<Snippet text={$computerStore?.token as string} class="w-[min(16rem,100%)]" />
+	</BasicElement>
+	<BasicElement
+		title="Computer MAC"
+		description="This is your computer MAC."
+		footer="Used for `Awake` script via WOL."
+		act={false}
+	>
+		<Snippet text={$computerStore?.mac as string} class="w-[min(16rem,100%)]" />
+	</BasicElement>
+	<BasicElement
+		title="Computer Data"
+		description="This is your computer data. Used for very advanced purposes."
+		footer="Can be changed in controlhub library function or in our API."
+		act={false}
+	>
+		<Code lang="json" code={JSON.stringify($computerStore?.data, null, 2)} class="w-min-[100%]" />
+	</BasicElement>
+
 	<BasicElement
 		title="Computer ID"
 		description="This is your computer ID within ControlHub."

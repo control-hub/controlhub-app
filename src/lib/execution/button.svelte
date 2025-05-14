@@ -82,7 +82,7 @@
 					})
 				).replaceAll('\\', '\\\\').replaceAll('"', '\\"') +
 				'")\n'
-			: '\n\n';
+			: '';
 
 		return computersPart + executable;
 	};

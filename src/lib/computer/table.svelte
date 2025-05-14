@@ -26,38 +26,28 @@
 	let cachedExecutions = new Set<string>();
 
 	onMount(async () => {
-		unsubscribe = await pb.collection('executions').subscribe(
-			'*',
-			({ action, record }) => {
-				if (record.user !== $userStore?.id) return;
-				if (cachedExecutions.has(record.id)) return;
+		unsubscribe = await pb.collection('executions').subscribe('*', ({ action, record }) => {
+			if (record.user !== $userStore?.id) return;
+			if (cachedExecutions.has(record.id)) return;
 
-				if (action === 'update' && record.status === '2') {
-					cachedExecutions.add(record.id);
+			if (action === 'update' && record.status === '2') {
+				cachedExecutions.add(record.id);
 
-					toast.success(
-						`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
-					);
-				} else if (action === 'update' && record.status === '3') {
-					cachedExecutions.add(record.id);
-					
-					const computer = $computersStore.find((c) => c.id === record.computer);
-					toast.error(
-						`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
-					);
-					goto(
-						'/' +
-							$teamStore?.name +
-							'/' +
-							$regionStore?.name +
-							'/' +
-							computer?.name +
-							'/' +
-							record.id
-					);
-				}
+				toast.success(
+					`Execution ${record.id} completed after ${record.duration.toFixed(1)} seconds.`
+				);
+			} else if (action === 'update' && record.status === '3') {
+				cachedExecutions.add(record.id);
+
+				const computer = $computersStore.find((c) => c.id === record.computer);
+				toast.error(
+					`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
+				);
+				goto(
+					'/' + $teamStore?.name + '/' + $regionStore?.name + '/' + computer?.name + '/' + record.id
+				);
 			}
-		);
+		});
 	});
 
 	onDestroy(async () => {
@@ -205,35 +195,36 @@
 		await result;
 	}
 </script>
+
 {#if $havePermission('add_computer')}
-<Dialog.Root bind:open={$computerDialogOpen}>
-	<Dialog.Trigger>
-		{#snippet child({ props })}
-		<Button {...props} variant="outline" class="mb-4 w-full"
-		>Create computer<CirclePlus class={icon.left} /></Button
-		>
-		{/snippet}
-	</Dialog.Trigger>
-	<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
-		<Dialog.Header>
-			<Dialog.Title>Create computer</Dialog.Title>
-			<Dialog.Description>Enter your new computer name.</Dialog.Description>
-		</Dialog.Header>
-		<form
-		class="flex gap-2"
-		onsubmit={toastApi.execAsync(
-			async () => await createComputer($computerForm.name),
-			`Computer ${$computerForm.name} created.`,
-			`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
-		)}
-		>
-		<div class="grid w-full grid-cols-1 gap-2">
-			<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
-		</div>
-		<Button type="submit" class="h-full">Create</Button>
-	</form>
-</Dialog.Content>
-</Dialog.Root>
+	<Dialog.Root bind:open={$computerDialogOpen}>
+		<Dialog.Trigger>
+			{#snippet child({ props })}
+				<Button {...props} variant="outline" class="mb-4 w-full"
+					>Create computer<CirclePlus class={icon.left} /></Button
+				>
+			{/snippet}
+		</Dialog.Trigger>
+		<Dialog.Content class="sm:max-w-[425px]" trapFocus={false}>
+			<Dialog.Header>
+				<Dialog.Title>Create computer</Dialog.Title>
+				<Dialog.Description>Enter your new computer name.</Dialog.Description>
+			</Dialog.Header>
+			<form
+				class="flex gap-2"
+				onsubmit={toastApi.execAsync(
+					async () => await createComputer($computerForm.name),
+					`Computer ${$computerForm.name} created.`,
+					`Failed to create computer ${$computerForm.name}, my be this computer already exists.`
+				)}
+			>
+				<div class="grid w-full grid-cols-1 gap-2">
+					<Input id="name" placeholder="Computer name" bind:value={$computerForm.name} required />
+				</div>
+				<Button type="submit" class="h-full">Create</Button>
+			</form>
+		</Dialog.Content>
+	</Dialog.Root>
 {/if}
 
 <div class="grid animate-fade-in-up grid-cols-2 gap-6 max-xl:grid-cols-1">
@@ -458,58 +449,27 @@
 		transition-all duration-200 hover:shadow-md hover:ring-2 hover:ring-primary/20"
 	>
 		<div class="flex items-center justify-between gap-3">
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					<a
-						class="z-50 flex flex-row items-center"
-						href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}"
-					>
-						<img
-							src={getAvatarUrl(computer.id, 48)}
-							alt={computer.name}
-							class="h-12 w-12 rounded-full"
-						/>
+			<a
+				class="z-50 flex flex-row items-center"
+				href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}"
+			>
+				<img
+					src={getAvatarUrl(computer.id, 48)}
+					alt={computer.name}
+					class="h-12 w-12 rounded-full"
+				/>
 
-						<div class="ml-3 flex-1">
-							<h3 class="text-left font-medium text-foreground">{computer.name}</h3>
+				<div class="ml-3 flex-1">
+					<h3 class="text-left font-medium text-foreground">{computer.name}</h3>
 
-							<div class="flex items-center gap-1">
-								<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
-								<span class="text-{statusColorMap[computer.status]}">
-									<svelte:component
-										this={getStatusInfo(computer.status).icon}
-										class="h-3.5 w-3.5"
-									/>
-								</span>
-							</div>
-						</div>
-					</a>
-				</Tooltip.Trigger>
-				<Tooltip.Content class="bg-opacity-0" side="right">
-					<!-- <pre class="max-w-xs overflow-x-auto text-xs">{JSON.stringify(
-							{
-								id: computer.id,
-								name: computer.name,
-								ip: computer.ip,
-								mac: computer.mac,
-								status: computer.status,
-								token: computer.token,
-								data: computer.data
-							},
-							null,
-							4
-						)}</pre> -->
-						<Code lang="json" code={JSON.stringify({
-							id: computer.id,
-							name: computer.name,
-							ip: computer.ip,
-							mac: computer.mac,
-							status: computer.status,
-							token: computer.token,
-							data: computer.data
-						}, null, 4)} />
-				</Tooltip.Content>
-			</Tooltip.Root>
+					<div class="flex items-center gap-1">
+						<p class="text-sm text-muted-foreground">{computer.ip || 'No IP'}</p>
+						<span class="text-{statusColorMap[computer.status]}">
+							<svelte:component this={getStatusInfo(computer.status).icon} class="h-3.5 w-3.5" />
+						</span>
+					</div>
+				</div>
+			</a>
 			<div class="flex gap-3">
 				<Badge
 					class="bg-{statusColorMap[computer.status]} hover:bg-{statusColorMap[
