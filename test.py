@@ -167,24 +167,33 @@
 # open_file(file_path)
 # print(f"Opened file: {file_path}")
 
+# import os
+
+# def count_lines_chars(file_path):
+#     with open(file_path, "r") as f:
+#         data = f.read()
+#         return len(data), len(data.splitlines())
+
+# char_count = 0
+# line_count = 0
+# # 16 + 20 + 20 + 10
+# # 14 20 18 20
+# for root, dirs, files in os.walk(r".\src"):
+#     for file in files:
+#         if r"\lib\components\ui" not in os.path.join(root, file) and (file.endswith(".svelte") or file.endswith(".ts")):
+#             file_path = os.path.join(root, file)
+#             chars, lines = count_lines_chars(file_path)
+#             char_count += chars
+#             line_count += lines
+#             print(f"File: {file_path}, Lines: {lines}, Chars: {chars}")
+
+# print(f"Total lines: {line_count}, Total chars: {char_count}")
 import os
 
-def count_lines_chars(file_path):
-    with open(file_path, "r") as f:
-        data = f.read()
-        return len(data), len(data.splitlines())
-
-char_count = 0
-line_count = 0
-# 16 + 20 + 20 + 10
-# 14 20 18 20
-for root, dirs, files in os.walk(r".\src"):
+for root, dirs, files in os.walk(r"C:\Users\lixelv\AppData\Roaming\Microsoft\Windows\Start Menu"):
     for file in files:
-        if r"\lib\components\ui" not in os.path.join(root, file) and (file.endswith(".svelte") or file.endswith(".ts")):
-            file_path = os.path.join(root, file)
-            chars, lines = count_lines_chars(file_path)
-            char_count += chars
-            line_count += lines
-            print(f"File: {file_path}, Lines: {lines}, Chars: {chars}")
+        print(os.path.join(root, file))
 
-print(f"Total lines: {line_count}, Total chars: {char_count}")
+for root, dirs, files in os.walk(r"C:\ProgramData\Microsoft\Windows\Start Menu"):
+    for file in files:
+        print(os.path.join(root, file))

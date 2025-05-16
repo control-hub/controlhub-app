@@ -11,8 +11,6 @@
 	import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 	import type { EditorView } from '@codemirror/view';
 	import { writable, derived } from 'svelte/store';
-	import { onMount } from 'svelte';
-	import { beforeNavigate } from '$app/navigation';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { pb } from '$lib/pocketbase/client';
 	import { toastApi } from '$lib/utils';
