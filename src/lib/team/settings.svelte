@@ -78,7 +78,7 @@
 			saveButtonText="Transfer"
 		>
 			<Select.Root type="single" bind:value={$teamOwnerChangeValue}>
-				<Select.Trigger class="w-[180px]"
+				<Select.Trigger class="w-[min(16rem,100%)]"
 					>{(
 						$teamsAccessStore.find(
 							(access) =>

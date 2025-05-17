@@ -115,7 +115,7 @@
 			useAlert={true}
 			alertMessage="Are you sure you want to refresh token of your computer? This action cannot be undone, if computer is connected it will lose connection."
 		>
-			<Snippet text={$computerStore?.token as string} class="w-[min(20rem,100%)]" />
+			<Snippet text={$computerStore?.token as string} class="w-[min(16rem,100%)]" />
 		</BasicElement>
 	{:else}
 		<BasicElement
@@ -124,7 +124,7 @@
 			footer="Use this token to access this computer in our client app, or in our API."
 			act={false}
 		>
-			<Snippet text={$computerStore?.token as string} class="w-[min(20rem,100%)]" />
+			<Snippet text={$computerStore?.token as string} class="w-[min(16rem,100%)]" />
 		</BasicElement>
 	{/if}
 	{#if $havePermission('edit_computer')}
@@ -136,7 +136,7 @@
 			saveButtonText="Change"
 		>
 			<Select.Root type="single">
-				<Select.Trigger class="w-[min(20rem,100%)]">
+				<Select.Trigger class="w-[min(16rem,100%)]">
 					<div class="flex items-center">
 						{@render computerStatus($selectedStatus as '0' | '1' | '2')}
 					</div>
@@ -157,7 +157,7 @@
 		footer="Used for nothing."
 		act={false}
 	>
-		<Snippet text={$computerStore?.ip as string} class="w-[min(20rem,100%)]" />
+		<Snippet text={$computerStore?.ip as string} class="w-[min(16rem,100%)]" />
 	</BasicElement>
 	<BasicElement
 		title="Computer MAC"
@@ -165,7 +165,7 @@
 		footer="Used for `Awake` script via WOL."
 		act={false}
 	>
-		<Snippet text={$computerStore?.mac as string} class="w-[min(20rem,100%)]" />
+		<Snippet text={$computerStore?.mac as string} class="w-[min(16rem,100%)]" />
 	</BasicElement>
 	<BasicElement
 		title="Computer Data"
@@ -182,7 +182,7 @@
 		footer="Use this ID to access this computer in our API."
 		act={false}
 	>
-		<Snippet text={$computerStore?.id as string} class="w-[min(20rem,100%)]" />
+		<Snippet text={$computerStore?.id as string} class="w-[min(16rem,100%)]" />
 	</BasicElement>
 	{#if $havePermission('delete_computer')}
 		<BasicElement
