@@ -103,7 +103,7 @@
 	});
 </script>
 
-<div class={cn("max-w-[min(650px,100%)]", style({ variant }), className)}>
+<div class={cn("max-w-[max(650px,100%)]", style({ variant }), className)}>
 	{@html highlighted}
 	{#if !hideCopy}
 		<div

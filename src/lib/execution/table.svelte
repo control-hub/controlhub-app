@@ -26,10 +26,12 @@
 		</Alert.Description>
 	</Alert.Root>
 {:else}
+<div class="flex flex-col justify-between h-full">
 	<div class="grid grid-cols-1 gap-3">
 		{#each $executionsStore as execution (execution.id)}
 			<TableItem {execution} {showUser} />
 		{/each}
+	</div>
 		<Pagination.Root
 			perPage={$executionsPerPage}
 			count={$executionsStoreCount}
@@ -60,5 +62,5 @@
 				</Pagination.Content>
 			{/snippet}
 		</Pagination.Root>
-	</div>
+</div>
 {/if}

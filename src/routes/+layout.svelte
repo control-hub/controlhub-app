@@ -97,8 +97,8 @@
 					{/if}
 					<div class="w-[min(100vw,100%)] border-b border-input"></div>
 				</header>
-				<div class="container flex justify-center">
-					<div class="my-6 w-full">
+				<div class="container flex justify-center h-full">
+					<div class="mt-6 mb-6 w-full h-[calc(100%-3rem)]">
 						<slot />
 					</div>
 				</div>

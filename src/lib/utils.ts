@@ -312,7 +312,11 @@ export const createComputer = async (name: string): Promise<ComputersResponse> =
 
 export const getUserDefaultSearch = (user?: UsersResponse): string => {
 	const subResult = (user?.defaultSearch === "none" ? "" : user?.defaultSearch);
-	return subResult === undefined ? "" : subResult;
+	const result = (subResult == "" || subResult == undefined) ? "core" : subResult;
+
+	console.log(result, subResult, user, user?.defaultSearch);
+
+	return result;
 };
 
 export const logout = async () => {

@@ -5,7 +5,6 @@
 	import { LoaderCircle, Mail } from 'lucide-svelte';
 	import { theme } from 'theme-selector';
 
-	import { goto } from '$app/navigation';
 	import { toastApi } from '$lib/utils';
 	import { slide } from 'svelte/transition';
 	import { logos } from '$lib/config';
@@ -36,7 +35,7 @@
 	async function formAction() {
 		loading = true;
 		await toastApi.post('/api/auth/login', formData, () => {
-			goto('/');
+			window.location.href = '/';
 		});
 		loading = false;
 	}
