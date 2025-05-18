@@ -14,6 +14,7 @@ This repository contains main control-hub.org website. Fore more detailed docs v
 -  Create your own public/privite scripts
 -  Use default scripts of core user
 -  Watch logs of executions
+-  Drag & drop for computers
 
 ## License
 
