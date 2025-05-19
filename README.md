@@ -1,38 +1,21 @@
-# sv
+![image](https://github.com/user-attachments/assets/dfece6e9-b526-49de-b537-0d81fcd79438)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+This repository contains main control-hub.org website. Fore more detailed docs visit [main repo](https://github.com/control-hub/controlhub), also here is [playlist with how to use guide on russian](https://www.youtube.com/watch?v=tOdoN6NBIOk&list=PLBQcTLwZqeGRtCOc6nBVxaPdsLouO8aU_&index=3) 
 
-## Creating a project
+## [Website](https://control-hub.org)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```bash
-# create a new project in the current directory
-npx sv create
+-  Beautiful UI\UX with shadcn-svelte
+-  Create teams, invite сolleagues, manage permissions
+-  Login via Google/Yandex/GitHub
+-  Watch your computer status without reloading the page
+-  Browse history of executed scripts
+-  Create your own public/privite scripts
+-  Use default scripts of core user
+-  Watch logs of executions
+-  Drag & drop for computers
 
-# create a new project in my-app
-npx sv create my-app
-```
+## License
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+This project is licensed under the MIT License.
