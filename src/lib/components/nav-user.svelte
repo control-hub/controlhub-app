@@ -53,7 +53,7 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item>
 						{#snippet child({ props })}
-							<a target="_blank" rel="noopener noreferrer" href="https://github.com/control-hub/controlhub" {...props}>
+							<a target="_blank" rel="noopener noreferrer" href="https://github.com/control-hub" {...props}>
 								<Github />
 								GitHub
 							</a>
