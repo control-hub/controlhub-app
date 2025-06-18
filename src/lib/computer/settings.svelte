@@ -81,7 +81,7 @@
 		async () => {
 			await pb.collection('computers').delete($computerStore?.id as string);
 			computerStore.set(undefined);
-			goto('/' + $teamStore?.name + '/' + $regionStore?.name);
+			goto('/' + $teamStore?.name + '/' + $regionStore?.name + '/');
 		},
 		'Computer deleted successfully.',
 		'Failed to delete computer.'

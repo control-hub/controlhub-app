@@ -22,7 +22,7 @@
 			});
 
 			teamStore.set(result);
-			goto('/' + $teamNameChangeValue + '/~/settings');
+			goto('/' + $teamNameChangeValue + '/~/settings/');
 		},
 		'Team name changed successfully.',
 		'Failed to change team name.'

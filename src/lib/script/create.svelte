@@ -31,7 +31,7 @@
 		scriptDialogOpen.set(false);
 		await result;
 
-		goto('/scripts/' + $userStore?.username + '/' + $scriptForm.name);
+		goto('/scripts/' + $userStore?.username + '/' + $scriptForm.name + '/');
 	}
 </script>
 

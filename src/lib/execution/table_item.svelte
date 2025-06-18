@@ -28,7 +28,7 @@
 		const region =
 			$regionStore || (await pb.collection('regions').getOne(computer?.region as string));
 		const team = $teamStore || (await pb.collection('teams').getOne(region?.team as string));
-		goto('/' + team?.name + '/' + region?.name + '/' + computer?.name + '/' + execution.id);
+		goto('/' + team?.name + '/' + region?.name + '/' + computer?.name + '/' + execution.id + '/');
 	};
 </script>
 

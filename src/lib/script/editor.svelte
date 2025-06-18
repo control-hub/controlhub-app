@@ -265,7 +265,7 @@
 
 	const deleteScript = async () => {
 		await pb.collection('scripts').delete($scriptStore?.id as string);
-		goto('/scripts/' + $userStore?.username);
+		goto('/scripts/' + $userStore?.username + '/');
 		scriptStore.set(undefined);
 	};
 </script>

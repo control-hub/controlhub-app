@@ -25,7 +25,7 @@
 		regionDialogOpen.set(false);
 		await result;
 
-		goto('/' + $teamStore?.name + '/' + $regionForm.name);
+		goto('/' + $teamStore?.name + '/' + $regionForm.name  + '/');
 	}
 </script>
 

@@ -19,7 +19,7 @@
 			});
 
 			regionStore.set(result);
-			goto('/' + $teamStore?.name + '/' + $regionNameChangeValue + '/~/settings');
+			goto('/' + $teamStore?.name + '/' + $regionNameChangeValue + '/~/settings/');
 		},
 		'Region name changed successfully.',
 		'Failed to change region name.'
@@ -29,7 +29,7 @@
 		async () => {
 			await pb.collection('regions').delete($regionStore?.id as string);
 			regionStore.set(undefined);
-			goto('/' + $teamStore?.name);
+			goto('/' + $teamStore?.name + '/');
 		},
 		'Region deleted successfully.',
 		'Failed to delete region.'

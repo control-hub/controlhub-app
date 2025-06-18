@@ -6,7 +6,7 @@
 
     onMount(() => {
         if ($userStore) {
-            goto(`/scripts/${$userStore?.username || 'core'}`, { replaceState: true })
+            goto('/scripts/' + ($userStore?.username || 'core') + '/', { replaceState: true })
         }
     })
 </script>

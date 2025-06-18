@@ -31,7 +31,7 @@
 		teamDialogOpen.set(false);
 		teamForm.set({ name: '' });
 
-		goto('/' + result.name);
+		goto('/' + result.name + '/');
 	}
 </script>
 
