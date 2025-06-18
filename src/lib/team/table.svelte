@@ -89,12 +89,12 @@
 				<Button
 					variant="outline"
 					class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
-					href="/{team.name}/~/settings"
+					href="/{team.name}/~/settings/"
 				>
 					<Ellipsis class={icon.default} />
 				</Button>
 			</div>
-			<a href="/{team.name}" aria-label={team.name}>
+			<a href="/{team.name}/" aria-label={team.name}>
 				<div class="absolute inset-0 z-10"></div>
 			</a>
 		</Card.Root>

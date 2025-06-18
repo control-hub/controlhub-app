@@ -77,6 +77,6 @@
 </Card.Content>
 <Card.Footer>
 	<p class="text-center text-sm">
-		Have an account? <a href="/auth/login" class="text-blue-500">Login</a>
+		Have an account? <a href="/auth/login/" class="text-blue-500">Login</a>
 	</p>
 </Card.Footer>

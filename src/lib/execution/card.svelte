@@ -47,7 +47,7 @@
 				<span class="text-muted-foreground">Script:</span>
 				<a
 					href="/scripts/{(script.expand as { user?: UsersResponse })?.user
-						?.username}/{script.name}"
+						?.username}/{script.name}/"
 					class="font-medium underline underline-offset-4 hover:opacity-80"
 				>
 					{script.name}
@@ -72,7 +72,7 @@
 				<span class="text-muted-foreground">{formatDate($executionStore?.updated as string)}</span>
 				<div class="flex items-center gap-2">
 					<span class="text-muted-foreground">by</span>
-					<a href="/scripts/{user.username}">
+					<a href="/scripts/{user.username}/">
 						<UserAvatar {user} />
 					</a>
 				</div>

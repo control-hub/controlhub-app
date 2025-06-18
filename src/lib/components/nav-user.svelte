@@ -61,7 +61,7 @@
 					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						{#snippet child({ props })}
-							<a href="/settings" {...props}>
+							<a href="/settings/" {...props}>
 								<Settings2 />
 								Settings
 							</a>

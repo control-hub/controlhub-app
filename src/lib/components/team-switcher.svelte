@@ -13,7 +13,6 @@
 
 	const dialogOpen = writable(false);
 
-	import type { TeamsResponse } from '$lib/types';
 	import { writable } from 'svelte/store';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
 	import { goto } from '$app/navigation';

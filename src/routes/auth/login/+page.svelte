@@ -116,10 +116,10 @@
 		<Card.Footer>
 			<div class="flex w-full items-center justify-between">
 				<p class="text-center text-sm">
-					Don't have an account? <a href="/auth/signup" class="text-blue-500">Sign up</a>
+					Don't have an account? <a href="/auth/signup/" class="text-blue-500">Sign up</a>
 				</p>
 				<p class="text-center text-sm">
-					<a href="/auth/forgot" class="text-foreground/40">Forgot password?</a>
+					<a href="/auth/forgot/" class="text-foreground/40">Forgot password?</a>
 				</p>
 			</div>
 		</Card.Footer>
