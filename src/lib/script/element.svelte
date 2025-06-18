@@ -29,7 +29,7 @@
 	</div>
 	<a
 		href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||
-			$userStore?.username || ''}/{script.name}"
+			$userStore?.username || ''}/{script.name}/"
 		aria-label={script.name}
 	>
 		<div class="absolute inset-0 z-10"></div>

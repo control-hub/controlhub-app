@@ -43,12 +43,12 @@
 				<Button
 					variant="outline"
 					class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
-					href="/{$teamStore?.name as string}/{region.name}/~/settings"
+					href="/{$teamStore?.name as string}/{region.name}/~/settings/"
 				>
 					<Ellipsis class={icon.default} />
 				</Button>
 			</div>
-			<a href="/{$teamStore?.name as string}/{region.name}" aria-label={region.name}>
+			<a href="/{$teamStore?.name as string}/{region.name}/" aria-label={region.name}>
 				<div class="absolute inset-0 z-10"></div>
 			</a>
 		</Card.Root>

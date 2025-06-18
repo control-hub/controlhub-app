@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/dfece6e9-b526-49de-b537-0d81fcd79438)
 
-This repository contains main control-hub.org website. Fore more detailed docs visit [main repo](https://github.com/control-hub/controlhub), also here is [playlist with how to use guide on russian](https://www.youtube.com/watch?v=tOdoN6NBIOk&list=PLBQcTLwZqeGRtCOc6nBVxaPdsLouO8aU_&index=3) 
+This repository contains main control-hub.org website. Fore more detailed docs visit [main repo](https://github.com/control-hub), also here is [playlist with how to use guide on russian](https://www.youtube.com/watch?v=tOdoN6NBIOk&list=PLBQcTLwZqeGRtCOc6nBVxaPdsLouO8aU_&index=3) 
 
 ## [Website](https://control-hub.org)
 

@@ -435,7 +435,7 @@
 		<div class="flex items-center justify-between gap-3">
 			<a
 				class="z-50 flex flex-row items-center"
-				href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}"
+				href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}/"
 			>
 				<img
 					src={getAvatarUrl(computer.id, 48)}

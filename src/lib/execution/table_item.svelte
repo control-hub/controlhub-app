@@ -61,7 +61,7 @@
 		{#if user !== undefined && showUser}
 			<div class="flex items-center gap-2">
 				<span class="text-muted-foreground"> by </span>
-				<a href="/scripts/{user.username}" class="flex gap-2 items-center text-md text-foreground/75">
+				<a href="/scripts/{user.username}/" class="flex gap-2 items-center text-md text-foreground/75">
 					<u>{user.username}</u>
 					<UserAvatar {user} />
 				</a>
