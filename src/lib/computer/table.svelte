@@ -8,7 +8,7 @@
 	import { BadgeCheck, BadgeMinus, BadgeAlert } from 'lucide-svelte';
 	import { computersStore, teamStore, regionStore, userStore, havePermission } from '$lib/stores';
 	import type { ComputersResponse } from '$lib/types';
-	import { toastApi, createComputer as utilsCreateComputer } from '$lib/utils';
+	import { toastApi, customEncode, createComputer as utilsCreateComputer } from '$lib/utils';
 	import { icon } from '$lib/config';
 	import { pb } from '$lib/pocketbase/client';
 
@@ -44,7 +44,14 @@
 					`Execution ${record.id} failed on computer ${computer?.name} after ${record.duration.toFixed(1)} seconds.`
 				);
 				goto(
-					'/' + $teamStore?.name + '/' + $regionStore?.name + '/' + computer?.name + '/' + record.id
+					'/' +
+						customEncode($teamStore?.name as string) +
+						'/' +
+						customEncode($regionStore?.name as string) +
+						'/' +
+						customEncode(computer?.name as string) +
+						'/' +
+						customEncode(record.id)
 				);
 			}
 		});
@@ -435,7 +442,9 @@
 		<div class="flex items-center justify-between gap-3">
 			<a
 				class="z-50 flex flex-row items-center"
-				href="/{$teamStore?.name as string}/{$regionStore?.name as string}/{computer.name}/"
+				href="/{customEncode($teamStore?.name as string)}/{customEncode(
+					$regionStore?.name as string
+				)}/{customEncode(computer.name)}/"
 			>
 				<img
 					src={getAvatarUrl(computer.id, 48)}

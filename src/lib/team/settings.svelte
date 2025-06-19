@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { teamStore, havePermission, teamsAccessStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
-	import { toastApi } from '$lib/utils';
+	import { customEncode, toastApi } from '$lib/utils';
 	import type { TeamsResponse, UsersResponse } from '$lib/types';
 	import { writable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
@@ -22,7 +22,7 @@
 			});
 
 			teamStore.set(result);
-			goto('/' + $teamNameChangeValue + '/~/settings/');
+			goto('/' + customEncode($teamNameChangeValue) + '/~/settings/');
 		},
 		'Team name changed successfully.',
 		'Failed to change team name.'

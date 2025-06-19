@@ -122,7 +122,7 @@
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
 			</div>
-			<!-- <a href="/{$teamStore?.name as string}/{user.username}/" aria-label={user.username}>
+			<!-- <a href="/{customEncode($teamStore?.name as string)}/{customEncode(user.username)}/" aria-label={user.username}>
 				<div class="absolute inset-0 z-10"></div>
 			</a> -->
 		</Card.Root>

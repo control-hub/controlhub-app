@@ -7,7 +7,7 @@
 	import { PlusCircle } from 'lucide-svelte';
 
 	import { writable } from 'svelte/store';
-	import { toastApi } from '$lib/utils';
+	import { customEncode, toastApi } from '$lib/utils';
 	import { icon } from '$lib/config';
 
 	import { scriptsStore, userStore } from '$lib/stores';
@@ -31,7 +31,13 @@
 		scriptDialogOpen.set(false);
 		await result;
 
-		goto('/scripts/' + $userStore?.username + '/' + $scriptForm.name + '/');
+		goto(
+			'/scripts/' +
+				customEncode($userStore?.username as string) +
+				'/' +
+				customEncode($scriptForm.name) +
+				'/'
+		);
 	}
 </script>
 
@@ -39,10 +45,7 @@
 	<Dialog.Root bind:open={$scriptDialogOpen}>
 		<Dialog.Trigger>
 			{#snippet child({ props })}
-				<Button
-					{...props}
-					class="relative w-60 animate-fade-in-up text-center"
-				>
+				<Button {...props} class="relative w-60 animate-fade-in-up text-center">
 					Create script
 					<PlusCircle class={icon.left} />
 				</Button>
@@ -80,4 +83,4 @@
 			</form>
 		</Dialog.Content>
 	</Dialog.Root>
-	{/if}
+{/if}

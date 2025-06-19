@@ -13,7 +13,7 @@
 	import { writable, derived } from 'svelte/store';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { pb } from '$lib/pocketbase/client';
-	import { toastApi } from '$lib/utils';
+	import { customEncode, toastApi } from '$lib/utils';
 	import { toast } from 'svelte-sonner';
 	import { browser } from '$app/environment';
 	import { Input } from '$lib/components/ui/input';
@@ -265,7 +265,7 @@
 
 	const deleteScript = async () => {
 		await pb.collection('scripts').delete($scriptStore?.id as string);
-		goto('/scripts/' + $userStore?.username + '/');
+		goto('/scripts/' + customEncode($userStore?.username as string) + '/');
 		scriptStore.set(undefined);
 	};
 </script>

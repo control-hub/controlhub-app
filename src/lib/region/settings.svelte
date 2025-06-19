@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { regionStore, teamStore, havePermission } from '$lib/stores';
 	import { goto } from '$app/navigation';
-	import { toastApi } from '$lib/utils';
+	import { customEncode, toastApi } from '$lib/utils';
 	import { writable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
 
@@ -19,7 +19,13 @@
 			});
 
 			regionStore.set(result);
-			goto('/' + $teamStore?.name + '/' + $regionNameChangeValue + '/~/settings/');
+			goto(
+				'/' +
+					customEncode($teamStore?.name as string) +
+					'/' +
+					customEncode($regionNameChangeValue) +
+					'/~/settings/'
+			);
 		},
 		'Region name changed successfully.',
 		'Failed to change region name.'
@@ -29,7 +35,7 @@
 		async () => {
 			await pb.collection('regions').delete($regionStore?.id as string);
 			regionStore.set(undefined);
-			goto('/' + $teamStore?.name + '/');
+			goto('/' + customEncode($teamStore?.name as string) + '/');
 		},
 		'Region deleted successfully.',
 		'Failed to delete region.'

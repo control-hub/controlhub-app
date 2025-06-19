@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { computerStore, teamStore, regionStore, havePermission } from '$lib/stores';
 	import { goto } from '$app/navigation';
-	import { generateToken, toastApi } from '$lib/utils';
+	import { customEncode, generateToken, toastApi } from '$lib/utils';
 	import { writable } from 'svelte/store';
 	import { pb } from '$lib/pocketbase/client';
 
@@ -36,11 +36,11 @@
 			computerStore.set(result);
 			goto(
 				'/' +
-					$teamStore?.name +
+					customEncode($teamStore?.name as string) +
 					'/' +
-					$regionStore?.name +
+					customEncode($regionStore?.name as string) +
 					'/' +
-					$computerNameChangeValue +
+					customEncode($computerNameChangeValue) +
 					'/~/settings'
 			);
 		},
@@ -75,13 +75,19 @@
 		},
 		'Computer status changed successfully.',
 		'Failed to change computer status.'
-	)
+	);
 
 	const computerDeleteSubmit = toastApi.execAsync(
 		async () => {
 			await pb.collection('computers').delete($computerStore?.id as string);
 			computerStore.set(undefined);
-			goto('/' + $teamStore?.name + '/' + $regionStore?.name + '/');
+			goto(
+				'/' +
+					customEncode($teamStore?.name as string) +
+					'/' +
+					customEncode($regionStore?.name as string) +
+					'/'
+			);
 		},
 		'Computer deleted successfully.',
 		'Failed to delete computer.'
@@ -198,6 +204,6 @@
 </div>
 
 {#snippet computerStatus(status: '0' | '1' | '2')}
-	<div class="aspect-square h-2 rounded-full mr-2 {statusClassMap[status]}"></div>
+	<div class="mr-2 aspect-square h-2 rounded-full {statusClassMap[status]}"></div>
 	{statusMap[status]}
 {/snippet}

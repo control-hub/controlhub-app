@@ -6,7 +6,7 @@
 	import { PlusCircle } from 'lucide-svelte';
 
 	import { writable } from 'svelte/store';
-	import { toastApi } from '$lib/utils';
+	import { customEncode, toastApi } from '$lib/utils';
 	import { icon } from '$lib/config';
 	import { goto } from '$app/navigation';
 
@@ -25,7 +25,13 @@
 		regionDialogOpen.set(false);
 		await result;
 
-		goto('/' + $teamStore?.name + '/' + $regionForm.name  + '/');
+		goto(
+			'/' +
+				customEncode($teamStore?.name as string) +
+				'/' +
+				customEncode($regionForm.name as string) +
+				'/'
+		);
 	}
 </script>
 

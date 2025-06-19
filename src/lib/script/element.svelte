@@ -2,7 +2,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 
-	import { shrinkString } from '$lib/utils';
+	import { customEncode, shrinkString } from '$lib/utils';
 
 	import type { ScriptsResponse, UsersResponse } from '$lib/types';
 	import { userStore } from '$lib/stores';
@@ -28,8 +28,8 @@
 		<Badge variant="secondary" class="h-6 max-sm:ml-6">Executed:&nbsp;{script.executed}</Badge>
 	</div>
 	<a
-		href="/scripts/{(script.expand as { user?: UsersResponse })?.user?.username ||
-			$userStore?.username || ''}/{script.name}/"
+		href="/scripts/{customEncode((script.expand as { user?: UsersResponse })?.user?.username ||
+			$userStore?.username || '')}/{customEncode(script.name)}/"
 		aria-label={script.name}
 	>
 		<div class="absolute inset-0 z-10"></div>

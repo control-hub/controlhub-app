@@ -7,7 +7,7 @@
 	import { PlusCircle, Ellipsis } from 'lucide-svelte';
 
 	import { writable, derived, type Writable } from 'svelte/store';
-	import { toastApi, createTeam as utilsCreateTeam, shrinkString } from '$lib/utils';
+	import { toastApi, createTeam as utilsCreateTeam, shrinkString, customEncode } from '$lib/utils';
 	import { icon } from '$lib/config';
 	import { teamsStore } from '$lib/stores';
 	import { goto } from '$app/navigation';
@@ -31,7 +31,7 @@
 		teamDialogOpen.set(false);
 		teamForm.set({ name: '' });
 
-		goto('/' + result.name + '/');
+		goto('/' + customEncode(result.name) + '/');
 	}
 </script>
 
@@ -89,12 +89,12 @@
 				<Button
 					variant="outline"
 					class="z-20 my-auto aspect-square flex-shrink-0 hover:bg-background"
-					href="/{team.name}/~/settings/"
+					href="/{customEncode(team.name)}/~/settings/"
 				>
 					<Ellipsis class={icon.default} />
 				</Button>
 			</div>
-			<a href="/{team.name}/" aria-label={team.name}>
+			<a href="/{customEncode(team.name)}/" aria-label={team.name}>
 				<div class="absolute inset-0 z-10"></div>
 			</a>
 		</Card.Root>

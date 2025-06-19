@@ -9,7 +9,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { toastApi, createTeam as utilsCreateTeam } from '$lib/utils';
+	import { customEncode, toastApi, createTeam as utilsCreateTeam } from '$lib/utils';
 
 	const dialogOpen = writable(false);
 
@@ -28,7 +28,7 @@
 		createTeamName = '';
 		dialogOpen.set(false);
 
-		goto('/' + result.name);
+		goto('/' + customEncode(result.name));
 	};
 </script>
 
@@ -68,7 +68,7 @@
 					<DropdownMenu.Label class="text-xs text-muted-foreground">Teams</DropdownMenu.Label>
 					<ScrollArea class={`max-h-[20vh]-scroll`}>
 						{#each $teamsStore as team, index (team.id)}
-							<DropdownMenu.Item onSelect={() => goto('/' + team.name + '/')} class="gap-2 p-2">
+							<DropdownMenu.Item onSelect={() => goto('/' + customEncode(team.name) + '/')} class="gap-2 p-2">
 								<div class="flex size-6 items-center justify-center rounded-sm border">
 									<TeamIcon team={team} class="size-3"/>
 								</div>

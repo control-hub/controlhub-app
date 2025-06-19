@@ -10,6 +10,8 @@ export const load = async ({ parent, params }) => {
 	await parent();
 	const teamsPromise = pb.collection('teams').getFullList<TeamsResponse>({ sort: '-created' });
 
+	console.log(params.team)
+
 	const team = await pb
 		.collection('teams')
 		.getFirstListItem<TeamsResponse>(`name = "${shield(params.team)}"`);

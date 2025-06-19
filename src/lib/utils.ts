@@ -16,7 +16,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const shield = (str: string) => {
-	return str.replace('"', '\\"');
+	return str.replaceAll('"', '\\"');
+};
+
+export const customEncode = (str: string): string => {
+	return str.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, (char) => {
+		return encodeURIComponent(char);
+	});
 };
 
 export const compareProviders = (
@@ -107,8 +113,8 @@ export const toastApi = {
 	post: async (
 		url: string,
 		data: any = {},
-		onSuccess: () => void = () => {},
-		onError: () => void = () => {}
+		onSuccess: () => void = () => { },
+		onError: () => void = () => { }
 	) => {
 		const response = await post(url, data);
 

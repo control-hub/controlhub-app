@@ -5,6 +5,7 @@
 	import { teamStore, regionStore, computerStore } from '$lib/stores';
 	import type { ExecutionsResponse, ScriptsResponse, UsersResponse } from '$lib/types';
 	import { UserAvatar } from '$lib/user';
+	import { customEncode } from '$lib/utils';
 
 	export let execution: ExecutionsResponse;
 
@@ -28,7 +29,17 @@
 		const region =
 			$regionStore || (await pb.collection('regions').getOne(computer?.region as string));
 		const team = $teamStore || (await pb.collection('teams').getOne(region?.team as string));
-		goto('/' + team?.name + '/' + region?.name + '/' + computer?.name + '/' + execution.id + '/');
+		goto(
+			'/' +
+				customEncode(team?.name as string) +
+				'/' +
+				customEncode(region?.name as string) +
+				'/' +
+				customEncode(computer?.name as string) +
+				'/' +
+				customEncode(execution.id) +
+				'/'
+		);
 	};
 </script>
 
@@ -61,7 +72,10 @@
 		{#if user !== undefined && showUser}
 			<div class="flex items-center gap-2">
 				<span class="text-muted-foreground"> by </span>
-				<a href="/scripts/{user.username}/" class="flex gap-2 items-center text-md text-foreground/75">
+				<a
+					href="/scripts/{customEncode(user.username)}/"
+					class="text-md flex items-center gap-2 text-foreground/75"
+				>
 					<u>{user.username}</u>
 					<UserAvatar {user} />
 				</a>
