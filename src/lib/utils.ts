@@ -20,7 +20,7 @@ export const shield = (str: string) => {
 };
 
 export const customEncode = (str: string): string => {
-	return str.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, (char) => {
+	return str.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/gu, (char) => {
 		return encodeURIComponent(char);
 	});
 };
