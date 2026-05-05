@@ -33,7 +33,7 @@ RUN apt-get update
 
 # Копируем собранные файлы
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm i
 COPY --from=builder /app/build ./build
 
 # Открываем порт
