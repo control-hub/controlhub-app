@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 export const load = async ({ locals, url }) => {
 	const user = locals.user;
 
-	if (!user && !url.pathname.startsWith('/auth/')) {
+	if (!user && !url.pathname.startsWith('/auth/') && !url.pathname.startsWith('/landing')) {
 		throw redirect(302, '/auth/login');
 	}
 
